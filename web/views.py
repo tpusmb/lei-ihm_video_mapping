@@ -1,11 +1,12 @@
 from flask import Flask, render_template, request
+from utils import save_mapping
 
 app = Flask(__name__)
 
 
 @app.route('/')
 def ihm():
-    return render_template('index.html'), 200
+    return render_template('index.html', configs=save_mapping.load()), 200
 
 
 @app.route('/test')
@@ -15,6 +16,8 @@ def test():
 
 @app.route('/sendPoints', methods=['POST'])
 def send_points():
+    data = request.json
+    save_mapping.save(data)
     print(request.json)
     return "success", 200
 
