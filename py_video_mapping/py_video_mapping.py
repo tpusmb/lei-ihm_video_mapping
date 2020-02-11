@@ -5,15 +5,14 @@ from __future__ import absolute_import
 
 import logging.handlers
 import os
+import time
 from threading import Thread
 
-from scipy.spatial import distance as dist
 import cv2
 import imutils
 import numpy as np
 import screeninfo
 from screeninfo import Monitor
-import time
 
 from .screen_relation import ScreenRelation
 
@@ -118,7 +117,7 @@ class PyVideoMapping:
             [w - 1, 0],
             [w - 1, h - 1],
             [0, h - 1]], dtype="float32")
-        
+
         dst = np.array([
             top_left,
             top_right,
