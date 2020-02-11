@@ -24,12 +24,18 @@
     });
 
     function sendPoints() {
-        let mPoints = [];
+        const mPoints = [];
         maptastic.getLayout().forEach((value) =>
             mPoints.push(value['targetPoints'])
         );
         console.log(maptastic.getLayout());
         console.log(mPoints);
+
+        const data = {
+            'width': $(window).width(),
+            'heigth': $(window).height(),
+            'points': mPoints
+        };
 
         $.ajax({
             url: '/sendPoints',
@@ -39,7 +45,7 @@
             success: function (data) {
                 console.log("points sent successful");
             },
-            data: JSON.stringify(mPoints)
+            data: JSON.stringify(data)
         });
     }
 
