@@ -298,7 +298,7 @@ var Maptastic = function(config) {
 
 	var keyDown = function(event) {
 	  if(!configActive){
-	    if(event.keyCode == 32 && event.shiftKey){
+	    if(event.keyCode == 32 && event.shiftKey || event.keyCode === 69){
 	      setConfigEnabled(true);
 	      return;
 	    } else {
@@ -321,6 +321,11 @@ var Maptastic = function(config) {
 	        return;
 	      }
 	    break;
+
+		  case 69: // e key
+			  setConfigEnabled(false);
+			  return;
+			  break;
 
 	    case 37: // left arrow
 	      delta[0] -= increment;
