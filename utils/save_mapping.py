@@ -1,6 +1,6 @@
 import json
 
-MAPPING_DATA = "mapping_data.txt"
+MAPPING_DATA = "mapping_data.json"
 
 
 def save(data):
