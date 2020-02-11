@@ -741,7 +741,6 @@ var Maptastic = function(config) {
         addLayer(layerList[i].id, layerList[i].targetPoints)
     } else if((layerList[i] instanceof HTMLElement) || (typeof(layerList[i]) === 'string')) {
       addLayer(layerList[i]);
-      console.log(2)
     }
   }
 

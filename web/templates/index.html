@@ -19,11 +19,19 @@
 <script src="{{ url_for('static', filename='js/maptastic.js') }}"></script>
 <script src="{{ url_for('static', filename='js/jquery-3.4.1.min.js') }}"></script>
 <script>
-    const mappingConfig = {{configs|tojson|safe}};
+    const mappingConfig = {
+    {
+        configs | tojson | safe
+    }
+    }
+    ;
     const maptastic = new Maptastic({
         'autoLoad': false,
         'autoSave': false,
-        'layers': getLayers()
+        'layers': getLayers(),
+        'onchange': () => {
+            sendPoints()
+        }
     });
 
     function sendPoints() {
@@ -31,8 +39,6 @@
         maptastic.getLayout().forEach((value) =>
             mPoints.push(value['targetPoints'])
         );
-        console.log(maptastic.getLayout());
-        console.log(mPoints);
 
         const data = {
             'width': $(window).width(),
