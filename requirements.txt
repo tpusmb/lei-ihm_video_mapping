@@ -1,2 +1,5 @@
 docopt
 Flask==1.1.1
+opencv-python
+screeninfo
+imutils
