@@ -10,18 +10,20 @@
     </style>
 </head>
 <body>
-<img id="img1" src="{{url_for('static', filename='img/test_image.jpg') }}" alt="image test 1"/>
-<img id="img2" src="{{url_for('static', filename='img/test_image.jpg') }}" alt="image test 2"/>
-<img id="img3" src="{{url_for('static', filename='img/test_image.jpg') }}" alt="image test 3"/>
+<img id="img0" src="{{url_for('static', filename='img/test_image.jpg') }}" alt="image test 1"/>
+<img id="img1" src="{{url_for('static', filename='img/test_image.jpg') }}" alt="image test 2"/>
+<img id="img2" src="{{url_for('static', filename='img/test_image.jpg') }}" alt="image test 3"/>
 
 <button onclick="sendPoints()">Envoie</button>
 
 <script src="{{ url_for('static', filename='js/maptastic.js') }}"></script>
 <script src="{{ url_for('static', filename='js/jquery-3.4.1.min.js') }}"></script>
 <script>
-    const mappingConfig = {{configs|tojson|safe }};
+    const mappingConfig = {{configs|tojson|safe}};
     const maptastic = new Maptastic({
-        'layers': ['img1', 'img2', 'img3']
+        'autoLoad': false,
+        'autoSave': false,
+        'layers': getLayers()
     });
 
     function sendPoints() {
@@ -48,6 +50,20 @@
             },
             data: JSON.stringify(data)
         });
+    }
+
+    function getLayers() {
+        if (mappingConfig != null) {
+            const res = [];
+            mappingConfig['points'].forEach((coords, index) => {
+                res.push({
+                    'id': 'img' + index,
+                    'sourcePoints': coords,
+                    'targetPoints': coords
+                });
+            });
+            return res;
+        } else return ['img0', 'img1', 'img2'];
     }
 
 </script>
