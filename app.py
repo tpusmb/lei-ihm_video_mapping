@@ -14,7 +14,7 @@ Options:
 
 from docopt import docopt
 
-from web import app
+from web import app, py_video_mapping
 
 if __name__ == '__main__':
     args = docopt(__doc__)
@@ -29,3 +29,4 @@ if __name__ == '__main__':
         debug_mode = False
 
     app.run(debug=debug_mode, port=port)
+    py_video_mapping.stop()
