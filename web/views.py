@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request
+from utils import save_mapping
 
 from py_video_mapping import PyVideoMapping, creat_monitor
 
@@ -10,7 +11,7 @@ py_video_mapping.show_to_projector(py_video_mapping.wall_paper, blocking=False)
 
 @app.route('/')
 def ihm():
-    return render_template('index.html'), 200
+    return render_template('index.html', configs=save_mapping.load()), 200
 
 
 @app.route('/test')
@@ -22,6 +23,7 @@ def test():
 def send_points():
     print("update projector")
     data_json = request.json
+    save_mapping.save(data_json)
     if py_video_mapping.screen_relation is None:
         py_video_mapping.change_ui_screen(creat_monitor(data_json["width"], data_json["heigth"]))
     py_video_mapping.mapping_calibration(data_json["points"])
