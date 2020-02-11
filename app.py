@@ -4,11 +4,11 @@
 """
 Main script to run the degree management web-app.
 Usage:
-   app.py <port> [--mode=<mode>]
+   app.py [--port=<port>] [--mode=<mode>]
 
 Options:
     -h --help                   Show this screen.
-    <port>                      Port to run the server example 8080, [default 8080]
+    --port=<port>               Port to run the server example 8080, [default: 8080]
     --mode=<mode>               Debug or prod, else prod, [default: debug]
 """
 
@@ -20,7 +20,7 @@ if __name__ == '__main__':
     args = docopt(__doc__)
 
     try:
-        port = int(args["<port>"])
+        port = int(args["--port"])
     except ValueError:
         port = 8080
     try:
