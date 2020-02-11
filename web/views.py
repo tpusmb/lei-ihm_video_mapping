@@ -14,7 +14,7 @@ def test():
 
 
 @app.route('/sendPoints', methods=['POST'])
-def sendPoints():
+def send_points():
     print(request.json)
     return "success", 200
 
