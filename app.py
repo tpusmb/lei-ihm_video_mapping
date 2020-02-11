@@ -4,12 +4,12 @@
 """
 Main script to run the degree management web-app.
 Usage:
-   app.py <port> <mode>
+   app.py <port> [--mode=<mode>]
 
 Options:
     -h --help                   Show this screen.
     <port>                      Port to run the server example 8080, [default 8080]
-    <mode>                      debug or prod, else prod
+    --mode=<mode>               Debug or prod, else prod, [default: debug]
 """
 
 from docopt import docopt
@@ -24,7 +24,7 @@ if __name__ == '__main__':
     except ValueError:
         port = 8080
     try:
-        debug_mode = args["<mode>"] == 'debug'
+        debug_mode = args["--mode"] == 'debug'
     except ValueError:
         debug_mode = False
 
