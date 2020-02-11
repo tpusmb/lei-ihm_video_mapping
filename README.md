@@ -2,7 +2,6 @@
 Our lei IHM to config mapping
 
 ## Init
-    git submodule update --init --recursive
     pip install -r requirements.txt
 
 ## END POINTS
