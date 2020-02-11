@@ -1,6 +1,11 @@
 # lei-ihm_video_mapping
 Our lei IHM to config mapping
 
+## Init
+    git submodule update --init --recursive
+    pip install -r requirements.txt
+    pip install -r py_video_mapping/requirements.txt
+
 ## END POINTS
 
     [GET]: /
