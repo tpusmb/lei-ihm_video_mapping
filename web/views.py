@@ -10,7 +10,7 @@ def hello_world():
 
 @app.route('/test')
 def test():
-    return render_template('three.html'), 200
+    return render_template('demo/three.html'), 200
 
 
 @app.route('/sendPoints', methods=['POST'])
