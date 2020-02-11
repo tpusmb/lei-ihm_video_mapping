@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>LEI - MAPPING PROJECTION</title>
+    <style>
+        body {
+            background: black;
+        }
+    </style>
+</head>
+<body>
+<img id="img1" src="{{url_for('static', filename='img/test_image.jpg') }}" alt="image test 1"/>
+<img id="img2" src="{{url_for('static', filename='img/test_image.jpg') }}" alt="image test 2"/>
+<img id="img3" src="{{url_for('static', filename='img/test_image.jpg') }}" alt="image test 3"/>
+
+<button onclick="sendPoints()">Envoie</button>
+
+<script src="{{ url_for('static', filename='js/maptastic.js') }}"></script>
+<script src="{{ url_for('static', filename='js/jquery-3.4.1.min.js') }}"></script>
+<script>
+    const maptastic = new Maptastic({
+        'layers': ['img1', 'img2', 'img3']
+    });
+
+    function sendPoints() {
+        let mPoints = [];
+        maptastic.getLayout().forEach((value) =>
+            mPoints.push(value['targetPoints'])
+        );
+        console.log(maptastic.getLayout());
+        console.log(mPoints);
+
+        $.ajax({
+            url: '/sendPoints',
+            type: 'post',
+            dataType: 'json',
+            contentType: 'application/json',
+            success: function (data) {
+                console.log("points sent successful");
+            },
+            data: JSON.stringify(mPoints)
+        });
+    }
+
+</script>
+</body>
+</html>
