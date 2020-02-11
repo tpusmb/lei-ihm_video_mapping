@@ -7,8 +7,11 @@
     </style>
 </head>
 <body>
+<div id="so-simple">This is pretty simple.</div>
+<button onclick="sendPoints()">Envoie</button>
 
 <script src="{{ url_for('static', filename='js/maptastic.js') }}"></script>
+<script src="{{ url_for('static', filename='js/jquery-3.4.1.min.js') }}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r69/three.js"></script>
 <script>
 
@@ -52,7 +55,29 @@
 
     renderer.domElement.id = "webgl-canvas";
 
-    new Maptastic(renderer.domElement);
+    var maptastic = new Maptastic({
+        'layers': [renderer.domElement, "so-simple"]
+    });
+
+    function sendPoints() {
+        let mPoints = [];
+        maptastic.getLayout().forEach((value, index) =>
+            mPoints.push(value['targetPoints'])
+        );
+        console.log(maptastic.getLayout());
+        console.log(mPoints);
+
+        $.ajax({
+            url: '/sendPoints',
+            type: 'post',
+            dataType: 'json',
+            contentType: 'application/json',
+            success: function (data) {
+                console.log("points sent successful");
+            },
+            data: JSON.stringify(mPoints)
+        });
+    }
 
 </script>
 
