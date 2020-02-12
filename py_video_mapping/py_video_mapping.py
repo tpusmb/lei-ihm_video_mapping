@@ -5,7 +5,6 @@ from __future__ import absolute_import
 
 import logging.handlers
 import os
-import time
 from abc import ABC, abstractmethod
 from threading import Thread, Lock
 
@@ -185,7 +184,6 @@ class ProjectorShow(Thread):
             self.mutex.release()
             cv2.imshow(self.window_name, output_frame)
             cv2.waitKey(1)
-            time.sleep(0.1)
 
     def display_face(self, face_id, object_to_show: FrameGetter):
         """
@@ -274,6 +272,13 @@ class PyVideoMapping:
             projector_bottom_left = self.screen_relation.to_projector_screen(*ui_bottom_left)
             self.projector_show.update_face(face_id, projector_top_left, projector_top_right,
                                             projector_bottom_right, projector_bottom_left)
+
+    def show_video(self, face_id, video_path):
+        self.projector_show.display_face(face_id, VideoGetter(video_path))
+
+    def show_image(self, face_id, image_path: str):
+        image = cv2.imread(image_path)
+        self.projector_show.display_face(face_id, ImageGetter(image))
 
     def stop(self):
         self.projector_show.stop()
