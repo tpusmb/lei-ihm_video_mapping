@@ -5,7 +5,6 @@ from __future__ import absolute_import
 
 import logging.handlers
 import os
-import time
 from abc import ABC, abstractmethod
 from threading import Thread, Lock
 
@@ -13,7 +12,6 @@ import cv2
 import numpy as np
 import screeninfo
 from screeninfo import Monitor
-import timeit
 
 from utils import save_mapping
 from .screen_relation import ScreenRelation
@@ -59,6 +57,7 @@ class FaceObject:
         self.projector_bottom_left = projector_bottom_left
         self.output_width = output_width
         self.output_height = output_height
+        self.blackout = False
         self.perspective_mat = None
 
     def transform_image(self, frame):
@@ -107,8 +106,13 @@ class FaceObject:
         return self.projector_top_left is not None and self.projector_top_right is not None \
                and self.projector_bottom_right is not None and self.projector_bottom_left
 
+    def set_blackout(self, b: bool):
+        self.blackout = b
+
     def process_image(self, wall_paper, frame):
         assert self.is_ready()
+        if self.blackout:
+            return wall_paper
         wrap = self.transform_image(frame)
         return self.add_sub_image(wall_paper, wrap)
 
@@ -198,6 +202,11 @@ class ProjectorShow(Thread):
         with self.mutex:
             self.frame_getter_list[face_id] = object_to_show
 
+    def set_blackout(self, face_id, b: bool):
+        assert 0 <= face_id < len(self.faces_object)
+        with self.mutex:
+            self.faces_object[face_id].set_blackout(b)
+
     def update_face(self, face_id, projector_top_left, projector_top_right,
                     projector_bottom_right, projector_bottom_left):
         """
@@ -281,6 +290,15 @@ class PyVideoMapping:
     def show_image(self, face_id, image_path: str):
         image = cv2.imread(image_path)
         self.projector_show.display_face(face_id, ImageGetter(image))
+
+    def set_blackout(self, face_id, b: bool):
+        """
+
+        :param face_id:
+        :param b:
+        :return:
+        """
+        self.projector_show.set_blackout(face_id, b)
 
     def stop(self):
         self.projector_show.stop()
