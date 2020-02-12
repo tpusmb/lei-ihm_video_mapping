@@ -5,6 +5,7 @@ from __future__ import absolute_import
 
 import logging.handlers
 import os
+import time
 from abc import ABC, abstractmethod
 from threading import Thread, Lock
 
@@ -12,6 +13,7 @@ import cv2
 import numpy as np
 import screeninfo
 from screeninfo import Monitor
+import timeit
 
 from utils import save_mapping
 from .screen_relation import ScreenRelation
@@ -65,20 +67,20 @@ class FaceObject:
         :param frame:
         :return:
         """
-        if self.perspective_mat is None:
-            h, w, _ = frame.shape
-            rect = np.array([
-                [0, 0],
-                [w - 1, 0],
-                [w - 1, h - 1],
-                [0, h - 1]], dtype="float32")
-            dst = np.array([
-                self.projector_top_left,
-                self.projector_top_right,
-                self.projector_bottom_right,
-                self.projector_bottom_left
-            ], dtype="float32")
-            self.perspective_mat = cv2.getPerspectiveTransform(rect, dst)
+        # TODO if self.perspective_mat is None:
+        h, w, _ = frame.shape
+        rect = np.array([
+            [0, 0],
+            [w - 1, 0],
+            [w - 1, h - 1],
+            [0, h - 1]], dtype="float32")
+        dst = np.array([
+            self.projector_top_left,
+            self.projector_top_right,
+            self.projector_bottom_right,
+            self.projector_bottom_left
+        ], dtype="float32")
+        self.perspective_mat = cv2.getPerspectiveTransform(rect, dst)
         warped = cv2.warpPerspective(frame, self.perspective_mat, (self.output_width, self.output_height))
         min_x = min(self.projector_top_left[0], self.projector_bottom_left[0])
         max_x = max(self.projector_top_right[0], self.projector_bottom_right[0])
@@ -127,6 +129,7 @@ class VideoGetter(FrameGetter):
     def get_image(self):
         _, frame = self.video_capture.read()
         if frame is None:
+            self.video_capture.release()
             self.video_capture = cv2.VideoCapture(self.path_video)
             _, frame = self.video_capture.read()
         return frame
