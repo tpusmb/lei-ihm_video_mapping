@@ -33,7 +33,7 @@ PYTHON_LOGGER.setLevel(logging.DEBUG)
 FOLDER_ABSOLUTE_PATH = os.path.normpath(os.path.dirname(os.path.abspath(__file__)))
 
 TEST_IMAGE = os.path.join(FOLDER_ABSOLUTE_PATH, "test_image.jpg")
-PROJECTOR_DATA = "projector_data.json"
+PROJECTOR_DATA = "projector_data.map"
 NB_FACES = 3
 
 
