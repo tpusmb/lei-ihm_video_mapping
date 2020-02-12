@@ -51,7 +51,6 @@ class FaceObject:
         :param projector_bottom_right:
         :param projector_bottom_left:
         """
-        print("update face")
         self.projector_top_left = projector_top_left
         self.projector_top_right = projector_top_right
         self.projector_bottom_right = projector_bottom_right
@@ -174,12 +173,9 @@ class ProjectorShow(Thread):
         while not self.end:
             output_frame = self.wall_paper.copy()
             self.mutex.acquire()
-            i = 0
             for frame_getter, face_object in zip(self.frame_getter_list, self.faces_object):
                 if frame_getter is None or not face_object.is_ready():
-                    print("not ok for {}".format(i))
                     continue
-                i += 1
                 output_frame = face_object.process_image(output_frame, frame_getter.get_image())
             self.mutex.release()
             cv2.imshow(self.window_name, output_frame)
