@@ -7,7 +7,7 @@ import logging.handlers
 import os
 import time
 from abc import ABC, abstractmethod
-from threading import Thread
+from threading import Thread, Lock
 
 import cv2
 import numpy as np
@@ -52,6 +52,7 @@ class FaceObject:
         :param projector_bottom_right:
         :param projector_bottom_left:
         """
+        print("update face")
         self.projector_top_left = projector_top_left
         self.projector_top_right = projector_top_right
         self.projector_bottom_right = projector_bottom_right
@@ -153,14 +154,15 @@ class ProjectorShow(Thread):
         self.projector_positions = save_mapping.load(PROJECTOR_DATA)
         self.nb_face = nb_face
         if self.projector_positions is not None:
-            self.faces_object = [FaceObject(self.screen.width, self.screen.heigh, *self.projector_positions[i])
+            self.faces_object = [FaceObject(self.screen.width, self.screen.height, *self.projector_positions[i])
                                  for i in range(nb_face)]
         else:
-            self.faces_object = [FaceObject(output_width=self.screen.width, output_height=self.screen.heigh)
+            self.faces_object = [FaceObject(output_width=self.screen.width, output_height=self.screen.height)
                                  for _ in range(nb_face)]
             self.projector_positions = [None] * nb_face
         self.frame_getter_list = [None, None, None]
         self.wall_paper = self.creat_blank_image()
+        self.mutex = Lock()
 
     def creat_blank_image(self):
         return np.zeros((self.screen.height, self.screen.width, 3), np.uint8)
@@ -172,10 +174,15 @@ class ProjectorShow(Thread):
         cv2.setWindowProperty(self.window_name, cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
         while not self.end:
             output_frame = self.wall_paper.copy()
+            self.mutex.acquire()
+            i = 0
             for frame_getter, face_object in zip(self.frame_getter_list, self.faces_object):
                 if frame_getter is None or not face_object.is_ready():
+                    print("not ok for {}".format(i))
                     continue
+                i += 1
                 output_frame = face_object.process_image(output_frame, frame_getter.get_image())
+            self.mutex.release()
             cv2.imshow(self.window_name, output_frame)
             cv2.waitKey(1)
             time.sleep(0.1)
@@ -188,7 +195,8 @@ class ProjectorShow(Thread):
         :return:
         """
         assert 0 <= face_id < len(self.faces_object)
-        self.frame_getter_list[face_id] = object_to_show
+        with self.mutex:
+            self.frame_getter_list[face_id] = object_to_show
 
     def update_face(self, face_id, projector_top_left, projector_top_right,
                     projector_bottom_right, projector_bottom_left):
@@ -202,10 +210,12 @@ class ProjectorShow(Thread):
         :return:
         """
         assert 0 <= face_id < len(self.faces_object)
-        self.faces_object[face_id].__init__(projector_top_left, projector_top_right,
-                                            projector_bottom_right, projector_bottom_left)
-        self.projector_positions[face_id] = [projector_top_left, projector_top_right,
-                                             projector_bottom_right, projector_bottom_left]
+        with self.mutex:
+            self.faces_object[face_id].__init__(self.screen.width, self.screen.height,
+                                                projector_top_left, projector_top_right,
+                                                projector_bottom_right, projector_bottom_left)
+            self.projector_positions[face_id] = [projector_top_left, projector_top_right,
+                                                 projector_bottom_right, projector_bottom_left]
         save_mapping.save(self.projector_positions, PROJECTOR_DATA)
 
     def stop(self):
@@ -256,7 +266,8 @@ class PyVideoMapping:
         if self.screen_relation is None:
             raise ValueError("Need to provide ui screen in the constructor")
         # Get all image tuple (tuple) x, y
-        for face_id, ui_top_left, ui_top_right, ui_bottom_right, ui_bottom_left in enumerate(ui_images):
+        for face_id in range(len(ui_images)):
+            ui_top_left, ui_top_right, ui_bottom_right, ui_bottom_left = ui_images[face_id]
             projector_top_left = self.screen_relation.to_projector_screen(*ui_top_left)
             projector_top_right = self.screen_relation.to_projector_screen(*ui_top_right)
             projector_bottom_right = self.screen_relation.to_projector_screen(*ui_bottom_right)

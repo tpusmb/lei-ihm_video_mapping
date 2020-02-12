@@ -8,7 +8,6 @@ MAPPING_DATA = "mapping_data.json"
 
 if len(PyVideoMapping.get_all_screens()) > 1:
     py_video_mapping = PyVideoMapping(PyVideoMapping.get_all_screens()[1])
-    py_video_mapping.show_save_projector_positions()
 else:
     print("No projector detected")
     py_video_mapping = None
