@@ -1,16 +1,15 @@
-import json
 import io
-MAPPING_DATA = "mapping_data.json"
+import json
 
 
-def save(data):
-    with io.open(MAPPING_DATA, 'w', encoding="utf-8") as outfile:
+def save(data, file_name):
+    with io.open(file_name, 'w', encoding="utf-8") as outfile:
         json.dump(data, outfile, ensure_ascii=True)
 
 
-def load():
+def load(file_name):
     try:
-        with io.open(MAPPING_DATA, encoding="utf-8") as json_file:
+        with io.open(file_name, encoding="utf-8") as json_file:
             return json.load(json_file)
     except FileNotFoundError:
         return None

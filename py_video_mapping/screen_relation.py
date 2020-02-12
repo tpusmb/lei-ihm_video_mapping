@@ -41,7 +41,7 @@ class ScreenRelation:
         :param ui_screen_x:
         :return:
         """
-        return (self.projector_screen.width * ui_screen_x) // self.ui_screen.width
+        return int((self.projector_screen.width * ui_screen_x) // self.ui_screen.width)
 
     def to_projector_screen_y(self, ui_screen_y):
         """
@@ -49,7 +49,7 @@ class ScreenRelation:
         :param ui_screen_y:
         :return:
         """
-        return (self.projector_screen.height * ui_screen_y) // self.ui_screen.height
+        return int((self.projector_screen.height * ui_screen_y) // self.ui_screen.height)
 
     def to_projector_screen(self, ui_screen_x, ui_screen_y):
         """

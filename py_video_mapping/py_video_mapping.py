@@ -14,6 +14,7 @@ import numpy as np
 import screeninfo
 from screeninfo import Monitor
 
+from utils import save_mapping
 from .screen_relation import ScreenRelation
 
 PYTHON_LOGGER = logging.getLogger(__name__)
@@ -33,6 +34,7 @@ PYTHON_LOGGER.setLevel(logging.DEBUG)
 FOLDER_ABSOLUTE_PATH = os.path.normpath(os.path.dirname(os.path.abspath(__file__)))
 
 TEST_IMAGE = os.path.join(FOLDER_ABSOLUTE_PATH, "test_image.jpg")
+PROJECTOR_DATA = "projector_data.json"
 
 
 class ImgShow(Thread):
@@ -125,8 +127,8 @@ class PyVideoMapping:
             bottom_left
         ], dtype="float32")
 
-        h, _ = cv2.findHomography(rect, dst)
-        warped = cv2.warpPerspective(frame, h, (output_width, output_height))
+        m = cv2.getPerspectiveTransform(rect, dst)
+        warped = cv2.warpPerspective(frame, m, (output_width, output_height))
         min_x = min(top_left[0], bottom_left[0])
         max_x = max(top_right[0], bottom_right[0])
         min_y = min(top_left[1], top_right[1])
@@ -143,6 +145,22 @@ class PyVideoMapping:
     def show_to_projector(self, frame, blocking=True):
         self.img_show.show_image(frame)
 
+    def transform_and_add(self, frame, projector_top_left, projector_top_right,
+                          projector_bottom_right, projector_bottom_left):
+        """
+
+        :param frame:
+        :param projector_top_left:
+        :param projector_top_right:
+        :param projector_bottom_right:
+        :param projector_bottom_left:
+        :return:
+        """
+        wrap = self.transform_image(self.test_image, projector_top_left, projector_top_right,
+                                    projector_bottom_right, projector_bottom_left,
+                                    self.screen.width, self.screen.height)
+        return self.add_sub_image(frame, wrap, *projector_top_left)
+
     def mapping_calibration(self, ui_images):
         """
 
@@ -152,6 +170,7 @@ class PyVideoMapping:
             ui_top_left = x, y
         :return:
         """
+        new_positions = []
         if self.screen_relation is None:
             raise ValueError("Need to provide ui screen in the constructor")
         output_frame = self.wall_paper.copy()
@@ -161,11 +180,24 @@ class PyVideoMapping:
             projector_top_right = self.screen_relation.to_projector_screen(*ui_top_right)
             projector_bottom_right = self.screen_relation.to_projector_screen(*ui_bottom_right)
             projector_bottom_left = self.screen_relation.to_projector_screen(*ui_bottom_left)
-            wrap = self.transform_image(self.test_image, projector_top_left, projector_top_right,
-                                        projector_bottom_right, projector_bottom_left,
-                                        self.screen.width, self.screen.height)
+            new_positions.append([projector_top_left, projector_top_right,
+                                  projector_bottom_right, projector_bottom_left])
+            output_frame = self.transform_and_add(output_frame, projector_top_left, projector_top_right,
+                                                  projector_bottom_right, projector_bottom_left)
+        self.show_to_projector(output_frame, blocking=False)
+        save_mapping.save(new_positions, PROJECTOR_DATA)
+        return new_positions
 
-            output_frame = self.add_sub_image(output_frame, wrap, *projector_top_left)
+    def show_save_projector_positions(self):
+        projector_positions = save_mapping.load(PROJECTOR_DATA)
+        if projector_positions is None:
+            PYTHON_LOGGER.info("No projector save positions")
+            return
+        output_frame = self.wall_paper.copy()
+        for projector_top_left, projector_top_right, projector_bottom_right, projector_bottom_left \
+                in projector_positions:
+            output_frame = self.transform_and_add(output_frame, projector_top_left, projector_top_right,
+                                                  projector_bottom_right, projector_bottom_left)
         self.show_to_projector(output_frame, blocking=False)
 
     def stop(self):
