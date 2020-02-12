@@ -4,7 +4,7 @@ from utils import save_mapping
 from py_video_mapping import PyVideoMapping, creat_monitor
 
 app = Flask(__name__)
-MAPPING_DATA = "mapping_data.json"
+MAPPING_DATA = "mapping_data.map"
 
 if len(PyVideoMapping.get_all_screens()) > 1:
     py_video_mapping = PyVideoMapping(PyVideoMapping.get_all_screens()[1])
@@ -25,7 +25,6 @@ def test():
 
 @app.route('/sendPoints', methods=['POST'])
 def send_points():
-    print("update projector")
     data_json = request.json
     save_mapping.save(data_json, MAPPING_DATA)
 

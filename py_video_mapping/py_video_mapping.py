@@ -33,7 +33,7 @@ PYTHON_LOGGER.setLevel(logging.DEBUG)
 FOLDER_ABSOLUTE_PATH = os.path.normpath(os.path.dirname(os.path.abspath(__file__)))
 
 TEST_IMAGE = os.path.join(FOLDER_ABSOLUTE_PATH, "test_image.jpg")
-PROJECTOR_DATA = "projector_data.json"
+PROJECTOR_DATA = "projector_data.map"
 NB_FACES = 3
 
 
@@ -51,7 +51,6 @@ class FaceObject:
         :param projector_bottom_right:
         :param projector_bottom_left:
         """
-        print("update face")
         self.projector_top_left = projector_top_left
         self.projector_top_right = projector_top_right
         self.projector_bottom_right = projector_bottom_right
@@ -96,7 +95,10 @@ class FaceObject:
         """
         x_offset, y_offset = self.projector_top_left
         wall_paper_copy = wall_paper.copy()
-        wall_paper_copy[y_offset:y_offset + frame.shape[0], x_offset:x_offset + frame.shape[1]] = frame
+        try:
+            wall_paper_copy[y_offset:y_offset + frame.shape[0], x_offset:x_offset + frame.shape[1]] = frame
+        except ValueError:
+            pass
         return wall_paper_copy
 
     def is_ready(self):
@@ -174,12 +176,9 @@ class ProjectorShow(Thread):
         while not self.end:
             output_frame = self.wall_paper.copy()
             self.mutex.acquire()
-            i = 0
             for frame_getter, face_object in zip(self.frame_getter_list, self.faces_object):
                 if frame_getter is None or not face_object.is_ready():
-                    print("not ok for {}".format(i))
                     continue
-                i += 1
                 output_frame = face_object.process_image(output_frame, frame_getter.get_image())
             self.mutex.release()
             cv2.imshow(self.window_name, output_frame)
