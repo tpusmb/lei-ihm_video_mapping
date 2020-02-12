@@ -25,7 +25,6 @@ def test():
 
 @app.route('/sendPoints', methods=['POST'])
 def send_points():
-    print("update projector")
     data_json = request.json
     save_mapping.save(data_json, MAPPING_DATA)
 

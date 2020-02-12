@@ -95,7 +95,10 @@ class FaceObject:
         """
         x_offset, y_offset = self.projector_top_left
         wall_paper_copy = wall_paper.copy()
-        wall_paper_copy[y_offset:y_offset + frame.shape[0], x_offset:x_offset + frame.shape[1]] = frame
+        try:
+            wall_paper_copy[y_offset:y_offset + frame.shape[0], x_offset:x_offset + frame.shape[1]] = frame
+        except ValueError:
+            pass
         return wall_paper_copy
 
     def is_ready(self):
