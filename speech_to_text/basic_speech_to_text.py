@@ -80,7 +80,7 @@ def speech_to_text(noise_level: int = None) -> Union[None, str]:
             r.energy_threshold = noise_level
         else:
             r.adjust_for_ambient_noise(source)
-        audio = r.listen(source)
+        audio = r.listen(source, phrase_time_limit=5)
 
     with suppress(sr.UnknownValueError, sr.RequestError):
         # Call the google voice recognizer

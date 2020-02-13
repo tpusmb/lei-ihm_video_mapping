@@ -1,6 +1,6 @@
 import sys
 from enum import Enum
-from typing import Union
+from typing import Union, Tuple
 
 import requests
 
@@ -19,6 +19,7 @@ class Intent(Enum):
     POSITIF = "positif"
     NEGATIF = "negatif"
     PLANTE_CHALLENGE = "plante_challenge"
+    UNKNOWN_INTENT = ""
 
     @staticmethod
     def from_str(intent_str: str) -> Union["Intent", None]:
@@ -38,15 +39,12 @@ class RasaIntent:
         self.url = url
         # TODO start server in background
 
-    def detect_intent(self, text: str) -> Union[Intent, None]:  # TODO use intent enumeration
+    def detect_intent(self, text: str) -> Tuple[Union[Intent, None], float]:
         res = requests.post(self.url, json={"text": text})
         intent_res = res.json().get("intent", [])
         intent_str = intent_res.get("name")
         confidence = intent_res.get('confidence')
-        if intent_str and confidence < 0.5:
-            print(f"Low intent score for text: <{text}>", file=sys.stderr)
-            print(f"Confidence: {confidence}, for intent <{intent_str}> ", file=sys.stderr)
-        return Intent.from_str(intent_str)
+        return Intent.from_str(intent_str), confidence
 
 
 if __name__ == '__main__':
