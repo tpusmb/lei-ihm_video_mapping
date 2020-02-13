@@ -1,0 +1,45 @@
+intents:
+  - salutation
+  - fin
+  - suivre_etat_plante
+  - afficher_etat_plante
+  - entretenir_plante
+  - afficher_progres_du_jardinier
+  - afficher_courbe_progression
+  - afficher_niveau
+  - planter_une_nouvelle_plante
+  - planter_un_bulbe
+  - positif
+  - negatif
+  - plante_challenge
+
+actions:
+- utter_salutation
+- utter_fin
+- utter_suivre_etat_plante
+- utter_afficher_etat_plante
+- utter_entretenir_plante
+- utter_plante_challenge
+
+responses:
+  utter_salutation:
+  - text: "utter_salutation"
+
+  utter_fin:
+  - text: "utter_fin"
+
+  utter_suivre_etat_plante:
+  - text: "utter_suivre_etat_plante"
+
+  utter_afficher_etat_plante:
+  - text: "utter_afficher_etat_plante"
+
+  utter_entretenir_plante:
+  - text: "utter_entretenir_plante"
+
+  utter_plante_challenge:
+  - text: "En effet je suis une plante VIVANTE !"
+
+session_config:
+  session_expiration_time: 60
+  carry_over_slots_to_new_session: true
