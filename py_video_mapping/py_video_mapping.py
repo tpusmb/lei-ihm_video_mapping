@@ -200,7 +200,7 @@ class ProjectorShow(Thread):
         """
         assert 0 <= face_id < len(self.faces_object)
         with self.mutex:
-            self.set_blackout(face_id, False)
+            self.faces_object[face_id].set_blackout(False)
             self.frame_getter_list[face_id] = object_to_show
 
     def set_blackout(self, face_id, b: bool):
