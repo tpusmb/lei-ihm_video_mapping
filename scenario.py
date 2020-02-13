@@ -24,8 +24,8 @@ FOLDER_ABSOLUTE_PATH = os.path.normpath(os.path.dirname(os.path.abspath(__file__
 
 class Scenario:
 
-    def __init__(self):
-        self.py_video_mapping = PyVideoMapping(PyVideoMapping.get_all_screens()[1])
+    def __init__(self, video_mapping):
+        self.py_video_mapping = video_mapping
 
     # Menus
     def display_main_menu(self):
@@ -81,7 +81,7 @@ class Scenario:
     def display_plant_state(self, state):
         self.py_video_mapping.show_image(0, "ressources/images/etapes/Etape{}Plante.png".format(state))
         # TODO rajouter la video par dessus l'image
-        self.py_video_mapping.show_image(1, "ressources/images/EtatPlante")
+        self.py_video_mapping.show_image(1, "ressources/images/EtatPlante.png")
         next_state = state + 1 if state < 4 else state
         self.py_video_mapping.show_image(2, "ressources/images/etapes/Etape{}Plante.png".format(next_state))
 
@@ -107,7 +107,7 @@ class Scenario:
     def display_karaoke(self):
         self.py_video_mapping.show_video(0, "ressources/videos/karaoke/dance.mp4")
         self.py_video_mapping.show_video(1, "ressources/videos/karaoke/karaoke_gang-namseutayil.mp4")
-        self.py_video_mapping.show_video(3, "ressources/videos/karaoke/dance.mp4")
+        self.py_video_mapping.show_video(2, "ressources/videos/karaoke/dance.mp4")
 
     def stop_mapping(self):
         input("enter top stop")
