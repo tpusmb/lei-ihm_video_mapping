@@ -9,6 +9,7 @@ from abc import ABC, abstractmethod
 from threading import Thread, Lock
 
 import cv2
+import imutils
 import numpy as np
 import screeninfo
 from screeninfo import Monitor
@@ -35,6 +36,23 @@ FOLDER_ABSOLUTE_PATH = os.path.normpath(os.path.dirname(os.path.abspath(__file__
 TEST_IMAGE = os.path.join(FOLDER_ABSOLUTE_PATH, "test_image.jpg")
 PROJECTOR_DATA = "projector_data.map"
 NB_FACES = 3
+
+
+def add_sub_image(wall_paper, frame, x_offset, y_offset):
+    """
+
+    :param wall_paper:
+    :param frame:
+    :param x_offset:
+    :param y_offset:
+    :return:
+    """
+    wall_paper_copy = wall_paper.copy()
+    try:
+        wall_paper_copy[y_offset:y_offset + frame.shape[0], x_offset:x_offset + frame.shape[1]] = frame
+    except ValueError:
+        pass
+    return wall_paper_copy
 
 
 class FaceObject:
@@ -87,21 +105,6 @@ class FaceObject:
         max_y = max(self.projector_bottom_left[1], self.projector_bottom_right[1])
         return warped[min_y:max_y, min_x:max_x]
 
-    def add_sub_image(self, wall_paper, frame):
-        """
-
-        :param wall_paper:
-        :param frame:
-        :return:
-        """
-        x_offset, y_offset = self.projector_top_left
-        wall_paper_copy = wall_paper.copy()
-        try:
-            wall_paper_copy[y_offset:y_offset + frame.shape[0], x_offset:x_offset + frame.shape[1]] = frame
-        except ValueError:
-            pass
-        return wall_paper_copy
-
     def is_ready(self):
         return self.projector_top_left is not None and self.projector_top_right is not None \
                and self.projector_bottom_right is not None and self.projector_bottom_left
@@ -114,7 +117,7 @@ class FaceObject:
         if self.blackout:
             return wall_paper
         wrap = self.transform_image(frame)
-        return self.add_sub_image(wall_paper, wrap)
+        return add_sub_image(wall_paper, wrap, *self.projector_top_left)
 
 
 class FrameGetter(ABC):
@@ -146,6 +149,37 @@ class ImageGetter(FrameGetter):
 
     def get_image(self):
         return self.image
+
+
+class VideoOnWallpaper(FrameGetter):
+
+    def __init__(self, image, video_path, x_offset, y_offset, width, height):
+        """
+
+        :param image:
+        :param video_path:
+        :param x_offset:
+        :param y_offset:
+        :param width:
+        :param height:
+        """
+        offset_ok = 0 <= x_offset < image.shape[1] and 0 <= y_offset < image.shape[1]
+        dim_ok = 0 < width < image.shape[1] and 0 < height < image.shape[0]
+        assert offset_ok and dim_ok
+        self.video_getter = VideoGetter(video_path)
+        self.image_getter = ImageGetter(image)
+        self.x_offset = x_offset
+        self.y_offset = y_offset
+        self.width = width
+        self.height = height
+
+
+def get_image(self):
+    video_img = self.video_getter.get_image()
+    wall_paper = self.image_getter.get_image()
+    video_img = imutils.resize(video_img, width=self.width, height=self.height)
+    wall_image = add_sub_image(wall_paper, video_img, self.x_offset, self.y_offset)
+    return wall_image
 
 
 class ProjectorShow(Thread):
@@ -285,12 +319,18 @@ class PyVideoMapping:
             self.projector_show.update_face(face_id, projector_top_left, projector_top_right,
                                             projector_bottom_right, projector_bottom_left)
 
-    def show_video(self, face_id, video_path):
+    def show_video(self, face_id: int, video_path: str):
         self.projector_show.display_face(face_id, VideoGetter(video_path))
 
-    def show_image(self, face_id, image_path: str):
+    def show_image(self, face_id: int, image_path: str):
         image = cv2.imread(image_path)
         self.projector_show.display_face(face_id, ImageGetter(image))
+
+    def show_video_on_wallpaper(self, face_id: int, video_path: str, image_path: str,
+                                x_offset: int, y_offset: int, width: int, height: int):
+        image = cv2.imread(image_path)
+        self.projector_show.display_face(face_id,
+                                         VideoOnWallpaper(image, video_path, x_offset, y_offset, width, height))
 
     def set_blackout(self, face_id, b: bool):
         """
