@@ -35,44 +35,34 @@ class Scenario:
 
     def display_sub_menu1(self):
         self.py_video_mapping.show_image(0, "ressources/images/commands/CommandeEntretenirPlante.png")
-        # TODO afficher un écran vide au milieu
-        self.py_video_mapping.show_image(1, "ressources/images/commands/CommandeApprendreAJardiner.png")
+        self.py_video_mapping.set_blackout(1, True)
         self.py_video_mapping.show_image(2, "ressources/images/commands/CommandeVoirEtatPlante.png")
 
     def display_sub_menu2(self):
         self.py_video_mapping.show_image(0, "ressources/images/commands/CommandeProgressionPlante.png")
-        # TODO afficher un écran vide au milieu
-        self.py_video_mapping.show_image(1, "ressources/images/commands/CommandeVoirProgression.png")
+        self.py_video_mapping.set_blackout(1, True)
         self.py_video_mapping.show_image(2, "ressources/images/commands/CommandeProgressionJardinier.png")
 
     # Actions
     def display_action_creuser(self):
-        # TODO afficher un écran vide à gauche
-        self.py_video_mapping.show_image(0, "ressources/images/commands/CommandePlanterPlante.png")
+        self.py_video_mapping.set_blackout(0, True)
         self.py_video_mapping.show_image(1, "ressources/images/actions/ActionCreuser.png")
-        # TODO afficher un écran vide à droite
-        self.py_video_mapping.show_image(2, "ressources/images/commands/CommandePlanterPlante.png")
+        self.py_video_mapping.set_blackout(2, True)
 
     def display_action_placer_bulbe(self):
-        # TODO afficher un écran vide à gauche
-        self.py_video_mapping.show_image(0, "ressources/images/commands/CommandePlanterPlante.png")
+        self.py_video_mapping.set_blackout(0, True)
         self.py_video_mapping.show_image(1, "ressources/images/actions/ActionPlacerBulbe.png")
-        # TODO afficher un écran vide à droite
-        self.py_video_mapping.show_image(2, "ressources/images/commands/CommandePlanterPlante.png")
+        self.py_video_mapping.set_blackout(2, True)
 
     def display_action_reboucher_trou(self):
-        # TODO afficher un écran vide à gauche
-        self.py_video_mapping.show_image(0, "ressources/images/commands/CommandePlanterPlante.png")
+        self.py_video_mapping.set_blackout(0, True)
         self.py_video_mapping.show_image(1, "ressources/images/actions/ActionReboucherTrou.png")
-        # TODO afficher un écran vide à droite
-        self.py_video_mapping.show_image(2, "ressources/images/commands/CommandePlanterPlante.png")
+        self.py_video_mapping.set_blackout(2, True)
 
     def display_action_arroser(self):
-        # TODO afficher un écran vide à gauche
-        self.py_video_mapping.show_image(0, "ressources/images/commands/CommandePlanterPlante.png")
+        self.py_video_mapping.set_blackout(0, True)
         self.py_video_mapping.show_image(1, "ressources/images/actions/ActionArroserLeBulbe.png")
-        # TODO afficher un écran vide à droite
-        self.py_video_mapping.show_image(2, "ressources/images/commands/CommandePlanterPlante.png")
+        self.py_video_mapping.set_blackout(2, True)
 
     # Feedbacks
     def display_good_feedback(self):
@@ -109,17 +99,15 @@ class Scenario:
 
     # Help
     def display_command_list(self):
-        # TODO afficher un écran vide à gauche
-        self.py_video_mapping.show_image(0, "ressources/images/ListeDesCommandes.png")
+        self.py_video_mapping.set_blackout(0, True)
         self.py_video_mapping.show_image(1, "ressources/images/ListeDesCommandes.png")
-        # TODO afficher un écran vide à droite
-        self.py_video_mapping.show_image(2, "ressources/images/ListeDesCommandes.png")
+        self.py_video_mapping.set_blackout(2, True)
 
     # Karaoke
     def display_karaoke(self):
-        self.py_video_mapping.show_video(0, "ressources/videos/karaoke/karaoke_gang-namseutayil.mp4")
+        self.py_video_mapping.show_video(0, "ressources/videos/karaoke/dance.mp4")
         self.py_video_mapping.show_video(1, "ressources/videos/karaoke/karaoke_gang-namseutayil.mp4")
-        self.py_video_mapping.show_video(3, "ressources/videos/karaoke/karaoke_gang-namseutayil.mp4")
+        self.py_video_mapping.show_video(3, "ressources/videos/karaoke/dance.mp4")
 
     def stop_mapping(self):
         input("enter top stop")
