@@ -56,6 +56,15 @@ def add_sub_image(wall_paper, frame, x_offset, y_offset):
     return wall_paper_copy
 
 
+def draw_text_onto_image(image, text, x_offset, y_offset, scale):
+    org = (x_offset, y_offset)
+    font = cv2.FONT_HERSHEY_SIMPLEX
+    font_scale = scale
+    color = (0, 0, 0)
+    thickness = 5
+    return cv2.putText(image, text, org, font, font_scale, color, thickness, cv2.LINE_AA)
+
+
 class FaceObject:
 
     def __init__(self, output_width, output_height,

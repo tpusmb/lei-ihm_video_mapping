@@ -2,8 +2,10 @@ from __future__ import absolute_import
 
 from data_drawer import BarDraw
 from datas.models.Flower import Flower
+from py_video_mapping import draw_text_onto_image
 import logging.handlers
 import os
+import cv2
 
 from datas.repositories.PlayerRepository import PlayerRepository
 
@@ -85,10 +87,13 @@ class Scenario:
         self.py_video_mapping.show_image(2, "ressources/images/feedbacks/PasCompris.png")
 
     # Data
-    def display_plant_state(self, state):
+    def display_plant_state(self, state, mood, temperature, humidity):
         self.py_video_mapping.show_image(0, "ressources/images/etapes/Etape{}Plante.png".format(state))
-        # TODO rajouter la video par dessus l'image
-        self.py_video_mapping.show_image(1, "ressources/images/EtatPlante.png")
+        image_text1 = draw_text_onto_image(cv2.imread("ressources/images/EtatPlante.png"), "{} C".format(temperature),
+                                           230, 650, 3)
+        image_text2 = draw_text_onto_image(image_text1, "{}%".format(humidity), 745, 650, 3)
+        self.py_video_mapping.show_video_on_wallpaper(1, "ressources/videos/animations/{}_plant.mp4".format(mood),
+                                                      image_text2, 225, 10, 650, 1, True)
         next_state = state + 1 if state < 4 else state
         self.py_video_mapping.show_image(2, "ressources/images/etapes/Etape{}Plante.png".format(next_state))
 
