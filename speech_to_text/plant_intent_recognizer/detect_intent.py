@@ -1,3 +1,4 @@
+import subprocess
 import sys
 from enum import Enum
 from typing import Union, Tuple
@@ -11,6 +12,7 @@ class Intent(Enum):
     SUIVRE_ETAT_PLANTE = "suivre_etat_plante"
     AFFICHER_ETAT_PLANTE = "afficher_etat_plante"
     ENTRETENIR_PLANTE = "entretenir_plante"
+    AFFICHER_PROGRES_PLANTE = "afficher_progres_de_la_plante"
     AFFICHER_PROGRES_DU_JARDINIER = "afficher_progres_du_jardinier"
     AFFICHER_COURBE_PROGRESSION = "afficher_courbe_progression"
     AFFICHER_NIVEAU = "afficher_niveau"
