@@ -11,7 +11,7 @@ import speech_recognition as sr
 import pvporcupine
 
 
-def is_wake_up_word_said(input_device_index=13, sensitivity=0.5, keyword='hey pico', timeout=10):
+def is_wake_up_word_said(input_device_index=18, sensitivity=0.5, keyword='hey pico', timeout=10):
     keyword_file_path = [pvporcupine.KEYWORD_FILE_PATHS[keyword]]
     num_keywords = len(keyword_file_path)
 
