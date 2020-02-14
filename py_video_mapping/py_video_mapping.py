@@ -12,7 +12,6 @@ import cv2
 import imutils
 import numpy as np
 import screeninfo
-from ffpyplayer.player import MediaPlayer
 from screeninfo import Monitor
 
 from utils import save_mapping
