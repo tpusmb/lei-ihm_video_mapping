@@ -64,6 +64,11 @@ class Scenario:
         self.py_video_mapping.show_image(1, "ressources/images/actions/ActionArroserLeBulbe.png")
         self.py_video_mapping.set_blackout(2, True)
 
+    def display_action_biner(self):
+        self.py_video_mapping.set_blackout(0, True)
+        self.py_video_mapping.show_image(1, "ressources/images/actions/ActionReboucherTrou.png")  # FIXME
+        self.py_video_mapping.set_blackout(2, True)
+
     # Feedbacks
     def display_good_feedback(self):
         self.py_video_mapping.show_image(0, "ressources/images/feedbacks/Bon.png")

@@ -2,6 +2,8 @@ import sys
 from time import sleep
 from typing import Callable, List
 
+import random
+
 from py_video_mapping import *
 
 from scenario import Scenario
@@ -48,7 +50,7 @@ def start_planting_bulbe():
 
 
 @register_function_for_intent(intent=Intent.SUIVRE_ETAT_PLANTE)
-def entretenir_plante():
+def suivre_etat_plante():
     scenario.display_sub_menu1()
 
 
@@ -65,11 +67,17 @@ def afficher_niveau():
 @register_function_for_intent(intent=Intent.AFFICHER_ETAT_PLANTE)
 def plant_state():
     scenario.display_plant_state(0)
+    scenario.display_plant_progression("happy")  # TODO ERROR: TOO MUCH SCENARIO FOR PLANT STATE /!\
 
 
 @register_function_for_intent(intent=Intent.ENTRETENIR_PLANTE)
-def happy_plant():
-    scenario.display_plant_progression("happy")
+def entretenir_plante():
+    # Dirt should be mixed every week
+    # For demo purposes we use random
+    if random.random() < 0.66:
+        scenario.display_action_arroser()
+    else:
+        scenario.display_action_biner()
 
 
 @register_function_for_intent(intent=Intent.UNKNOWN_INTENT)
@@ -81,6 +89,7 @@ def incomprehension_feedback():
 def negatif_feedback():
     # scenario.display_bad_feedback()  # TODO Should this be added ?
     pass
+
 
 @register_function_for_intent(intent=Intent.POSITIF)
 def play_next_step():
