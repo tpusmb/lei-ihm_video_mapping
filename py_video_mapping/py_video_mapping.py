@@ -12,10 +12,11 @@ import cv2
 import imutils
 import numpy as np
 import screeninfo
-from screeninfo import Monitor
 from ffpyplayer.player import MediaPlayer
+from screeninfo import Monitor
 
 from utils import save_mapping
+from .filevideostream import FileVideoStream
 from .screen_relation import ScreenRelation
 
 PYTHON_LOGGER = logging.getLogger(__name__)
@@ -130,16 +131,19 @@ class FrameGetter(ABC):
 
 class VideoGetter(FrameGetter):
 
-    def __init__(self, path_video):
+    def __init__(self, path_video, play_audio):
         self.path_video = path_video
-        self.video_capture = cv2.VideoCapture(self.path_video)
+        self.file_video_stream = FileVideoStream(self.path_video, play_audio=play_audio).start()
+        self.play_audio = play_audio
 
     def get_image(self):
-        _, frame = self.video_capture.read()
+        frame = self.file_video_stream.read()
         if frame is None:
-            self.video_capture.release()
-            self.video_capture = cv2.VideoCapture(self.path_video)
-            _, frame = self.video_capture.read()
+            self.file_video_stream.stop()
+            self.file_video_stream = FileVideoStream(self.path_video, play_audio=self.play_audio).start()
+        while frame is None:
+            print("Play video again")
+            frame = self.file_video_stream.read()
         return frame
 
 
@@ -154,7 +158,7 @@ class ImageGetter(FrameGetter):
 
 class VideoOnWallpaper(FrameGetter):
 
-    def __init__(self, image, video_path, x_offset, y_offset, width, height):
+    def __init__(self, image, video_path, x_offset, y_offset, width, height, play_video_audio):
         """
 
         :param image:
@@ -167,7 +171,7 @@ class VideoOnWallpaper(FrameGetter):
         offset_ok = 0 <= x_offset < image.shape[1] and 0 <= y_offset < image.shape[1]
         dim_ok = 0 < width < image.shape[1] and 0 < height < image.shape[0]
         assert offset_ok and dim_ok
-        self.video_getter = VideoGetter(video_path)
+        self.video_getter = VideoGetter(video_path, play_video_audio)
         self.image_getter = ImageGetter(image)
         self.x_offset = x_offset
         self.y_offset = y_offset
@@ -184,7 +188,7 @@ def get_image(self):
 
 
 class ProjectorShow(Thread):
-    def __init__(self, screen, nb_face):
+    def __init__(self, screen, nb_face, delay=20):
         """
 
         :param screen:
@@ -206,6 +210,7 @@ class ProjectorShow(Thread):
         self.frame_getter_list = [None, None, None]
         self.wall_paper = self.creat_blank_image()
         self.mutex = Lock()
+        self.delay = delay
 
     def creat_blank_image(self):
         return np.zeros((self.screen.height, self.screen.width, 3), np.uint8)
@@ -224,7 +229,7 @@ class ProjectorShow(Thread):
                 output_frame = face_object.process_image(output_frame, frame_getter.get_image())
             self.mutex.release()
             cv2.imshow(self.window_name, output_frame)
-            cv2.waitKey(1)
+            cv2.waitKey(self.delay)
 
     def display_face(self, face_id, object_to_show: FrameGetter):
         """
@@ -268,13 +273,12 @@ class ProjectorShow(Thread):
 
 
 class PyVideoMapping:
-    def __init__(self, screen, ui_screen: Monitor = None):
+    def __init__(self, screen, ui_screen: Monitor = None, delay=22):
         self.screen = screen
         self.ui_screen = ui_screen
         self.screen_relation = None
         self.test_image = cv2.imread(TEST_IMAGE)
-        self.projector_show = ProjectorShow(self.screen, NB_FACES)
-        self.player = MediaPlayer("")
+        self.projector_show = ProjectorShow(self.screen, NB_FACES, delay)
 
         if self.ui_screen is not None:
             self.screen_relation = ScreenRelation(ui_screen, self.screen)
@@ -321,20 +325,20 @@ class PyVideoMapping:
             self.projector_show.update_face(face_id, projector_top_left, projector_top_right,
                                             projector_bottom_right, projector_bottom_left)
 
-    def show_video(self, face_id: int, video_path: str, enable_audio: bool):
-        self.projector_show.display_face(face_id, VideoGetter(video_path))
-        if enable_audio:
-            self.play_audio(video_path)
+    def show_video(self, face_id: int, video_path: str, enable_audio: bool = False):
+        self.projector_show.display_face(face_id, VideoGetter(video_path, enable_audio))
 
     def show_image(self, face_id: int, image_path: str):
         image = cv2.imread(image_path)
         self.projector_show.display_face(face_id, ImageGetter(image))
 
     def show_video_on_wallpaper(self, face_id: int, video_path: str, image_path: str,
-                                x_offset: int, y_offset: int, width: int, height: int):
+                                x_offset: int, y_offset: int, width: int, height: int,
+                                play_video_audio: bool = False):
         image = cv2.imread(image_path)
         self.projector_show.display_face(face_id,
-                                         VideoOnWallpaper(image, video_path, x_offset, y_offset, width, height))
+                                         VideoOnWallpaper(image, video_path, x_offset, y_offset, width, height,
+                                                          play_video_audio))
 
     def set_blackout(self, face_id, b: bool):
         """
@@ -344,13 +348,6 @@ class PyVideoMapping:
         :return:
         """
         self.projector_show.set_blackout(face_id, b)
-
-    def play_audio(self, video_path):
-        self.player = MediaPlayer(video_path)
-        frame, val = self.player.get_frame()
-        while val != 'eof':
-            frame, val = self.player.get_frame()
-        self.player.close_player()
 
     def stop(self):
         self.projector_show.stop()
