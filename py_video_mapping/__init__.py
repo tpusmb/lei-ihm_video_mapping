@@ -3,3 +3,4 @@
 
 from .py_video_mapping import PyVideoMapping, ProjectorShow, VideoGetter, ImageGetter
 from .screen_relation import ScreenRelation, creat_monitor
+from .filevideostream import FileVideoStream
