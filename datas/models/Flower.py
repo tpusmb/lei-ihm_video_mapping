@@ -32,3 +32,6 @@ class Flower:
 
     def is_last_rank(self):
         return self.rank == self.MAX_RANK
+
+    def make_update(self):
+        self.updated_at = datetime.today()
