@@ -327,14 +327,38 @@ class PyVideoMapping:
     def show_video(self, face_id: int, video_path: str, enable_audio: bool = False):
         self.projector_show.display_face(face_id, VideoGetter(video_path, enable_audio))
 
-    def show_image(self, face_id: int, image_path: str):
-        image = cv2.imread(image_path)
+    def show_image(self, face_id: int, image_path):
+        """
+
+        :param face_id:
+        :param image_path: image path or ndarray
+        :return:
+        """
+        if isinstance(image_path, str):
+            image = cv2.imread(image_path)
+        else:
+            image = image_path
         self.projector_show.display_face(face_id, ImageGetter(image))
 
-    def show_video_on_wallpaper(self, face_id: int, video_path: str, image_path: str,
+    def show_video_on_wallpaper(self, face_id: int, video_path: str, image_path,
                                 x_offset: int, y_offset: int, width: int, height: int,
                                 play_video_audio: bool = False):
-        image = cv2.imread(image_path)
+        """
+
+        :param face_id:
+        :param video_path:
+        :param image_path: image path or ndarray
+        :param x_offset:
+        :param y_offset:
+        :param width:
+        :param height:
+        :param play_video_audio:
+        :return:
+        """
+        if isinstance(image_path, str):
+            image = cv2.imread(image_path)
+        else:
+            image = image_path
         self.projector_show.display_face(face_id,
                                          VideoOnWallpaper(image, video_path, x_offset, y_offset, width, height,
                                                           play_video_audio))
