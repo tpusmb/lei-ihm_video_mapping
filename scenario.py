@@ -1,9 +1,11 @@
 from __future__ import absolute_import
 
+from data_drawer import BarDraw
 from datas.models.Flower import Flower
-from datas.models.Player import Player
 import logging.handlers
 import os
+
+from datas.repositories.PlayerRepository import PlayerRepository
 
 PYTHON_LOGGER = logging.getLogger(__name__)
 if not os.path.exists("log"):
@@ -91,15 +93,20 @@ class Scenario:
         self.py_video_mapping.show_image(2, "ressources/images/etapes/Etape{}Plante.png".format(next_state))
 
     def display_plant_progression(self, flower: Flower):
-        self.py_video_mapping.show_video(0, "ressources/videos/animations/{}_plant.mp4".format(flower.mood), True)
+        self.py_video_mapping.show_video(0, "ressources/videos/animations/{}_plant.mp4".format(flower.mood.value), True)
         # TODO faire le graphique
         self.py_video_mapping.show_image(1, "ressources/images/commands/CommandeProgressionPlante.png")
-        self.py_video_mapping.show_video(2, "ressources/videos/animations/{}_plant.mp4".format(flower.mood), True)
+        self.py_video_mapping.show_video(2, "ressources/videos/animations/{}_plant.mp4".format(flower.mood.value), True)
 
-    def display_gardener_progression(self, player: Player):
+    def display_gardener_progression(self, player_repo: PlayerRepository):
         # TODO le level sur l'image 1 et 3 et rajouter la jauge d'xp sur l'image 2
         self.py_video_mapping.show_image(0, "ressources/images/commands/CommandeProgressionJardinier.png")
-        self.py_video_mapping.show_image(1, "ressources/images/NiveauDuJardinier.png")
+        # self.py_video_mapping.show_image(1, "ressources/images/NiveauDuJardinier.png")
+        nivel_gui = BarDraw("Demo")
+        nivel_gui.start()
+        nivel_gui.add_bar("bar number 1")
+        nivel_gui.update_value("bar number 1", player_repo.xp_percent_to_next_level())
+        self.py_video_mapping.show_image(1, nivel_gui.get_figure_cv2_image())
         self.py_video_mapping.show_image(2, "ressources/images/commands/CommandeProgressionJardinier.png")
 
     # Help

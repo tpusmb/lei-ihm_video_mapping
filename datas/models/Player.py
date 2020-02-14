@@ -13,6 +13,10 @@ class Player:
     @xp.setter
     def xp(self, value):
         self.__xp = value
-        if self.LEVEL_1 + self.STEP_LEVEL * self.level == self.xp:
+        if self.xp >= self.total_xp_needed_for_next_level():
             self.level += 1
             self.__xp = 0
+
+    def total_xp_needed_for_next_level(self):
+        return self.LEVEL_1 + self.STEP_LEVEL * self.level
+

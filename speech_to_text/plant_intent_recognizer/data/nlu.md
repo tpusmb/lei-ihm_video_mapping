@@ -53,6 +53,7 @@
 - comment evolue tu ?
 - quelle est ton evolution
 - quel est le progrès de la plante
+- je veux voir la progression de la plante
 
 ## intent:afficher_progres_du_jardinier
 - afficher les progrès du jardinier
@@ -96,6 +97,7 @@
 
 
 ## intent:positif
+- ok
 - Ok c'est bon
 - On peut passer à la suite
 - C'est tout bon pour moi
