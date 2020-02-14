@@ -1,7 +1,7 @@
 from __future__ import absolute_import
 
 from data_drawer import BarDraw
-from datas.models.Flower import Flower
+from datas.models.Flower import Flower, Mood
 from py_video_mapping import draw_text_onto_image
 import logging.handlers
 import os
@@ -87,12 +87,16 @@ class Scenario:
         self.py_video_mapping.show_image(2, "ressources/images/feedbacks/PasCompris.png")
 
     # Data
-    def display_plant_state(self, state, mood, temperature, humidity):
+    def display_plant_state(self, state: int, mood: Mood, temperature: int, humidity: int):
+        """
+        :param state: Represent the growth of the plant (between 0 and 5)
+        :return:
+        """
         self.py_video_mapping.show_image(0, "ressources/images/etapes/Etape{}Plante.png".format(state))
         image_text1 = draw_text_onto_image(cv2.imread("ressources/images/EtatPlante.png"), "{} C".format(temperature),
                                            230, 650, 3)
         image_text2 = draw_text_onto_image(image_text1, "{}%".format(humidity), 745, 650, 3)
-        self.py_video_mapping.show_video_on_wallpaper(1, "ressources/videos/animations/{}_plant.mp4".format(mood),
+        self.py_video_mapping.show_video_on_wallpaper(1, "ressources/videos/animations/{}_plant.mp4".format(mood.value),
                                                       image_text2, 225, 10, 650, 1, True)
         next_state = state + 1 if state < 4 else state
         self.py_video_mapping.show_image(2, "ressources/images/etapes/Etape{}Plante.png".format(next_state))
@@ -109,8 +113,8 @@ class Scenario:
         # self.py_video_mapping.show_image(1, "ressources/images/NiveauDuJardinier.png")
         nivel_gui = BarDraw("Demo")
         nivel_gui.start()
-        nivel_gui.add_bar("bar number 1")
-        nivel_gui.update_value("bar number 1", player_repo.xp_percent_to_next_level())
+        nivel_gui.add_bar("_")
+        nivel_gui.update_value("_", player_repo.xp_percent_to_next_level())
         self.py_video_mapping.show_image(1, nivel_gui.get_figure_cv2_image())
         self.py_video_mapping.show_image(2, "ressources/images/commands/CommandeProgressionJardinier.png")
 
