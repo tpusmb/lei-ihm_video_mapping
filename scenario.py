@@ -91,10 +91,10 @@ class Scenario:
         self.py_video_mapping.show_image(2, "ressources/images/etapes/Etape{}Plante.png".format(next_state))
 
     def display_plant_progression(self, flower: Flower):
-        self.py_video_mapping.show_video(0, "ressources/videos/animations/{}_plant.mp4".format(flower.get_mood()), True)
+        self.py_video_mapping.show_video(0, "ressources/videos/animations/{}_plant.mp4".format(flower.mood), True)
         # TODO faire le graphique
         self.py_video_mapping.show_image(1, "ressources/images/commands/CommandeProgressionPlante.png")
-        self.py_video_mapping.show_video(2, "ressources/videos/animations/{}_plant.mp4".format(flower.get_mood()), True)
+        self.py_video_mapping.show_video(2, "ressources/videos/animations/{}_plant.mp4".format(flower.mood), True)
 
     def display_gardener_progression(self, player: Player):
         # TODO le level sur l'image 1 et 3 et rajouter la jauge d'xp sur l'image 2
