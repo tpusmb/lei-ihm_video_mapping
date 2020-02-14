@@ -13,6 +13,7 @@ import imutils
 import numpy as np
 import screeninfo
 from screeninfo import Monitor
+from ffpyplayer.player import MediaPlayer
 
 from utils import save_mapping
 from .screen_relation import ScreenRelation
@@ -273,6 +274,7 @@ class PyVideoMapping:
         self.screen_relation = None
         self.test_image = cv2.imread(TEST_IMAGE)
         self.projector_show = ProjectorShow(self.screen, NB_FACES)
+        self.player = MediaPlayer("")
 
         if self.ui_screen is not None:
             self.screen_relation = ScreenRelation(ui_screen, self.screen)
@@ -319,8 +321,10 @@ class PyVideoMapping:
             self.projector_show.update_face(face_id, projector_top_left, projector_top_right,
                                             projector_bottom_right, projector_bottom_left)
 
-    def show_video(self, face_id: int, video_path: str):
+    def show_video(self, face_id: int, video_path: str, enable_audio: bool):
         self.projector_show.display_face(face_id, VideoGetter(video_path))
+        if enable_audio:
+            self.play_audio(video_path)
 
     def show_image(self, face_id: int, image_path: str):
         image = cv2.imread(image_path)
@@ -340,6 +344,13 @@ class PyVideoMapping:
         :return:
         """
         self.projector_show.set_blackout(face_id, b)
+
+    def play_audio(self, video_path):
+        self.player = MediaPlayer(video_path)
+        frame, val = self.player.get_frame()
+        while val != 'eof':
+            frame, val = self.player.get_frame()
+        self.player.close_player()
 
     def stop(self):
         self.projector_show.stop()
