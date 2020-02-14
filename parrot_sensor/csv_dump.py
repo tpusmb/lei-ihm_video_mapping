@@ -65,10 +65,10 @@ if __name__ == "__main__":
     datas_directory = "../datas/"
     import api_cloud
 
-    client_id = "faubet.mael@gmail.com"
-    client_secret = "7vhQGmU3BP0cmJhIamnH7Pyxr3yo8XoU6B4jOShVFK8ZtCdS"
-    username = "speedbirds@hotmail.fr"
-    password = "darkofthemoon3"
+    client_id = ""
+    client_secret = ""
+    username = ""
+    password = ""
 
     connection = api_cloud.ApiCloud(client_id, client_secret)
     connection.login(username, password)

@@ -25,10 +25,10 @@ class CaptorData(object):
     TEMPERATURE = "temperature"  # celsius
     LIGHT = "light"
 
-    def __init__(self, client_id="faubet.mael@gmail.com",
-                 client_secret="7vhQGmU3BP0cmJhIamnH7Pyxr3yo8XoU6B4jOShVFK8ZtCdS",
-                 username="speedbirds@hotmail.fr",
-                 password="darkofthemoon3", time_delta=7, do_init=True):
+    def __init__(self, client_id="",
+                 client_secret="",
+                 username="",
+                 password="", time_delta=7, do_init=True):
         """
         Initialise la récupération de données du capteur.
         :param client_id: Identifiant du client
