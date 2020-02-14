@@ -5,3 +5,4 @@ screeninfo
 imutils
 matplotlib
 pillow
+ffpyplayer

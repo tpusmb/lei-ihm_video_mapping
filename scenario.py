@@ -64,6 +64,11 @@ class Scenario:
         self.py_video_mapping.show_image(1, "ressources/images/actions/ActionArroserLeBulbe.png")
         self.py_video_mapping.set_blackout(2, True)
 
+    def display_action_biner(self):
+        self.py_video_mapping.set_blackout(0, True)
+        self.py_video_mapping.show_image(1, "ressources/images/actions/ActionBiner.png")
+        self.py_video_mapping.set_blackout(2, True)
+
     # Feedbacks
     def display_good_feedback(self):
         self.py_video_mapping.show_image(0, "ressources/images/feedbacks/Bon.png")
@@ -86,10 +91,10 @@ class Scenario:
         self.py_video_mapping.show_image(2, "ressources/images/etapes/Etape{}Plante.png".format(next_state))
 
     def display_plant_progression(self, mood):
-        self.py_video_mapping.show_video(0, "ressources/videos/animations/{}_plant.mp4".format(mood))
+        self.py_video_mapping.show_video(0, "ressources/videos/animations/{}_plant.mp4".format(mood), True)
         # TODO faire le graphique
         self.py_video_mapping.show_image(1, "ressources/images/commands/CommandeProgressionPlante.png")
-        self.py_video_mapping.show_video(2, "ressources/videos/animations/{}_plant.mp4".format(mood))
+        self.py_video_mapping.show_video(2, "ressources/videos/animations/{}_plant.mp4".format(mood), True)
 
     def display_gardener_progression(self, level, exp):
         # TODO le level sur l'image 1 et 3 et rajouter la jauge d'xp sur l'image 2
@@ -105,9 +110,9 @@ class Scenario:
 
     # Karaoke
     def display_karaoke(self):
-        self.py_video_mapping.show_video(0, "ressources/videos/karaoke/dance.mp4")
-        self.py_video_mapping.show_video(1, "ressources/videos/karaoke/karaoke_gang-namseutayil.mp4")
-        self.py_video_mapping.show_video(2, "ressources/videos/karaoke/dance.mp4")
+        self.py_video_mapping.show_video(0, "ressources/videos/karaoke/dance.mp4", False)
+        self.py_video_mapping.show_video(1, "ressources/videos/karaoke/karaoke_gang-namseutayil.mp4", True)
+        self.py_video_mapping.show_video(2, "ressources/videos/karaoke/dance.mp4", False)
 
     def stop_mapping(self):
         input("enter top stop")
