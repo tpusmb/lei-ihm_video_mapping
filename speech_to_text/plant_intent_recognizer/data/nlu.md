@@ -43,6 +43,8 @@
 - comment faire pour t'entretenir
 - aide moi à t'entretenir
 - quelles actions faire pour t'entretenir
+- de quoi la plante a besoin
+- quelles sont tes besoins
 
 ## intent:afficher_progres_du_jardinier
 - afficher les progrès du jardinier

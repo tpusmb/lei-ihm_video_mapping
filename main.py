@@ -6,8 +6,8 @@ from py_video_mapping import *
 
 from scenario import Scenario
 from speech_to_text.plant_intent_recognizer.detect_intent import Intent
-from speech_to_text.voice_controller import VoiceController, register_function_for_intent, register_function_for_active, \
-    register_function_for_sleep
+from speech_to_text.voice_controller import VoiceController, register_function_for_intent, \
+    register_function_for_active, register_function_for_sleep
 
 py_video_mapping = PyVideoMapping(PyVideoMapping.get_all_screens()[1])
 scenario = Scenario(py_video_mapping)
@@ -57,6 +57,11 @@ def progress():
     scenario.display_sub_menu2()
 
 
+@register_function_for_intent(intent=Intent.AFFICHER_NIVEAU)
+def afficher_niveau():
+    scenario.display_gardener_progression(1, 10)
+
+
 @register_function_for_intent(intent=Intent.AFFICHER_ETAT_PLANTE)
 def plant_state():
     scenario.display_plant_state(0)
@@ -72,16 +77,23 @@ def incomprehension_feedback():
     scenario.display_incomprehension_feedback()
 
 
+@register_function_for_intent(intent=Intent.NEGATIF)
+def negatif_feedback():
+    # scenario.display_bad_feedback()  # TODO Should this be added ?
+    pass
+
 @register_function_for_intent(intent=Intent.POSITIF)
 def play_next_step():
     if NEXT_STEPS:
         f = NEXT_STEPS.pop(0)  # Call the first function and remove it from the FIFO
+        scenario.display_good_feedback()
+        sleep(1)
         f()
     else:
         print("Trying to call a next step but there is none", file=sys.stderr, flush=True)
 
 
-vc = VoiceController(active_time_delay=180, noise_level=2000)
+vc = VoiceController(active_time_delay=180, noise_level=2000, confidence_threshold=0.5)
 vc.start()
 sleep(2)
 scenario.display_good_feedback()
