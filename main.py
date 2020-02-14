@@ -67,7 +67,11 @@ def afficher_niveau():
 @register_function_for_intent(intent=Intent.AFFICHER_ETAT_PLANTE)
 def plant_state():
     scenario.display_plant_state(0)
-    scenario.display_plant_progression("happy")  # TODO ERROR: TOO MUCH SCENARIO FOR PLANT STATE /!\
+
+
+@register_function_for_intent(intent=Intent.AFFICHER_PROGRES_PLANTE)
+def plant_progress():
+    scenario.display_plant_progression("happy")
 
 
 @register_function_for_intent(intent=Intent.ENTRETENIR_PLANTE)

@@ -1,9 +1,9 @@
 from __future__ import absolute_import
-from py_video_mapping import *
+
+from datas.models.Flower import Flower
+from datas.models.Player import Player
 import logging.handlers
 import os
-
-from screeninfo import Monitor
 
 PYTHON_LOGGER = logging.getLogger(__name__)
 if not os.path.exists("log"):
@@ -90,13 +90,13 @@ class Scenario:
         next_state = state + 1 if state < 4 else state
         self.py_video_mapping.show_image(2, "ressources/images/etapes/Etape{}Plante.png".format(next_state))
 
-    def display_plant_progression(self, mood):
-        self.py_video_mapping.show_video(0, "ressources/videos/animations/{}_plant.mp4".format(mood), True)
+    def display_plant_progression(self, flower: Flower):
+        self.py_video_mapping.show_video(0, "ressources/videos/animations/{}_plant.mp4".format(flower.mood), True)
         # TODO faire le graphique
         self.py_video_mapping.show_image(1, "ressources/images/commands/CommandeProgressionPlante.png")
-        self.py_video_mapping.show_video(2, "ressources/videos/animations/{}_plant.mp4".format(mood), True)
+        self.py_video_mapping.show_video(2, "ressources/videos/animations/{}_plant.mp4".format(flower.mood), True)
 
-    def display_gardener_progression(self, level, exp):
+    def display_gardener_progression(self, player: Player):
         # TODO le level sur l'image 1 et 3 et rajouter la jauge d'xp sur l'image 2
         self.py_video_mapping.show_image(0, "ressources/images/commands/CommandeProgressionJardinier.png")
         self.py_video_mapping.show_image(1, "ressources/images/NiveauDuJardinier.png")
@@ -122,4 +122,3 @@ class Scenario:
         self.py_video_mapping.set_blackout(0, True)
         self.py_video_mapping.set_blackout(1, True)
         self.py_video_mapping.set_blackout(2, True)
-
