@@ -113,3 +113,8 @@ class Scenario:
         input("enter top stop")
         self.py_video_mapping.stop()
 
+    def blackout(self):
+        self.py_video_mapping.set_blackout(0, True)
+        self.py_video_mapping.set_blackout(1, True)
+        self.py_video_mapping.set_blackout(2, True)
+
