@@ -46,6 +46,14 @@
 - de quoi la plante a besoin
 - quelles sont tes besoins
 
+## intent:afficher_progres_de_la_plante
+- quelle sont les progres de la pante
+- comment progresse tu plante ?
+- fais-tu des progres ?
+- comment evolue tu ?
+- quelle est ton evolution
+- quel est le progrès de la plante
+
 ## intent:afficher_progres_du_jardinier
 - afficher les progrès du jardinier
 - Comment est-ce que je m'en sors ?
