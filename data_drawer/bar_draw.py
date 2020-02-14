@@ -204,7 +204,7 @@ if __name__ == '__main__':
 
     gui.add_bar("bar number 1")
 
-    gui.update_value("bar number 1", 100)
+    gui.update_value("bar number 1", 10)
     cv2.imshow("main", gui.get_figure_cv2_image())
     cv2.waitKey(0)
 

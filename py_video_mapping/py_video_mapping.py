@@ -56,6 +56,15 @@ def add_sub_image(wall_paper, frame, x_offset, y_offset):
     return wall_paper_copy
 
 
+def draw_text_onto_image(image, text, x_offset, y_offset, scale):
+    org = (x_offset, y_offset)
+    font = cv2.FONT_HERSHEY_SIMPLEX
+    font_scale = scale
+    color = (0, 0, 0)
+    thickness = 5
+    return cv2.putText(image, text, org, font, font_scale, color, thickness, cv2.LINE_AA)
+
+
 class FaceObject:
 
     def __init__(self, output_width, output_height,
@@ -127,6 +136,10 @@ class FrameGetter(ABC):
     def get_image(self):
         pass
 
+    @abstractmethod
+    def stop(self):
+        pass
+
 
 class VideoGetter(FrameGetter):
 
@@ -145,6 +158,9 @@ class VideoGetter(FrameGetter):
             frame = self.file_video_stream.read()
         return frame
 
+    def stop(self):
+        self.file_video_stream.stop()
+
 
 class ImageGetter(FrameGetter):
 
@@ -153,6 +169,9 @@ class ImageGetter(FrameGetter):
 
     def get_image(self):
         return self.image
+
+    def stop(self):
+        pass
 
 
 class VideoOnWallpaper(FrameGetter):
@@ -177,13 +196,16 @@ class VideoOnWallpaper(FrameGetter):
         self.width = width
         self.height = height
 
+    def get_image(self):
+        video_img = self.video_getter.get_image()
+        wall_paper = self.image_getter.get_image()
+        video_img = imutils.resize(video_img, width=self.width, height=self.height)
+        wall_image = add_sub_image(wall_paper, video_img, self.x_offset, self.y_offset)
+        return wall_image
 
-def get_image(self):
-    video_img = self.video_getter.get_image()
-    wall_paper = self.image_getter.get_image()
-    video_img = imutils.resize(video_img, width=self.width, height=self.height)
-    wall_image = add_sub_image(wall_paper, video_img, self.x_offset, self.y_offset)
-    return wall_image
+    def stop(self):
+        self.video_getter.stop()
+        self.image_getter.stop()
 
 
 class ProjectorShow(Thread):
@@ -239,6 +261,8 @@ class ProjectorShow(Thread):
         """
         assert 0 <= face_id < len(self.faces_object)
         with self.mutex:
+            if self.frame_getter_list[face_id] is not None:
+                self.frame_getter_list[face_id].stop()
             self.faces_object[face_id].set_blackout(False)
             self.frame_getter_list[face_id] = object_to_show
 
@@ -269,6 +293,9 @@ class ProjectorShow(Thread):
 
     def stop(self):
         self.end = True
+        for face_object in self.faces_object:
+            if face_object is not None:
+                face_object.stop()
 
 
 class PyVideoMapping:

@@ -1,6 +1,7 @@
 """
 File to manage the speech to text for our plant.
 """
+import os
 import struct
 from contextlib import suppress
 from time import time
@@ -10,16 +11,30 @@ import pyaudio
 import speech_recognition as sr
 import pvporcupine
 
+FOLDER_ABSOLUTE_PATH = os.path.normpath(os.path.dirname(os.path.abspath(__file__)))
+HELLO_PLANT_PATH = 'hotworld_pico_voice_model/ok_plante_linux.ppn'
 
-def is_wake_up_word_said(input_device_index=18, sensitivity=0.5, keyword='hey pico', timeout=10):
-    keyword_file_path = [pvporcupine.KEYWORD_FILE_PATHS[keyword]]
-    num_keywords = len(keyword_file_path)
+PORCUPINE = None  # Allow to init porcupine only once
 
-    porcupine = pvporcupine.create(
-        library_path=pvporcupine.LIBRARY_PATH,
-        model_file_path=pvporcupine.MODEL_FILE_PATH,
-        keyword_file_paths=keyword_file_path,
-        sensitivities=[sensitivity] * num_keywords)
+
+def init_porcupine(use_custom, keyword, sensitivity):
+    global PORCUPINE
+    if not PORCUPINE:
+        keyword_file_path = [pvporcupine.KEYWORD_FILE_PATHS[keyword]]
+        custom_model_abs_path = os.path.join(FOLDER_ABSOLUTE_PATH, HELLO_PLANT_PATH)
+        if use_custom and os.path.exists(custom_model_abs_path):
+            keyword_file_path = [custom_model_abs_path]
+        num_keywords = len(keyword_file_path)
+        PORCUPINE = pvporcupine.create(
+            library_path=pvporcupine.LIBRARY_PATH,
+            model_file_path=pvporcupine.MODEL_FILE_PATH,
+            keyword_file_paths=keyword_file_path,
+            sensitivities=[sensitivity] * num_keywords)
+    return PORCUPINE
+
+
+def is_wake_up_word_said(input_device_index=13, sensitivity=0.5, keyword='hey pico', timeout=10, use_custom=True):
+    porcupine = init_porcupine(use_custom, keyword, sensitivity)
 
     pa = pyaudio.PyAudio()
     audio_stream = pa.open(
@@ -39,7 +54,6 @@ def is_wake_up_word_said(input_device_index=18, sensitivity=0.5, keyword='hey pi
         if porcupine.process(pcm):
             keyword_said = True
     audio_stream.close()
-    porcupine.delete()
     return keyword_said
 
 
