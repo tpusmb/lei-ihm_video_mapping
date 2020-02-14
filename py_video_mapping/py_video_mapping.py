@@ -273,13 +273,12 @@ class ProjectorShow(Thread):
 
 
 class PyVideoMapping:
-    def __init__(self, screen, ui_screen: Monitor = None, delay=18):
+    def __init__(self, screen, ui_screen: Monitor = None, delay=22):
         self.screen = screen
         self.ui_screen = ui_screen
         self.screen_relation = None
         self.test_image = cv2.imread(TEST_IMAGE)
         self.projector_show = ProjectorShow(self.screen, NB_FACES, delay)
-        self.player = MediaPlayer("")
 
         if self.ui_screen is not None:
             self.screen_relation = ScreenRelation(ui_screen, self.screen)
