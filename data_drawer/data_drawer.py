@@ -53,7 +53,7 @@ class DataDrawer:
         # Remove the toolbar
         mpl.rcParams['toolbar'] = 'None'
         # Set the font of the graph
-        font = {'weight': 'bold', 'size': 12}
+        font = {'weight': 'bold', 'size': 25}
         mpl.rc('font', **font)
         self.plot_figure = plt.figure(self.title)
         # Load the splash image

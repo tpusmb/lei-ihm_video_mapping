@@ -38,9 +38,9 @@ class GraphDraw(DataDrawer):
     def _reset_graph(self):
         plt.cla()
         plt.ylabel("Health score")
-        plt.xlabel("Time")
-        plt.title("Health states")
+        plt.xlabel("Joure")
         self.plot = self.plot_figure.add_subplot()
+        self.plot.set_ylim([0, 100])
         self.plot.plot(self.graph_values)
 
     def add_value(self, value):
