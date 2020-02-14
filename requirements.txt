@@ -6,3 +6,4 @@ imutils
 matplotlib
 pillow
 ffpyplayer
+imutils
