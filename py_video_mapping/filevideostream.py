@@ -21,7 +21,7 @@ class FileVideoStream:
         # intialize thread
         self.thread = Thread(target=self.update, args=())
         self.thread.daemon = True
-        self.play_audio = play_audio
+        self.play_audio = None
         self.video_path = path
 
     def start(self):
