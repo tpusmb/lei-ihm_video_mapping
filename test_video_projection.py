@@ -2,15 +2,13 @@ from py_video_mapping import *
 
 from scenario import Scenario
 
-py_video_mapping = PyVideoMapping(PyVideoMapping.get_all_screens()[1])
+py_video_mapping = PyVideoMapping(PyVideoMapping.get_all_screens()[-1])
 #py_video_mapping.set_blackout(0, True)
 scenario = Scenario(py_video_mapping)
 
-scenario.display_plant_state(4, "angry", 23, 55)
+scenario.display_main_menu()
 input("enter top stop")
 scenario.display_karaoke()
-input("enter top stop")
-scenario.display_main_menu()
 input("enter top stop")
 scenario.display_sub_menu1()
 input("enter top stop")
