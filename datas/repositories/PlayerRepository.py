@@ -19,7 +19,7 @@ class PlayerRepository:
     >>> assert p.xp_percent_to_next_level() == 0
     """
 
-    def __init__(self, player=Player(), flower=Flower(Mood.STANDING)):
+    def __init__(self, player=Player(), flower=None):
         self.player = player
         self.flower = flower
 
