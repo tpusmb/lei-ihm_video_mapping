@@ -28,11 +28,11 @@ class ApiCloud(object):
         if req.status_code == ApiCloud.SUCCESS:
             self.__logged = True
             self.__token = req.json()
-            print "Login successful!"
+            print("Login successful!")
             return True
         else:
             self.__logged = False
-            print "Login Failure: " + req.json()['error']
+            print("Login Failure: " + req.json()['error'])
             return False
 
     def get_sensor_data_sync(self):

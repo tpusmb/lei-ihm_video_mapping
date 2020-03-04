@@ -7,135 +7,73 @@ GNU AFFERO GENERAL PUBLIC LICENSE
 
 import csv
 import datetime
+import json
 
-import api_cloud
-import csv_dump
+from parrot_sensor import api_cloud
+from utils import save_mapping
 
-class CaptorData(object):
+
+class CaptorData:
     """
     Se charge de récupérer les données sur le Cloud de Flower Power via leur API puis de les organiser dans une liste
     de dictionnaire.
     Permet de récupérer facilement ces données.
     """
 
-    NICKNAME = "nickname"
-    TIMESTAMP = "timestamp"
-    FERTILIZER = "fertilizer"
-    SOIL_MOISTURE = "soil_moisture"  # percent
-    TEMPERATURE = "temperature"  # celsius
-    LIGHT = "light"
-
-    def __init__(self, client_id="",
-                 client_secret="",
-                 username="",
-                 password="", time_delta=7, do_init=True):
+    def __init__(self, time_delta=2):
         """
         Initialise la récupération de données du capteur.
-        :param client_id: Identifiant du client
-        :param client_secret: Clé secrète du client
-        :param username: Nom d'utilisateur
-        :param password: Mot de passe
         :param time_delta: Depuis combien de jours récupérer les données
         """
-        if not do_init:
-            self.data = list()
-            return
-        since = (datetime.datetime.now() - datetime.timedelta(days=time_delta)).strftime("%d-%b-%Y %H:%M:%S")
-        today = datetime.datetime.now().strftime("%d-%b-%Y %H:%M:%S")
+        self.since = (datetime.datetime.now() - datetime.timedelta(hours=time_delta)).strftime("%d-%b-%Y %H:%M:%S")
+        self.today = datetime.datetime.now().strftime("%d-%b-%Y %H:%M:%S")
+        self.config = self.get_projetconfig('../projetconfig.json')
+        self.connection = api_cloud.ApiCloud(self.config[0], self.config[1])
 
-        self.connection = api_cloud.ApiCloud(client_id, client_secret)
-        self.connection.login(username, password)
-        csv_dump.dump_all_flower_power(self.connection, since, today)
-        self.data = list()
-
-    @staticmethod
-    def get_data_from_csv_file(filename):
+    def get_sensor_data(self):
         """
-        Récupère les données d'un fichier .csv (formatté pour le Flower Power) et les place dans un tableau de
-        dictionnaire de la forme:
-        {"timestamp": date d'acquisition,
-         "fertilizer_level": niveau d'engrais,
-         "soil_moisture_percent": niveau d'humidité,
-         "air_temperature_celsius": témpérature (°C),
-         "light": lumière (en lux)}
-        :param filename: Nom du fichier où extraire les données
+        recupere les données du capteur température ect.
+        :return:
         """
-        c = CaptorData(do_init=False)
+        self.connection = api_cloud.ApiCloud(self.config[0], self.config[1])
+        self.connection.login(self.config[0], self.config[2])
+        location_identifier = self.get_identifier_location()
+        return self.init_temperature_and_humidity(self.connection.get_samples_location(location_identifier, self.since,
+                                                                                      self.today))
 
-        reader = csv.reader(open(filename, "rb"))
-
-        for row in reader:
-            time = datetime.datetime.strptime(row[1], "%Y-%m-%d %H:%M:%S")
-            try:
-                rowdic = {
-                    CaptorData.NICKNAME: row[0],
-                    CaptorData.TIMESTAMP: time,
-                    CaptorData.FERTILIZER: float(row[2]),
-                    CaptorData.LIGHT: float(row[3]),
-                    CaptorData.SOIL_MOISTURE: float(row[4]),
-                    CaptorData.TEMPERATURE: float(row[5])
-                }
-            except Exception as e:
-                print ("Erreur lors de la lecture des données du capteur !\n" + e.message)
-            c.data += [rowdic]
-
-        return c
-
-    def get_datas(self, quarter_of_hour=0):
+    def get_identifier_location(self):
         """
-        Récupère toutes les données correspondant à un quart d'heure (à partir du dernier)
-        ex: le quart d'heure 0 correspond à la toute dernière donnée récupérée.
-        :param quarter_of_hour: Le quart d'heure nous intéressant
-        :return: Un dictionnaire contenant les données du quart d'heure donné en paramètre
+        :return:
         """
-        if len(self.data) == 0:
-            import NaoCreator.setting as s
-            s.Setting.error("get_datas on Uninitialized Captor !")
-            return None
-        return self.data[-(quarter_of_hour + 1)]
+        parrot_data = json.loads(json.dumps(self.connection.get_sensor_data_sync()))["locations"][0][
+            "location_identifier"]
+        return parrot_data
 
-    def get_data(self, key, quarter_of_hour=0):
+    def get_projetconfig(self, filename):
         """
-        Récupère une certaine donnée correspondant à un quart d'heure (à partir du dernier)
-        ex: le quart d'heure 0 correspond à la toute dernière donnée récupérée.
-        :param key: Le nom de la donnée à récupérer
-        :param quarter_of_hour: Le quart d'heure nous intéressant
-        :return: La donnée correspondant au quart d'heure donné en paramètre
+        :param filename: fichier json
+        :return: liste avec les infos de connexion
         """
-        if len(self.data) == 0:
-            import NaoCreator.setting as s
-            s.Setting.error("CaptorData.get_datas: get_datas on Uninitialized Captor !")
-            return None
-        return self.data[-(quarter_of_hour + 1)][key]
+        config_data = list()
+        data = save_mapping.load(filename)
+        config_data.append(data["user"]["userid"])
+        config_data.append(data["user"]["usercode"])
+        config_data.append(data["user"]["passwd"])
+        return config_data
 
-    def get_avg_data(self, key, since=0, to=0):
+    def init_temperature_and_humidity(self, filename):
         """
-        Récupère la valeur moyenne d'une donnée sur une période donnée (par quart d'heures)
-        :param key: Le nom de la donnée à récupérer
-        :param since: Le quart d'heure depuis quand analyser
-        :param to: Le quart d'heure jusqu'où analyser
-        :return: La moyenne de cette donnée sur la durée since->to
+        :param filename: fichier json
+        :return:
         """
-        if to > since:
-            return sum([i[key] for i in self.data[len(self.data)-to: len(self.data)-since]])/float((to-since))
-        elif to == since:
-            return self.data[-(to + 1)][key]
-        else:
-            import NaoCreator.setting as s
-            s.Setting.error("CaptorData.get_avg_data: ")
+        temperature = 0
+        humidity = 0
+        data = json.loads(json.dumps(filename))['samples']
+        if len(data):
+            temperature = data[len(data) - 1]['air_temperature_celsius']
+            humidity = data[len(data) - 1]['calibrated_soil_moisture_percent']
+        return temperature, humidity
 
-datas = [csv_dump.datas_directory + csv_dump.basename + "Bernard" + csv_dump.extension,
-         csv_dump.datas_directory + csv_dump.basename + "Giselle" + csv_dump.extension]
 
-try:
-
-    __tmpCaptorData = CaptorData()
-
-    cpt_bernard = __tmpCaptorData.get_data_from_csv_file(datas[0])
-    cpt_giselle = __tmpCaptorData.get_data_from_csv_file(datas[1])
-    cpts = {"Bernard": cpt_bernard,
-            "Giselle": cpt_giselle}
-
-except Exception as e:
-    cpt_giselle = CaptorData.get_data_from_csv_file(datas[1])
-    print "error captor data: ", e
+__tmpCaptorData = CaptorData()
+__tmpCaptorData.get_sensor_data()
