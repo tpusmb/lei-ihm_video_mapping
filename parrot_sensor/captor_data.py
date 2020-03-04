@@ -39,7 +39,7 @@ class CaptorData:
         self.connection.login(self.config[0], self.config[2])
         location_identifier = self.get_identifier_location()
         return self.init_temperature_and_humidity(self.connection.get_samples_location(location_identifier, self.since,
-                                                                                      self.today))
+                                                                                       self.today))
 
     def get_identifier_location(self):
         """
@@ -73,7 +73,3 @@ class CaptorData:
             temperature = data[len(data) - 1]['air_temperature_celsius']
             humidity = data[len(data) - 1]['calibrated_soil_moisture_percent']
         return temperature, humidity
-
-
-__tmpCaptorData = CaptorData()
-__tmpCaptorData.get_sensor_data()
