@@ -67,7 +67,7 @@ def _trigger_function_on_intent(intent: Intent):
 
 class VoiceController:
 
-    def __init__(self, active_time_delay=10, noise_level=None, confidence_threshold=0.6, config_file=None):
+    def __init__(self, active_time_delay=10, noise_level=None, confidence_threshold=0.6, config_file=None, has_sleep_mode=True):
         """
         :param active_time_delay time in seconds after the keyword was said before being not "active"
         :param noise_level allow to fine tune the ambient noise, leave empy for auto-tune with background listening
@@ -86,6 +86,7 @@ class VoiceController:
         self.last_active_time = None
         self.noise_level = noise_level
         self.confidence_threshold = confidence_threshold
+        self.has_sleep_mode = has_sleep_mode
 
         self._thread = threading.Thread(target=self.run, args=())
         self._thread.daemon = True  # Daemonize thread
@@ -96,9 +97,10 @@ class VoiceController:
         _trigger_function_on_active()
 
     def set_mode_sleep(self):
-        print("SLEEP MODE", flush=True)
-        self.active = False
-        _trigger_function_on_sleep()
+        if self.has_sleep_mode:
+            print("SLEEP MODE", flush=True)
+            self.active = False
+            _trigger_function_on_sleep()
 
     def stop(self):
         """Stopping gracefully, might take a few seconds"""
