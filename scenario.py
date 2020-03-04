@@ -94,6 +94,7 @@ class Scenario:
         :param state: Represent the growth of the plant (between 0 and 5)
         :return:
         """
+        garden.refresh_data()
         self.py_video_mapping.show_image(0, "ressources/images/etapes/Etape{}Plante.png".format(state))
         image_text1 = draw_text_onto_image(
             cv2.imread("ressources/images/EtatPlante.png"), "{} C".format(garden.temperature), 230, 650, 3)
