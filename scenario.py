@@ -2,6 +2,7 @@ from __future__ import absolute_import
 
 from data_drawer import BarDraw
 from datas.models.Flower import Flower, Mood
+from datas.models.Garden import Garden
 from py_video_mapping import draw_text_onto_image
 import logging.handlers
 import os
@@ -87,17 +88,19 @@ class Scenario:
         self.py_video_mapping.show_image(2, "ressources/images/feedbacks/PasCompris.png")
 
     # Data
-    def display_plant_state(self, state: int, mood: Mood, temperature: int, humidity: int):
+    def display_plant_state(self, state: int, garden: Garden):
         """
+        :param garden: The current garden
         :param state: Represent the growth of the plant (between 0 and 5)
         :return:
         """
         self.py_video_mapping.show_image(0, "ressources/images/etapes/Etape{}Plante.png".format(state))
-        image_text1 = draw_text_onto_image(cv2.imread("ressources/images/EtatPlante.png"), "{} C".format(temperature),
-                                           230, 650, 3)
-        image_text2 = draw_text_onto_image(image_text1, "{}%".format(humidity), 745, 650, 3)
-        self.py_video_mapping.show_video_on_wallpaper(1, "ressources/videos/animations/{}_plant.mp4".format(mood.value),
-                                                      image_text2, 225, 10, 650, 1, True)
+        image_text1 = draw_text_onto_image(
+            cv2.imread("ressources/images/EtatPlante.png"), "{} C".format(garden.temperature), 230, 650, 3)
+        image_text2 = draw_text_onto_image(image_text1, "{}%".format(garden.humidity), 745, 650, 3)
+        self.py_video_mapping.show_video_on_wallpaper(
+            1, "ressources/videos/animations/{}_plant.mp4".format(garden.flower.mood.value),
+            image_text2, 225, 10, 650, 1, True)
         next_state = state + 1 if state < 4 else state
         self.py_video_mapping.show_image(2, "ressources/images/etapes/Etape{}Plante.png".format(next_state))
 
