@@ -6,8 +6,8 @@ from py_video_mapping import PyVideoMapping, creat_monitor
 app = Flask(__name__)
 MAPPING_DATA = "mapping_data.map"
 
-if len(PyVideoMapping.get_all_screens()) > 1:
-    py_video_mapping = PyVideoMapping(PyVideoMapping.get_all_screens()[1])
+if len(PyVideoMapping.get_all_screens()) >= 1:
+    py_video_mapping = PyVideoMapping(PyVideoMapping.get_all_screens()[-1])
 else:
     print("No projector detected")
     py_video_mapping = None

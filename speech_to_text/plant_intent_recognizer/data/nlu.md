@@ -4,6 +4,7 @@
 - bonjour
 - hello plante
 - coucou
+- ok plante
 
 ## intent:fin
 - fin

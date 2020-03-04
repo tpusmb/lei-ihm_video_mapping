@@ -28,5 +28,5 @@ if __name__ == '__main__':
     except ValueError:
         debug_mode = False
 
-    app.run(debug=debug_mode, port=port)
+    app.run(debug=debug_mode, port=port, host="0.0.0.0")
     py_video_mapping.stop()

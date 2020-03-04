@@ -18,7 +18,7 @@ KARAOKE_TIME = 1  # Time in seconds to lock the karaoke
 NEXT_STEPS: List[Callable[[], None]] = []  # Global var to know what the next function should be
 
 
-py_video_mapping = PyVideoMapping(PyVideoMapping.get_all_screens()[0])
+py_video_mapping = PyVideoMapping(PyVideoMapping.get_all_screens()[1])
 scenario = Scenario(py_video_mapping)
 
 
@@ -70,7 +70,7 @@ def afficher_niveau():
 
 @register_function_for_intent(intent=Intent.AFFICHER_ETAT_PLANTE)
 def plant_state():
-    scenario.display_plant_state(0)
+    scenario.display_plant_state(0, Mood.HAPPY, 30, 34)
 
 
 @register_function_for_intent(intent=Intent.AFFICHER_PROGRES_PLANTE)
