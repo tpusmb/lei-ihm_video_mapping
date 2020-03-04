@@ -1,4 +1,5 @@
 from datas.models.Flower import Flower, Mood
+from datas.models.Garden import Garden
 from datas.models.Player import Player
 
 
@@ -21,7 +22,10 @@ class PlayerRepository:
 
     def __init__(self, player=Player(), garden=None):
         self.player = player
-        self.garden = garden
+        if garden is None:
+            self.garden = Garden(Flower())
+        else:
+            self.garden = garden
 
     def action_water(self):
         self.player.xp += 5
