@@ -37,12 +37,17 @@ class Intent(Enum):
 
 class RasaIntent:
 
-    def __init__(self, url="http://localhost:5005/model/parse"):
+    def __init__(self, url="http://localhost:5005/model/parse", headers=None):
         self.url = url
+        self.headers = headers if headers else {}
         # TODO start server in background
 
     def detect_intent(self, text: str) -> Tuple[Union[Intent, None], float]:
-        res = requests.post(self.url, json={"text": text})
+        res = requests.post(
+            self.url,
+            json={"text": text},
+            headers=self.headers,
+        )
         intent_res = res.json().get("intent", [])
         intent_str = intent_res.get("name")
         confidence = intent_res.get('confidence')

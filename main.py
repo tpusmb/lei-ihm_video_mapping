@@ -17,7 +17,7 @@ KARAOKE_TIME = 1  # Time in seconds to lock the karaoke
 
 NEXT_STEPS: List[Callable[[], None]] = []  # Global var to know what the next function should be
 
-py_video_mapping = PyVideoMapping(PyVideoMapping.get_all_screens()[1])
+py_video_mapping = PyVideoMapping(PyVideoMapping.get_all_screens()[-1])
 scenario = Scenario(py_video_mapping)
 
 
@@ -115,7 +115,7 @@ def play_next_step():
 
 player_repo = PlayerRepository()
 # flower = Flower(Mood.HAPPY)
-vc = VoiceController(active_time_delay=180, noise_level=2000, confidence_threshold=0.5)
+vc = VoiceController(active_time_delay=180, noise_level=2000, confidence_threshold=0.5, config_file='projetconfig.json')
 vc.start()
 sleep(2)
 scenario.display_good_feedback()
