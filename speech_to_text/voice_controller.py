@@ -1,3 +1,4 @@
+import json
 import sys
 import threading
 from time import sleep, time
@@ -5,6 +6,7 @@ from typing import Callable, Dict, List
 
 from speech_to_text.basic_speech_to_text import speech_to_text, is_wake_up_word_said
 from speech_to_text.plant_intent_recognizer.detect_intent import Intent, RasaIntent
+from utils.save_mapping import load
 
 CALLBACK_INTENTS: Dict[Intent, List[Callable[[], None]]] = {}
 CALLBACK_ON_ACTIVE: List[Callable[[], None]] = []
@@ -65,12 +67,19 @@ def _trigger_function_on_intent(intent: Intent):
 
 class VoiceController:
 
-    def __init__(self, active_time_delay=10, noise_level=None, confidence_threshold=0.6):
+    def __init__(self, active_time_delay=10, noise_level=None, confidence_threshold=0.6, config_file=None):
         """
         :param active_time_delay time in seconds after the keyword was said before being not "active"
         :param noise_level allow to fine tune the ambient noise, leave empy for auto-tune with background listening
         """
-        self._rasa_intent = RasaIntent()
+        if config_file:
+            config = load(config_file)
+            rasa_config = config.get('rasa', {})
+            url = rasa_config['url']
+            headers = json.loads(rasa_config['headers'])
+            self._rasa_intent = RasaIntent(url=url, headers=headers)
+        else:
+            self._rasa_intent = RasaIntent()
         self.active = False
         self._stop = False
         self.active_time_delay = active_time_delay
@@ -143,7 +152,7 @@ if __name__ == '__main__':
         print("goodbye !")
 
 
-    vc = VoiceController()
+    vc = VoiceController(config_file='../projetconfig.json')
     vc.start()
     print("I can continue to do stuff")
     sleep(60)
