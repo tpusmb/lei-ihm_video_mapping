@@ -33,8 +33,15 @@ def init_porcupine(use_custom, keyword, sensitivity):
     return PORCUPINE
 
 
-def is_wake_up_word_said(input_device_index=13, sensitivity=0.5, keyword='hey pico', timeout=10, use_custom=True):
-    porcupine = init_porcupine(use_custom, keyword, sensitivity)
+def is_wake_up_word_said(input_device_index=18, sensitivity=0.5, keyword='hey pico', timeout=10):
+    keyword_file_path = [pvporcupine.KEYWORD_FILE_PATHS[keyword]]
+    num_keywords = len(keyword_file_path)
+
+    porcupine = pvporcupine.create(
+        library_path=pvporcupine.LIBRARY_PATH,
+        model_file_path=pvporcupine.MODEL_FILE_PATH,
+        keyword_file_paths=keyword_file_path,
+        sensitivities=[sensitivity] * num_keywords)
 
     pa = pyaudio.PyAudio()
     audio_stream = pa.open(
@@ -54,6 +61,7 @@ def is_wake_up_word_said(input_device_index=13, sensitivity=0.5, keyword='hey pi
         if porcupine.process(pcm):
             keyword_said = True
     audio_stream.close()
+    porcupine.delete()
     return keyword_said
 
 
