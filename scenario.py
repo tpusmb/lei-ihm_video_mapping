@@ -26,29 +26,36 @@ PYTHON_LOGGER.setLevel(logging.DEBUG)
 # Absolute path to the folder location of this python file
 FOLDER_ABSOLUTE_PATH = os.path.normpath(os.path.dirname(os.path.abspath(__file__)))
 
-COMMANDE_PLANTER_PLANTE = os.path.join(FOLDER_ABSOLUTE_PATH, "ressources/images/commands/CommandePlanterPlante.png")
-COMMANDE_APPRENDRE_A_JARDINER = os.path.join(FOLDER_ABSOLUTE_PATH,
-                                             "ressources/images/commands/CommandeApprendreAJardiner.png")
-COMMANDE_VOIR_PROGRESSION = os.path.join(FOLDER_ABSOLUTE_PATH, "ressources/images/commands/CommandeVoirProgression.png")
-COMMANDE_ENTRETENIR_PLANTE = os.path.join(FOLDER_ABSOLUTE_PATH,
-                                          "ressources/images/commands/CommandeEntretenirPlante.png")
-COMMANDE_VOIR_ETAT_PLANTE = os.path.join(FOLDER_ABSOLUTE_PATH, "ressources/images/commands/CommandeVoirEtatPlante.png")
-COMMANDE_PROGRESSION_PLANTE = os.path.join(FOLDER_ABSOLUTE_PATH,
-                                           "ressources/images/commands/CommandeProgressionPlante.png")
-COMMANDE_PROGRESSION_JARDINIER = os.path.join(FOLDER_ABSOLUTE_PATH,
-                                              "ressources/images/commands/CommandeProgressionJardinier.png")
-ACTION_CREUSER = os.path.join(FOLDER_ABSOLUTE_PATH, "ressources/images/actions/ActionCreuser.png")
-ACTION_PLACER_BULBE = os.path.join(FOLDER_ABSOLUTE_PATH, "ressources/images/actions/ActionPlacerBulbe.png")
-ACTION_REBOUCHER_TROU = os.path.join(FOLDER_ABSOLUTE_PATH, "ressources/images/actions/ActionReboucherTrou.png")
-ACTION_ARROSER_LE_BULBE = os.path.join(FOLDER_ABSOLUTE_PATH, "ressources/images/actions/ActionArroserLeBulbe.png")
-ACTION_BINER = os.path.join(FOLDER_ABSOLUTE_PATH, "ressources/images/actions/ActionBiner.png")
-FEEDBACKS_BON = os.path.join(FOLDER_ABSOLUTE_PATH, "ressources/images/feedbacks/Bon.png")
-FEEDBACKS_PAS_BON = os.path.join(FOLDER_ABSOLUTE_PATH, "ressources/images/feedbacks/PasBon.png")
-FEEDBACKS_PAS_COMPRIS = os.path.join(FOLDER_ABSOLUTE_PATH, "ressources/images/feedbacks/PasCompris.png")
-ETAT_PLANTE = os.path.join(FOLDER_ABSOLUTE_PATH, "ressources/images/EtatPlante.png")
-DANCE = os.path.join(FOLDER_ABSOLUTE_PATH, "ressources/videos/karaoke/dance.mp4")
-KARAOKE_GANG_NAMSEUTAYIL = os.path.join(FOLDER_ABSOLUTE_PATH, "ressources/videos/karaoke/karaoke_gang-namseutayil.mp4")
-LISTE_DES_COMMANDES = os.path.join(FOLDER_ABSOLUTE_PATH, "ressources/images/ListeDesCommandes.png")
+COMMANDE_PLANTER_PLANTE = os.path.join(FOLDER_ABSOLUTE_PATH, "ressources", "images", "commands",
+                                       "CommandePlanterPlante.png")
+COMMANDE_APPRENDRE_A_JARDINER = os.path.join(FOLDER_ABSOLUTE_PATH, "ressources", "images", "commands",
+                                             "CommandeApprendreAJardiner.png")
+COMMANDE_VOIR_PROGRESSION = os.path.join(FOLDER_ABSOLUTE_PATH, "ressources", "images", "commands",
+                                         "CommandeVoirProgression.png")
+COMMANDE_ENTRETENIR_PLANTE = os.path.join(FOLDER_ABSOLUTE_PATH, "ressources", "images", "commands",
+                                          "CommandeEntretenirPlante.png")
+COMMANDE_VOIR_ETAT_PLANTE = os.path.join(FOLDER_ABSOLUTE_PATH, "ressources", "images", "commands",
+                                         "CommandeVoirEtatPlante.png")
+COMMANDE_PROGRESSION_PLANTE = os.path.join(FOLDER_ABSOLUTE_PATH, "ressources", "images", "commands",
+                                           "CommandeProgressionPlante.png")
+COMMANDE_PROGRESSION_JARDINIER = os.path.join(FOLDER_ABSOLUTE_PATH, "ressources", "images", "commands",
+                                              "CommandeProgressionJardinier.png")
+ACTION_CREUSER = os.path.join(FOLDER_ABSOLUTE_PATH, "ressources", "images", "actions", "ActionCreuser.png")
+ACTION_PLACER_BULBE = os.path.join(FOLDER_ABSOLUTE_PATH, "ressources", "images", "actions", "ActionPlacerBulbe.png")
+ACTION_REBOUCHER_TROU = os.path.join(FOLDER_ABSOLUTE_PATH, "ressources", "images", "actions", "ActionReboucherTrou.png")
+ACTION_ARROSER_LE_BULBE = os.path.join(FOLDER_ABSOLUTE_PATH, "ressources", "images", "actions",
+                                       "ActionArroserLeBulbe.png")
+ACTION_BINER = os.path.join(FOLDER_ABSOLUTE_PATH, "ressources", "images", "actions", "ActionBiner.png")
+FEEDBACKS_BON = os.path.join(FOLDER_ABSOLUTE_PATH, "ressources", "images", "feedbacks", "Bon.png")
+FEEDBACKS_PAS_BON = os.path.join(FOLDER_ABSOLUTE_PATH, "ressources", "images", "feedbacks", "PasBon.png")
+FEEDBACKS_PAS_COMPRIS = os.path.join(FOLDER_ABSOLUTE_PATH, "ressources", "images", "feedbacks", "PasCompris.png")
+ETAT_PLANTE = os.path.join(FOLDER_ABSOLUTE_PATH, "ressources", "images", "EtatPlante.png")
+DANCE = os.path.join(FOLDER_ABSOLUTE_PATH, "ressources", "videos", "karaoke", "dance.mp4")
+KARAOKE_GANG_NAMSEUTAYIL = os.path.join(FOLDER_ABSOLUTE_PATH, "ressources", "videos", "karaoke",
+                                        "karaoke_gang-namseutayil.mp4")
+LISTE_DES_COMMANDES = os.path.join(FOLDER_ABSOLUTE_PATH, "ressources", "images", "ListeDesCommandes.png")
+ETAPES_PLANTE = os.path.join(FOLDER_ABSOLUTE_PATH, "ressources", "images", "etapes", "Etape")
+ANIMATIONS = os.path.join(FOLDER_ABSOLUTE_PATH, "ressources", "videos", "animations")
 
 
 class Scenario:
@@ -119,21 +126,23 @@ class Scenario:
         :return:
         """
         garden.refresh_data()
-        self.py_video_mapping.show_image(0, "ressources/images/etapes/Etape{}Plante.png".format(state))
+        self.py_video_mapping.show_image(0, "{}{}Plante.png".format(ETAT_PLANTE, state))
         image_text1 = draw_text_onto_image(
             cv2.imread(ETAT_PLANTE), "{} C".format(garden.temperature), 230, 650, 3)
         image_text2 = draw_text_onto_image(image_text1, "{}%".format(garden.humidity), 745, 650, 3)
+        animation_name = "{}_plant.mp4".format(garden.flower.mood.value)
         self.py_video_mapping.show_video_on_wallpaper(
-            1, "ressources/videos/animations/{}_plant.mp4".format(garden.flower.mood.value),
+            1, os.path.join(ANIMATIONS, animation_name),
             image_text2, 225, 10, 650, 1, True)
         next_state = state + 1 if state < 4 else state
-        self.py_video_mapping.show_image(2, "ressources/images/etapes/Etape{}Plante.png".format(next_state))
+        self.py_video_mapping.show_image(2, "{}{}Plante.png".format(ETAT_PLANTE, next_state))
 
     def display_plant_progression(self, flower: Flower):
-        self.py_video_mapping.show_video(0, "ressources/videos/animations/{}_plant.mp4".format(flower.mood.value), True)
+        animation_name = "{}_plant.mp4".format(flower.mood.value)
+        self.py_video_mapping.show_video(0, os.path.join(ANIMATIONS, animation_name), True)
         # TODO faire le graphique
         self.py_video_mapping.show_image(1, COMMANDE_PROGRESSION_PLANTE)
-        self.py_video_mapping.show_video(2, "ressources/videos/animations/{}_plant.mp4".format(flower.mood.value), True)
+        self.py_video_mapping.show_video(2, os.path.join(ANIMATIONS, animation_name), True)
 
     def display_gardener_progression(self, player_repo: PlayerRepository):
         # TODO le level sur l'image 1 et 3 et rajouter la jauge d'xp sur l'image 2
