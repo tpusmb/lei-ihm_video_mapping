@@ -16,7 +16,7 @@ from utils import save_mapping
 # Absolute path to the folder location of this python file
 FOLDER_ABSOLUTE_PATH = os.path.normpath(os.path.dirname(os.path.abspath(__file__)))
 
-CONFIG = os.path.join(FOLDER_ABSOLUTE_PATH, "../projetconfig.json")
+CONFIG = os.path.join(FOLDER_ABSOLUTE_PATH, "..", "projetconfig.json")
 
 class CaptorData:
     """
