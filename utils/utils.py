@@ -6,10 +6,9 @@ from __future__ import absolute_import
 import logging.handlers
 import os
 
+import cv2
 import numpy as np
 from PIL import Image
-import cv2
-from imutils.video import FileVideoStream
 
 PYTHON_LOGGER = logging.getLogger(__name__)
 if not os.path.exists("log"):

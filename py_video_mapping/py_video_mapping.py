@@ -10,6 +10,7 @@ import cv2
 import screeninfo
 from screeninfo import Monitor
 
+from utils.config_reader import ConfigReader
 from .frame_getter import ImageGetter, VideoGetter, VideoOnWallpaper
 from .projector_show import ProjectorShow
 from .screen_relation import ScreenRelation
@@ -35,12 +36,13 @@ NB_FACES = 3
 
 
 class PyVideoMapping:
-    def __init__(self, screen, ui_screen: Monitor = None, delay=22):
+    def __init__(self, screen, ui_screen: Monitor = None, config_reader: ConfigReader = ConfigReader()):
+        self.config_reader = config_reader
         self.screen = screen
         self.ui_screen = ui_screen
         self.screen_relation = None
         self.test_image = cv2.imread(TEST_IMAGE)
-        self.projector_show = ProjectorShow(self.screen, NB_FACES, delay)
+        self.projector_show = ProjectorShow(self.screen, NB_FACES, config_reader.Py_video_mapping["delay"])
 
         if self.ui_screen is not None:
             self.screen_relation = ScreenRelation(ui_screen, self.screen)

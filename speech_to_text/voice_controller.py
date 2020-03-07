@@ -150,7 +150,7 @@ if __name__ == '__main__':
         print("goodbye !")
 
 
-    vc = VoiceController(config_file='../projetconfig.json')
+    vc = VoiceController()
     vc.start()
     print("I can continue to do stuff")
     sleep(60)

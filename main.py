@@ -32,7 +32,10 @@ KARAOKE_TIME = 1  # Time in seconds to lock the karaoke
 
 NEXT_STEPS: List[Callable[[], None]] = []  # Global var to know what the next function should be
 
-py_video_mapping = PyVideoMapping(PyVideoMapping.get_all_screens()[-1])
+args = docopt(__doc__)
+config_file_path = args["<config-file-path>"]
+config_reader = ConfigReader(config_file_path)
+py_video_mapping = PyVideoMapping(PyVideoMapping.get_all_screens()[-1], config_reader=config_reader)
 scenario = Scenario(py_video_mapping)
 
 
@@ -128,17 +131,11 @@ def play_next_step():
         print("Trying to call a next step but there is none", file=sys.stderr, flush=True)
 
 
-if __name__ == "__main__":
-    args = docopt(__doc__)
-    config_file_path = args["<config-file-path>"]
-    config_reader = ConfigReader(config_file_path)
-    player_repo = PlayerRepository(config_reader)
-    vc = VoiceController(active_time_delay=180, noise_level=2000,
-                         confidence_threshold=0.5,
-                         config_reader=config_reader)
-    vc.start()
-    sleep(2)
-    scenario.display_good_feedback()
-    sleep(2)
-    stop()
-    print("ALL GOOD")
+player_repo = PlayerRepository(config_reader)
+vc = VoiceController(config_reader)
+vc.start()
+sleep(2)
+scenario.display_good_feedback()
+sleep(2)
+stop()
+print("ALL GOOD")

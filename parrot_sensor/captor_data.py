@@ -10,8 +10,6 @@ from utils.config_reader import ConfigReader
 
 FOLDER_ABSOLUTE_PATH = os.path.normpath(os.path.dirname(os.path.abspath(__file__)))
 
-CONFIG = os.path.join(FOLDER_ABSOLUTE_PATH, "..", "projetconfig.json")
-
 
 class CaptorData:
     """
