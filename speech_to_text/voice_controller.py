@@ -78,10 +78,10 @@ class VoiceController:
             self._rasa_intent = RasaIntent(url=url, headers=headers)
         self.active = False
         self._stop = False
-        self.active_time_delay = config_reader.Speech_to_text["active_time_delay"]
+        self.active_time_delay = config_reader.Speech_to_text.getint("active_time_delay")
         self.last_active_time = None
-        self.noise_level = config_reader.Speech_to_text["noise_level"]
-        self.confidence_threshold = config_reader.Speech_to_text["confidence_threshold"]
+        self.noise_level = config_reader.Speech_to_text.getint("noise_level")
+        self.confidence_threshold = config_reader.Speech_to_text.getfloat("confidence_threshold")
         self.has_sleep_mode = has_sleep_mode
 
         self._thread = threading.Thread(target=self.run, args=())

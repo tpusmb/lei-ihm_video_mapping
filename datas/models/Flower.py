@@ -1,8 +1,9 @@
 from datetime import datetime
 from enum import Enum
 
-from utils.config_reader import ConfigReader
 import numpy as np
+
+from utils.config_reader import ConfigReader
 
 
 class Mood(Enum):
@@ -22,12 +23,14 @@ class Flower:
         self.planted_at = planted_at
         self.updated_at = datetime.today()
 
-        mood_time_sad = config_reader.Plant["mood_time_sad"]
-        mood_time_sad = mood_time_sad if mood_time_sad is not None else np.inf
+        try:
+            mood_time_sad = config_reader.Plant.getfloat("mood_time_sad")
+        except TypeError:
+            mood_time_sad = np.inf
 
-        self.TIME_HAPPY = config_reader.Plant["mood_time_happy"]
-        self.TIME_STANDING = config_reader.Plant["mood_time_standing"] + self.TIME_HAPPY
-        self.TIME_ANGRY = config_reader.Plant["mood_time_angry"] + self.TIME_STANDING
+        self.TIME_HAPPY = config_reader.Plant.getfloat("mood_time_happy")
+        self.TIME_STANDING = config_reader.Plant.getfloat("mood_time_standing") + self.TIME_HAPPY
+        self.TIME_ANGRY = config_reader.Plant.getfloat("mood_time_angry") + self.TIME_STANDING
         self.TIME_SAD = mood_time_sad + self.TIME_ANGRY
 
     @property

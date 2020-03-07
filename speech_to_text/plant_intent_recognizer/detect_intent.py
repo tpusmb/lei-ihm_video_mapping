@@ -1,3 +1,4 @@
+import json
 import subprocess
 import sys
 from enum import Enum
@@ -40,7 +41,8 @@ class RasaIntent:
     def __init__(self, url="http://localhost:5005/model/parse", headers=None):
         self.url = url
         self.headers = headers if headers else {}
-        # TODO start server in background
+        if isinstance(self.headers, str):
+            self.headers = json.load(headers)
 
     def detect_intent(self, text: str) -> Tuple[Union[Intent, None], float]:
         res = requests.post(

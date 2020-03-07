@@ -33,11 +33,15 @@ class ConfigReader:
         param2 = titi
 
         [SectionB]
-        param3=zoro
+        param3=10
 
     Class usage:
     config = ConfigReader("config.ini")
     config.SectionA["param1"]
+    or
+    config.SectionB.getint("param3")
+    .getfloat
+    .getboolean
     """
 
     def __init__(self, absolute_path_config_file="config.ini"):

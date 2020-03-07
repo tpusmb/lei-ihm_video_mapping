@@ -42,7 +42,7 @@ class PyVideoMapping:
         self.ui_screen = ui_screen
         self.screen_relation = None
         self.test_image = cv2.imread(TEST_IMAGE)
-        self.projector_show = ProjectorShow(self.screen, NB_FACES, config_reader.Py_video_mapping["delay"])
+        self.projector_show = ProjectorShow(self.screen, NB_FACES, config_reader.Py_video_mapping.getint("delay"))
 
         if self.ui_screen is not None:
             self.screen_relation = ScreenRelation(ui_screen, self.screen)
