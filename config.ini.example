@@ -1,7 +1,7 @@
 [Parrot]
-userid =
-usercode =
-passwd =
+userid = <To fill>
+usercode = <To fill>
+passwd = <To fill>
 
 [Rasa]
 url = https://localhost:5005/model/parse

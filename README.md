@@ -5,7 +5,7 @@ Our lei IHM to config mapping
 
 TODO
 
-## Installation
+## 1) Installation
 
 ### General setup
 
@@ -78,7 +78,7 @@ To install rasa just run
     pip install rasa
 
 
-## Creat a mapping
+## 2) Creat a mapping
 
 First you need to map your video projector with the flower pot. To do this you need to run this command
 
@@ -87,3 +87,29 @@ First you need to map your video projector with the flower pot. To do this you n
 When the mapping his done you can test by running the test script.
 
     python test_video_projection.py
+
+## 3) Run rasa server
+
+We do not use the full capacities of rasa but [only the NLU part](https://rasa.com/docs/rasa/nlu/using-nlu-only/)
+
+To detect witch action do we use Rasa intent recognition. First you need to train the Rasa NLU model
+
+    cd speech_to_text/plant_intent_recognizer && rasa train nlu
+
+Then start the server
+
+    rasa run --enable-api
+    
+To test if all work
+
+    curl localhost:5005/model/parse -d '{"text":"hello"}'
+
+## 4) run the garden
+
+Before to run the main script copy and rename the `config.ini.example` file to `config.ini`
+
+**Note** and remember to replace all the parameters with the text `<To fill>`
+
+The you can run the garden
+
+    python main.py config.ini
