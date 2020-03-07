@@ -7,7 +7,7 @@ class Garden:
 
     def __init__(self, flower: Flower, config_reader: ConfigReader = ConfigReader()):
         self.flower = flower
-        self.captor_data = CaptorData(config_reader)
+        self.captor_data = CaptorData(config_reader=config_reader)
         self.temperature = 0
         self.humidity = 0
         self.refresh_data()

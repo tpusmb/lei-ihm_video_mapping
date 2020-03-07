@@ -5,11 +5,10 @@ import os
 
 import cv2
 
-from data_drawer import BarDraw
 from datas.models.Flower import Flower
 from datas.models.Garden import Garden
 from datas.repositories.PlayerRepository import PlayerRepository
-from utils.img_utils import draw_text_onto_image
+from utils.img_utils import draw_text_onto_image, xp_bar_draw
 
 PYTHON_LOGGER = logging.getLogger(__name__)
 if not os.path.exists("log"):
@@ -149,11 +148,7 @@ class Scenario:
         # TODO le level sur l'image 1 et 3 et rajouter la jauge d'xp sur l'image 2
         self.py_video_mapping.show_image(0, COMMANDE_PROGRESSION_JARDINIER)
         # self.py_video_mapping.show_image(1, "ressources/images/NiveauDuJardinier.png")
-        nivel_gui = BarDraw("Demo")
-        nivel_gui.start()
-        nivel_gui.add_bar("_")
-        nivel_gui.update_value("_", player_repo.xp_percent_to_next_level())
-        self.py_video_mapping.show_image(1, nivel_gui.get_figure_cv2_image())
+        self.py_video_mapping.show_image(1, xp_bar_draw(player_repo.xp_percent_to_next_level()))
         self.py_video_mapping.show_image(2, COMMANDE_PROGRESSION_JARDINIER)
 
     # Help
