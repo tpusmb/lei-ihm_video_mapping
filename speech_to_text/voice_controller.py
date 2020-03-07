@@ -1,4 +1,3 @@
-import json
 import sys
 import threading
 from time import sleep, time
@@ -6,7 +5,7 @@ from typing import Callable, Dict, List
 
 from speech_to_text.basic_speech_to_text import speech_to_text, is_wake_up_word_said
 from speech_to_text.plant_intent_recognizer.detect_intent import Intent, RasaIntent
-from utils.save_mapping import load
+from utils.config_reader import ConfigReader
 
 CALLBACK_INTENTS: Dict[Intent, List[Callable[[], None]]] = {}
 CALLBACK_ON_ACTIVE: List[Callable[[], None]] = []
@@ -48,9 +47,7 @@ def register_function_for_intent(intent: Intent):
             return response
 
         print(f"Registering {f} for intent: {intent.value}")
-        functions = CALLBACK_INTENTS.get(intent, [])
-        functions.append(f)
-        CALLBACK_INTENTS[intent] = functions
+        CALLBACK_INTENTS.setdefault(intent, []).append(f)
         return wrapped
 
     return inner_decorator
@@ -67,25 +64,24 @@ def _trigger_function_on_intent(intent: Intent):
 
 class VoiceController:
 
-    def __init__(self, active_time_delay=10, noise_level=None, confidence_threshold=0.6, config_file=None, has_sleep_mode=True):
+    def __init__(self, config_reader: ConfigReader = ConfigReader(), has_sleep_mode=True):
         """
-        :param active_time_delay time in seconds after the keyword was said before being not "active"
-        :param noise_level allow to fine tune the ambient noise, leave empy for auto-tune with background listening
+
+        :param config_reader:
+        :param has_sleep_mode:
         """
-        if config_file:
-            config = load(config_file)
-            rasa_config = config.get('rasa', {})
-            url = rasa_config['url']
-            headers = json.loads(rasa_config['headers'])
-            self._rasa_intent = RasaIntent(url=url, headers=headers)
+        url = config_reader.Rasa["url"]
+        headers = config_reader.Rasa["headers"]
+        if url is None:
+            self._rasa_intent = RasaIntent(headers)
         else:
-            self._rasa_intent = RasaIntent()
+            self._rasa_intent = RasaIntent(url=url, headers=headers)
         self.active = False
         self._stop = False
-        self.active_time_delay = active_time_delay
+        self.active_time_delay = config_reader.Speech_to_text["active_time_delay"]
         self.last_active_time = None
-        self.noise_level = noise_level
-        self.confidence_threshold = confidence_threshold
+        self.noise_level = config_reader.Speech_to_text["noise_level"]
+        self.confidence_threshold = config_reader.Speech_to_text["confidence_threshold"]
         self.has_sleep_mode = has_sleep_mode
 
         self._thread = threading.Thread(target=self.run, args=())
@@ -154,7 +150,7 @@ if __name__ == '__main__':
         print("goodbye !")
 
 
-    vc = VoiceController(config_file='../projetconfig.json')
+    vc = VoiceController()
     vc.start()
     print("I can continue to do stuff")
     sleep(60)

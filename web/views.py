@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request
-from utils import save_mapping
+from utils import json_io
 
 from py_video_mapping import PyVideoMapping, creat_monitor
 
@@ -15,7 +15,7 @@ else:
 
 @app.route('/')
 def ihm():
-    return render_template('index.html', configs=save_mapping.load(MAPPING_DATA)), 200
+    return render_template('index.html', configs=json_io.load(MAPPING_DATA)), 200
 
 
 @app.route('/test')
@@ -26,7 +26,7 @@ def test():
 @app.route('/sendPoints', methods=['POST'])
 def send_points():
     data_json = request.json
-    save_mapping.save(data_json, MAPPING_DATA)
+    json_io.save(data_json, MAPPING_DATA)
 
     if py_video_mapping is not None:
         if py_video_mapping.screen_relation is None:
