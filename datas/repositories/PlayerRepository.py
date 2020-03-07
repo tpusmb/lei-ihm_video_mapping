@@ -1,6 +1,7 @@
-from datas.models.Flower import Flower, Mood
+from datas.models.Flower import Flower
 from datas.models.Garden import Garden
 from datas.models.Player import Player
+from utils.config_reader import ConfigReader
 
 
 class PlayerRepository:
@@ -20,10 +21,10 @@ class PlayerRepository:
     >>> assert p.xp_percent_to_next_level() == 0
     """
 
-    def __init__(self, player=Player(), garden=None):
+    def __init__(self, player=Player(), config_reader: ConfigReader = ConfigReader(), garden=None):
         self.player = player
         if garden is None:
-            self.garden = Garden(Flower())
+            self.garden = Garden(Flower(config_reader=config_reader), config_reader)
         else:
             self.garden = garden
 

@@ -1,7 +1,8 @@
 from datetime import datetime
 from enum import Enum
 
-import config
+from utils.config_reader import ConfigReader
+import numpy as np
 
 
 class Mood(Enum):
@@ -15,16 +16,19 @@ class Flower:
     MIN_RANK = 1
     MAX_RANK = 5
 
-    def __init__(self, rank: int = 1, planted_at=datetime.today()):
+    def __init__(self, rank: int = 1, planted_at=datetime.today(), config_reader: ConfigReader = ConfigReader()):
         self.mood = Mood.STANDING  # based on the last time the plant was looked after
         self.rank = rank
         self.planted_at = planted_at
         self.updated_at = datetime.today()
 
-        self.TIME_HAPPY = config.MOOD_TIME_HAPPY
-        self.TIME_STANDING = config.MOOD_TIME_STANDING + self.TIME_HAPPY
-        self.TIME_ANGRY = config.MOOD_TIME_ANGRY + self.TIME_STANDING
-        self.TIME_SAD = config.MOOD_TIME_SAD + self.TIME_ANGRY
+        mood_time_sad = config_reader.Plant["mood_time_sad"]
+        mood_time_sad = mood_time_sad if mood_time_sad is not None else np.inf
+
+        self.TIME_HAPPY = config_reader.Plant["mood_time_happy"]
+        self.TIME_STANDING = config_reader.Plant["mood_time_standing"] + self.TIME_HAPPY
+        self.TIME_ANGRY = config_reader.Plant["mood_time_angry"] + self.TIME_STANDING
+        self.TIME_SAD = mood_time_sad + self.TIME_ANGRY
 
     @property
     def mood(self):

@@ -1,0 +1,22 @@
+[Parrot]
+userid =
+usercode =
+passwd =
+
+[Rasa]
+url = https://localhost:5005/model/parse
+headers
+
+[Speech_to_text]
+# time in seconds after the keyword was said before being not "active"
+active_time_delay=180
+# allow to fine tune the ambient noise, leave empy for auto-tune with background listening
+noise_level=2000
+# Rasa min intent confidence to activate the action
+confidence_threshold=0.7
+
+[Plant]
+mood_time_happy = 10.0
+mood_time_standing = 10.0
+mood_time_angry = 10.0
+mood_time_sad

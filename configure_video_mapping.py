@@ -4,7 +4,7 @@
 """
 Main script to run the degree management web-app.
 Usage:
-   video_mapping_conf.py [--port=<port>] [--mode=<mode>]
+   configure_video_mapping.py [--port=<port>] [--mode=<mode>]
 
 Options:
     -h --help                   Show this screen.

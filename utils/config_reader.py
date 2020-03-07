@@ -40,7 +40,7 @@ class ConfigReader:
     config.SectionA["param1"]
     """
 
-    def __init__(self, absolute_path_config_file):
+    def __init__(self, absolute_path_config_file="config.ini"):
         """
         :param absolute_path_config_file:
         """
@@ -51,3 +51,8 @@ class ConfigReader:
             self.__dict__.update(self.config)
         except Exception as e:
             PYTHON_LOGGER.error("Error to load the configurations: {}".format(e))
+
+
+if __name__ == "__main__":
+    config = ConfigReader("../config.ini")
+    print(config)

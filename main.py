@@ -1,17 +1,32 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""
+Run the augmented reality garden
+**Note**: Make sure your do the video mapping configuration with the configure_video_mapping.py file
+
+Usage:
+   main.py <config-file-path>
+
+Options:
+    -h --help                   Show this screen.
+    <config-file-path>          Path to the config file. Use the config.ini.example for help
+"""
+
+import random
 import sys
 from time import sleep
 from typing import Callable, List
 
-import random
+from docopt import docopt
 
-from datas.models.Flower import Flower, Mood
 from datas.repositories.PlayerRepository import PlayerRepository
 from py_video_mapping import *
-
 from scenario import Scenario
 from speech_to_text.plant_intent_recognizer.detect_intent import Intent
 from speech_to_text.voice_controller import VoiceController, register_function_for_intent, \
     register_function_for_active, register_function_for_sleep
+from utils.config_reader import ConfigReader
 
 KARAOKE_TIME = 1  # Time in seconds to lock the karaoke
 
@@ -113,12 +128,17 @@ def play_next_step():
         print("Trying to call a next step but there is none", file=sys.stderr, flush=True)
 
 
-player_repo = PlayerRepository()
-# flower = Flower(Mood.HAPPY)
-vc = VoiceController(active_time_delay=180, noise_level=2000, confidence_threshold=0.5, config_file='projetconfig.json')
-vc.start()
-sleep(2)
-scenario.display_good_feedback()
-sleep(2)
-stop()
-print("ALL GOOD")
+if __name__ == "__main__":
+    args = docopt(__doc__)
+    config_file_path = args["<config-file-path>"]
+    config_reader = ConfigReader(config_file_path)
+    player_repo = PlayerRepository(config_reader)
+    vc = VoiceController(active_time_delay=180, noise_level=2000,
+                         confidence_threshold=0.5,
+                         config_reader=config_reader)
+    vc.start()
+    sleep(2)
+    scenario.display_good_feedback()
+    sleep(2)
+    stop()
+    print("ALL GOOD")
