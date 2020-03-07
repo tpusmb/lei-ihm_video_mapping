@@ -57,7 +57,6 @@ class FaceObject:
         :param frame:
         :return:
         """
-        # TODO if self.perspective_mat is None:
         h, w, _ = frame.shape
         rect = np.array([
             [0, 0],
