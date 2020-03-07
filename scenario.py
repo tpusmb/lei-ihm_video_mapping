@@ -53,6 +53,7 @@ ETAT_PLANTE = os.path.join(FOLDER_ABSOLUTE_PATH, "ressources", "images", "EtatPl
 DANCE = os.path.join(FOLDER_ABSOLUTE_PATH, "ressources", "videos", "karaoke", "dance.mp4")
 KARAOKE_GANG_NAMSEUTAYIL = os.path.join(FOLDER_ABSOLUTE_PATH, "ressources", "videos", "karaoke",
                                         "karaoke_gang-namseutayil.mp4")
+NIVEAU_DU_JARDINIER = os.path.join(FOLDER_ABSOLUTE_PATH, "ressources", "images", "NiveauDuJardinier.png")
 LISTE_DES_COMMANDES = os.path.join(FOLDER_ABSOLUTE_PATH, "ressources", "images", "ListeDesCommandes.png")
 ETAPES_PLANTE = os.path.join(FOLDER_ABSOLUTE_PATH, "ressources", "images", "etapes", "Etape")
 ANIMATIONS = os.path.join(FOLDER_ABSOLUTE_PATH, "ressources", "videos", "animations")
@@ -145,11 +146,11 @@ class Scenario:
         self.py_video_mapping.show_video(2, os.path.join(ANIMATIONS, animation_name), True)
 
     def display_gardener_progression(self, player_repo: PlayerRepository):
-        # TODO le level sur l'image 1 et 3 et rajouter la jauge d'xp sur l'image 2
-        self.py_video_mapping.show_image(0, COMMANDE_PROGRESSION_JARDINIER)
-        # self.py_video_mapping.show_image(1, "ressources/images/NiveauDuJardinier.png")
+        gardener_level_image = draw_text_onto_image(cv2.imread(NIVEAU_DU_JARDINIER),
+                                                    "{}".format(player_repo.player.level), 300, 500, 10, (0, 0, 0), 20)
+        self.py_video_mapping.show_image(0, gardener_level_image)
         self.py_video_mapping.show_image(1, xp_bar_draw(player_repo.xp_percent_to_next_level()))
-        self.py_video_mapping.show_image(2, COMMANDE_PROGRESSION_JARDINIER)
+        self.py_video_mapping.show_image(2, gardener_level_image)
 
     # Help
     def display_command_list(self):

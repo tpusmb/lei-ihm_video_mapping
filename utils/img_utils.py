@@ -42,11 +42,11 @@ def add_sub_image(wall_paper, frame, x_offset, y_offset):
     return wall_paper_copy
 
 
-def draw_text_onto_image(image, text, x_offset, y_offset, scale, color=(0, 0, 0)):
+def draw_text_onto_image(image, text, x_offset, y_offset, scale, color=(0, 0, 0), letters_thickness=5):
     org = (x_offset, y_offset)
     font = cv2.FONT_HERSHEY_SIMPLEX
     font_scale = scale
-    thickness = 5
+    thickness = letters_thickness
     return cv2.putText(image, text, org, font, font_scale, color, thickness, cv2.LINE_AA)
 
 
