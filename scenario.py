@@ -1,14 +1,15 @@
 from __future__ import absolute_import
 
+import logging.handlers
+import os
+
+import cv2
+
 from data_drawer import BarDraw
 from datas.models.Flower import Flower
 from datas.models.Garden import Garden
-from py_video_mapping import draw_text_onto_image
-import logging.handlers
-import os
-import cv2
-
 from datas.repositories.PlayerRepository import PlayerRepository
+from utils.img_utils import draw_text_onto_image
 
 PYTHON_LOGGER = logging.getLogger(__name__)
 if not os.path.exists("log"):

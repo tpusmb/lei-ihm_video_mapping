@@ -53,7 +53,6 @@ class VideoGetter(FrameGetter):
             self.file_video_stream.stop()
             self.file_video_stream = FileVideoStream(self.path_video, play_audio=self.play_audio).start()
         while frame is None:
-            print("Play video again")
             frame = self.file_video_stream.read()
         return frame
 

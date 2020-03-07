@@ -117,6 +117,3 @@ class ProjectorShow(Thread):
 
     def stop(self):
         self.end = True
-        for face_object in self.faces_object:
-            if face_object is not None:
-                face_object.stop()
