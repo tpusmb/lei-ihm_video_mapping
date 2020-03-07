@@ -119,4 +119,4 @@ tensorboard/
 trained_models/**
 
 *.map
-*.conf
+*.ini
