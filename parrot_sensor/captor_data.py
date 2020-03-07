@@ -8,10 +8,15 @@ GNU AFFERO GENERAL PUBLIC LICENSE
 import csv
 import datetime
 import json
+import os
 
 from parrot_sensor import api_cloud
 from utils import json_io
 
+# Absolute path to the folder location of this python file
+FOLDER_ABSOLUTE_PATH = os.path.normpath(os.path.dirname(os.path.abspath(__file__)))
+
+CONFIG = os.path.join(FOLDER_ABSOLUTE_PATH, "..", "projetconfig.json")
 
 class CaptorData:
     """
@@ -27,7 +32,7 @@ class CaptorData:
         """
         self.since = (datetime.datetime.now() - datetime.timedelta(hours=time_delta)).strftime("%d-%b-%Y %H:%M:%S")
         self.today = datetime.datetime.now().strftime("%d-%b-%Y %H:%M:%S")
-        self.config = self.get_projetconfig('../projetconfig.json')
+        self.config = self.get_projetconfig(CONFIG)
         self.connection = api_cloud.ApiCloud(self.config[0], self.config[1])
 
     def get_sensor_data(self):

@@ -17,8 +17,7 @@ KARAOKE_TIME = 1  # Time in seconds to lock the karaoke
 
 NEXT_STEPS: List[Callable[[], None]] = []  # Global var to know what the next function should be
 
-
-py_video_mapping = PyVideoMapping(PyVideoMapping.get_all_screens()[1])
+py_video_mapping = PyVideoMapping(PyVideoMapping.get_all_screens()[-1])
 scenario = Scenario(py_video_mapping)
 
 
@@ -70,12 +69,12 @@ def afficher_niveau():
 
 @register_function_for_intent(intent=Intent.AFFICHER_ETAT_PLANTE)
 def plant_state():
-    scenario.display_plant_state(0, Mood.HAPPY, 30, 34)
+    scenario.display_plant_state(0, player_repo.garden)
 
 
 @register_function_for_intent(intent=Intent.AFFICHER_PROGRES_PLANTE)
 def plant_progress():
-    scenario.display_plant_progression(flower)
+    scenario.display_plant_progression(player_repo.garden.flower)
 
 
 @register_function_for_intent(intent=Intent.ENTRETENIR_PLANTE)
@@ -115,8 +114,8 @@ def play_next_step():
 
 
 player_repo = PlayerRepository()
-flower = Flower(Mood.HAPPY)
-vc = VoiceController(active_time_delay=180, noise_level=2000, confidence_threshold=0.5)
+# flower = Flower(Mood.HAPPY)
+vc = VoiceController(active_time_delay=180, noise_level=2000, confidence_threshold=0.5, config_file='projetconfig.json')
 vc.start()
 sleep(2)
 scenario.display_good_feedback()

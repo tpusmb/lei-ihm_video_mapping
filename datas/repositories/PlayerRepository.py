@@ -1,4 +1,5 @@
 from datas.models.Flower import Flower, Mood
+from datas.models.Garden import Garden
 from datas.models.Player import Player
 
 
@@ -19,21 +20,24 @@ class PlayerRepository:
     >>> assert p.xp_percent_to_next_level() == 0
     """
 
-    def __init__(self, player=Player(), flower=None):
+    def __init__(self, player=Player(), garden=None):
         self.player = player
-        self.flower = flower
+        if garden is None:
+            self.garden = Garden(Flower())
+        else:
+            self.garden = garden
 
     def action_water(self):
         self.player.xp += 5
-        self.flower.make_update()
+        self.garden.flower.make_update()
 
     def action_new_plant(self):
         self.player.xp += 20
-        self.flower.make_update()
+        self.garden.flower.make_update()
 
     def action_hoe(self):
         self.player.xp += 10
-        self.flower.make_update()
+        self.garden.flower.make_update()
 
     def xp_percent_to_next_level(self):
         return self.player.xp / self.player.total_xp_needed_for_next_level() * 100
