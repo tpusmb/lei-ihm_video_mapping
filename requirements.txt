@@ -10,4 +10,3 @@ requests
 opencv-contrib-python
 SpeechRecognition
 soundfile
-pvporcupine
