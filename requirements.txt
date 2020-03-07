@@ -1,6 +1,6 @@
 numpy
 docopt
-Flask==1.1.1
+Flask
 screeninfo
 imutils
 matplotlib
@@ -9,5 +9,4 @@ ffpyplayer
 requests
 numpy
 docopt
-opencv-contrib-python==4.1.0.25
-
+opencv-contrib-python

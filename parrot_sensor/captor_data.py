@@ -10,7 +10,7 @@ import datetime
 import json
 
 from parrot_sensor import api_cloud
-from utils import save_mapping
+from utils import json_io
 
 
 class CaptorData:
@@ -55,7 +55,7 @@ class CaptorData:
         :return: liste avec les infos de connexion
         """
         config_data = list()
-        data = save_mapping.load(filename)
+        data = json_io.load(filename)
         config_data.append(data["user"]["userid"])
         config_data.append(data["user"]["usercode"])
         config_data.append(data["user"]["passwd"])
