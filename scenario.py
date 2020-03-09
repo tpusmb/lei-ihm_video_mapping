@@ -49,7 +49,7 @@ ACTION_BINER = os.path.join(FOLDER_ABSOLUTE_PATH, "ressources", "images", "actio
 FEEDBACKS_BON = os.path.join(FOLDER_ABSOLUTE_PATH, "ressources", "images", "feedbacks", "Bon.png")
 FEEDBACKS_PAS_BON = os.path.join(FOLDER_ABSOLUTE_PATH, "ressources", "images", "feedbacks", "PasBon.png")
 FEEDBACKS_PAS_COMPRIS = os.path.join(FOLDER_ABSOLUTE_PATH, "ressources", "images", "feedbacks", "PasCompris.png")
-ETAT_PLANTE = os.path.join(FOLDER_ABSOLUTE_PATH, "ressources", "images", "Etat")
+ETAT_PLANTE = os.path.join(FOLDER_ABSOLUTE_PATH, "ressources", "images", "EtatPlante.png")
 DANCE = os.path.join(FOLDER_ABSOLUTE_PATH, "ressources", "videos", "karaoke", "dance.mp4")
 KARAOKE_GANG_NAMSEUTAYIL = os.path.join(FOLDER_ABSOLUTE_PATH, "ressources", "videos", "karaoke",
                                         "karaoke_gang-namseutayil.mp4")
@@ -130,7 +130,7 @@ class Scenario:
         :return:
         """
         garden.refresh_data()
-        self.py_video_mapping.show_image(0, "{}{}Plante.png".format(ETAT_PLANTE, state))
+        self.py_video_mapping.show_image(0, "{}{}Plante.png".format(ETAPES_PLANTE, state))
         image_text1 = draw_text_onto_image(
             cv2.imread(ETAT_PLANTE), "{} C".format(garden.temperature), 230, 650, 3)
         image_text2 = draw_text_onto_image(image_text1, "{}%".format(garden.humidity), 745, 650, 3)
@@ -139,7 +139,7 @@ class Scenario:
             1, os.path.join(ANIMATIONS, animation_name),
             image_text2, 225, 10, 650, 1, True)
         next_state = state + 1 if state < 4 else state
-        self.py_video_mapping.show_image(2, "{}{}Plante.png".format(ETAT_PLANTE, next_state))
+        self.py_video_mapping.show_image(2, "{}{}Plante.png".format(ETAPES_PLANTE, next_state))
 
     def display_plant_progression(self, flower_repo: FlowerRepository):
         previous_mood_animation_name = "{}_plant.mp4".format(
