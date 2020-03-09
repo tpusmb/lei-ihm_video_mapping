@@ -15,6 +15,10 @@ class FlowerRepository:
             self.flower.rank += 1
 
     def mood_plot(self):
+        """
+        Plot the mood history of the flower
+        :return: (ndarray) Plot made by matplotlib
+        """
         fig, ax = plt.subplots()
         y_labels = [Mood.ANGRY.value, Mood.SAD.value, Mood.STANDING.value, Mood.HAPPY.value]
         score = [y_labels.index(m) for m in self.flower.saved_moods]
