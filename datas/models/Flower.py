@@ -2,6 +2,7 @@ from datetime import datetime
 import numpy as np
 
 from utils.config_reader import ConfigReader
+from time import sleep
 
 
 class Mood:
@@ -26,7 +27,6 @@ class Flower:
         self.rank = rank
         self.planted_at = planted_at
         self.updated_at = datetime.today()
-        self.config_reader = config_reader
 
         self.saved_moods = [Mood.STANDING]  # to save previous moods
 
@@ -50,8 +50,8 @@ class Flower:
         self.saved_moods.append(self.__mood)
         time = (datetime.today() - self.updated_at).seconds
         time_happy = 0.0 <= time <= self.TIME_HAPPY
-        time_standing = self.TIME_HAPPY <= time <= self.TIME_STANDING
-        time_angry = self.TIME_STANDING <= time <= self.TIME_ANGRY
+        time_standing = self.TIME_HAPPY < time <= self.TIME_STANDING
+        time_angry = self.TIME_STANDING < time <= self.TIME_ANGRY
 
         if time_happy:
             self.__mood = Mood.HAPPY
