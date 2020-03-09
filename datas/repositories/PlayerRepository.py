@@ -6,6 +6,9 @@ from utils.config_reader import ConfigReader
 
 class PlayerRepository:
     """
+    Manage the player
+    Create the player, the garden and flower
+
     Example:
     >>> p = PlayerRepository()
     >>> assert p.player.xp == 0
@@ -29,16 +32,29 @@ class PlayerRepository:
             self.garden = garden
 
     def action_water(self):
+        """
+        When the player sprinkles plant, his xp is updated
+        """
         self.player.xp += 5
         self.garden.flower.make_update()
 
     def action_new_plant(self):
+        """
+        When the player plant a new plant, his xp is updated
+        """
         self.player.xp += 20
         self.garden.flower.make_update()
 
     def action_hoe(self):
+        """
+        When the player hoes a plant, his xp is updated
+        :return:
+        """
         self.player.xp += 10
         self.garden.flower.make_update()
 
     def xp_percent_to_next_level(self):
+        """
+        Enough XP for the next level
+        """
         return self.player.xp / self.player.total_xp_needed_for_next_level() * 100
