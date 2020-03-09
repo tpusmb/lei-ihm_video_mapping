@@ -13,15 +13,14 @@ FOLDER_ABSOLUTE_PATH = os.path.normpath(os.path.dirname(os.path.abspath(__file__
 
 class CaptorData:
     """
-    Se charge de récupérer les données sur le Cloud de Flower Power via leur API puis de les organiser dans une liste
-    de dictionnaire.
-    Permet de récupérer facilement ces données.
+    Is responsible for retrieving data from the Flower Power Cloud via their API and then organizing it in a list.
+    Allows you to easily recover this data.
     """
 
     def __init__(self, time_delta=2, config_reader: ConfigReader = ConfigReader()):
         """
-        Initialise la récupération de données du capteur.
-        :param time_delta: Depuis combien de jours récupérer les données
+        Initializes data recovery from the sensor.
+        :param time_delta: How many days have the data been recovered
         """
         self.since = (datetime.datetime.now() - datetime.timedelta(hours=time_delta)).strftime("%d-%b-%Y %H:%M:%S")
         self.today = datetime.datetime.now().strftime("%d-%b-%Y %H:%M:%S")
@@ -30,7 +29,7 @@ class CaptorData:
 
     def get_sensor_data(self):
         """
-        recupere les données du capteur température ect.
+        retrieves data from sensor
         :return:
         """
         self.connection = api_cloud.ApiCloud(self.config[0], self.config[1])
@@ -41,6 +40,7 @@ class CaptorData:
 
     def get_identifier_location(self):
         """
+        recover the position of the plant
         :return:
         """
         parrot_data = json.loads(
@@ -49,6 +49,7 @@ class CaptorData:
 
     def get_projetconfig(self, config_reader):
         """
+        initialize the configuration from a json file
         :param config_reader: (ConfigReader) config class
         :return: liste avec les infos de connexion
         """
@@ -60,6 +61,7 @@ class CaptorData:
 
     def init_temperature_and_humidity(self, filename):
         """
+        get temperature and humidity from sensor data
         :param filename: fichier json
         :return:
         """
