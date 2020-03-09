@@ -1,4 +1,5 @@
 import threading
+from time import sleep
 
 import cv2
 import imutils
@@ -11,17 +12,23 @@ DEFAULT_COLOR = (0, 255, 0)
 
 
 class MotionDetection:
+    """
+    Motion Detection is performed with openCV
+
+    We compare each frame with the precedent.
+    To simplify comparison we transform each frame on a black/white scale then blur it.
+    Then we use cv2's findContours method to retrieve bounding box of changed pixel.
+    """
 
     def __init__(self, config_reader: ConfigReader, callback):
         """
-
-        :param config_reader:
-        :param callback: the function called once motion is detected
+        Create a new Threaded MotionDetection that will call the callback function on detection, once start is called
         """
         config = config_reader.Motion_detection
         self.camera_index = config.getint("camera_index", 0)
         self.sensibility = config.getint("sensibility", 100)
         self.debug = config.getboolean("debug", False)
+        self.time_between_detection = config.getint("time_between_detection", 0)
         self.callback = callback
         self._stop = False
 
@@ -46,8 +53,7 @@ class MotionDetection:
             thresh = cv2.threshold(frame_delta, 25, 255, cv2.THRESH_BINARY)[1]
             # dilate the thresholded image to fill in holes, then find contours on thresholded image
             thresh = cv2.dilate(thresh, None, iterations=1)
-            cnts = cv2.findContours(thresh.copy(), cv2.RETR_EXTERNAL,
-                                    cv2.CHAIN_APPROX_SIMPLE)
+            cnts = cv2.findContours(thresh.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
             cnts = cnts[0]
 
             nbr_countour = 0
@@ -78,8 +84,8 @@ class MotionDetection:
             if nbr_countour:
                 if self.debug:
                     print(f'nbr_countour: {nbr_countour}')
-                self._stop = True
                 self.callback()
+                sleep(self.time_between_detection)
             prev_frame = gray  # For next frame
         # cleanup the camera and close any open windows
         vs.stop()
@@ -88,7 +94,8 @@ class MotionDetection:
     def stop(self):
         """Stopping gracefully, might take a few seconds"""
         self._stop = True
-        self._thread.join()
+        if self._thread.is_alive():
+            self._thread.join()
 
     def start(self):
         self._stop = False

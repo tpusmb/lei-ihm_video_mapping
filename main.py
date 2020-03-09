@@ -50,11 +50,6 @@ def display_main_menu():
     scenario.display_main_menu()
 
 
-@register_function_for_sleep
-def stop():
-    scenario.blackout()
-
-
 @register_function_for_intent(intent=Intent.FIN)
 def display_karaoke():
     scenario.display_karaoke()
@@ -137,7 +132,8 @@ def play_next_step():
 
 
 @register_function_for_sleep
-def start_motion_detection():
+def on_sleep():
+    scenario.blackout()
     md.start()
 
 
@@ -158,5 +154,5 @@ vc.start()
 sleep(2)
 scenario.display_good_feedback()
 sleep(2)
-stop()
+on_sleep()
 print("ALL GOOD")

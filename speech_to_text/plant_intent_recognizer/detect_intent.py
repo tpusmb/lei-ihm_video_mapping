@@ -50,6 +50,8 @@ class RasaIntent:
             json={"text": text},
             headers=self.headers,
         )
+        if not (200 <= res.status_code < 300):
+            print(f"received invalid response code {res.status_code}: {res.reason}")
         intent_res = res.json().get("intent", [])
         intent_str = intent_res.get("name")
         confidence = intent_res.get('confidence')

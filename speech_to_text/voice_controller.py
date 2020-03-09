@@ -82,6 +82,7 @@ class VoiceController:
         self.last_active_time = None
         self.noise_level = config_reader.Speech_to_text.getint("noise_level")
         self.confidence_threshold = config_reader.Speech_to_text.getfloat("confidence_threshold")
+        self.input_device_index = config_reader.Speech_to_text.getint("input_device_index")
         self.has_sleep_mode = has_sleep_mode
 
         self._thread = threading.Thread(target=self.run, args=())
@@ -124,7 +125,7 @@ class VoiceController:
                         _trigger_function_on_intent(intent)
                 elif time() - self.last_active_time > self.active_time_delay:
                     self.set_mode_sleep()
-            elif is_wake_up_word_said():
+            elif is_wake_up_word_said(input_device_index=self.input_device_index):
                 self.set_mode_active()
                 self.last_active_time = time()
             else:
