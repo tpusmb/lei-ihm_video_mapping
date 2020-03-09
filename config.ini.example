@@ -8,7 +8,7 @@ url = https://localhost:5005/model/parse
 headers
 
 [Speech_to_text]
-# time in seconds after the keyword was said before being not "active"
+# time in seconds after a recognized intent was said before being not "active"
 active_time_delay=180
 # allow to fine tune the ambient noise, leave empy for auto-tune with background listening
 noise_level=2000
