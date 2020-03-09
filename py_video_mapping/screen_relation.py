@@ -26,37 +26,50 @@ FOLDER_ABSOLUTE_PATH = os.path.normpath(os.path.dirname(os.path.abspath(__file__
 
 
 def creat_monitor(width, height):
+    """
+    Creat monitor
+    :param width: (int) width of the monitor
+    :param height: (int) height of the monitor
+    :return: (Monitor)
+    """
     return Monitor(0, 0, width, height)
 
 
 class ScreenRelation:
 
     def __init__(self, ui_screen: Monitor, projector_screen: Monitor):
+        """
+        Class to have position relation between 2 screen
+        :param ui_screen: (Monitor) first screen
+        :param projector_screen: (Monitor) second screen
+        """
         self.ui_screen = ui_screen
         self.projector_screen = projector_screen
 
     def to_projector_screen_x(self, ui_screen_x):
         """
-
-        :param ui_screen_x:
-        :return:
+        X position onto the first screen
+        :param ui_screen_x: (int)
+        :return: (int) x position onto the projector
         """
         return int((self.projector_screen.width * ui_screen_x) // self.ui_screen.width)
 
     def to_projector_screen_y(self, ui_screen_y):
         """
-
-        :param ui_screen_y:
-        :return:
+        Y position onto the first screen
+        :param ui_screen_y: (int)
+        :return: (int) y position onto the projector
         """
         return int((self.projector_screen.height * ui_screen_y) // self.ui_screen.height)
 
     def to_projector_screen(self, ui_screen_x, ui_screen_y):
         """
-
-        :param ui_screen_x: (int)
-        :param ui_screen_y: (int)
-        :return: (tuple) projector y, projector x
+        Get the x, y position of the first screen to projector screen
+        :param ui_screen_x: (int) X position onto the first screen
+        :param ui_screen_y: (int) Y position onto the first screen
+        :return: (tuple) projector x, projector y
+            x position onto the projector
+            y position onto the projector
         """
         new_x = self.to_projector_screen_x(ui_screen_x)
         new_y = self.to_projector_screen_y(ui_screen_y)

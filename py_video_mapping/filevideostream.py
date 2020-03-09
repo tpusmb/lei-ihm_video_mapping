@@ -9,6 +9,13 @@ from ffpyplayer.player import MediaPlayer
 
 class FileVideoStream:
     def __init__(self, path, transform=None, queue_size=128, play_audio=False):
+        """
+        Read video file
+        :param path: (string) Path to the video
+        :param transform: (function with one parameter) If you want to apply a transformation
+        :param queue_size: (int) Size of the frame queue
+        :param play_audio: (bool) If you want to play the audio of the video
+        """
         # initialize the file video stream along with the boolean
         # used to indicate if the thread should be stopped or not
         self.stream = cv2.VideoCapture(path)
@@ -19,17 +26,24 @@ class FileVideoStream:
         # the video file
         self.Q = Queue(maxsize=queue_size)
         # intialize thread
-        self.thread = Thread(target=self.update, args=())
+        self.thread = Thread(target=self.__update, args=())
         self.thread.daemon = True
         self.play_audio = None
         self.video_path = path
 
     def start(self):
+        """
+        Start the video file reading
+        :return: (FileVideoStream) the class
+        """
         # start a thread to read frames from the file video stream
         self.thread.start()
         return self
 
-    def update(self):
+    def __update(self):
+        """
+        Read and add frame into the queue
+        """
         player = MediaPlayer(self.video_path) if self.play_audio else None
         # keep looping infinitely
         while True:
@@ -72,16 +86,25 @@ class FileVideoStream:
         self.stream.release()
 
     def read(self):
+        """
+        Get frame. Block if necessary until an item is available
+        :return: (ndarray) Frame
+        """
         # return next frame in the queue
         return self.Q.get()
 
-    # Insufficient to have consumer use while(more()) which does
-    # not take into account if the producer has reached end of
-    # file stream.
     def running(self):
+        """
+        Get if the file reader his running
+        :return:
+        """
         return self.more() or not self.stopped
 
     def more(self):
+        """
+        Look if the his frame into the queue
+        :return: (bool)
+        """
         # return True if there are still frames in the queue. If stream is not stopped, try to wait a moment
         tries = 0
         while self.Q.qsize() == 0 and not self.stopped and tries < 5:
@@ -91,6 +114,9 @@ class FileVideoStream:
         return self.Q.qsize() > 0
 
     def stop(self):
+        """
+        Stop the video file reader
+        """
         # indicate that the thread should be stopped
         self.stopped = True
         # wait until stream resources are released (producer thread might be still grabbing frame)
