@@ -2,11 +2,12 @@ numpy
 docopt
 Flask
 screeninfo
-imutils
-matplotlib
+matplotlib==3.2.0
 pillow
-ffpyplayer
-requests
-opencv-contrib-python
+ffpyplayer==4.3.1
+requests==2.23.0
+opencv-contrib-python==4.2.0.32
+imutils==0.5.3
 SpeechRecognition
 soundfile
+pydub==0.23.1

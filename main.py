@@ -12,7 +12,7 @@ Options:
     -h --help                   Show this screen.
     <config-file-path>          Path to the config file. Use the config.ini.example for help
 """
-
+import os
 import random
 import sys
 from time import sleep
@@ -21,12 +21,17 @@ from typing import Callable, List
 from docopt import docopt
 
 from datas.repositories.PlayerRepository import PlayerRepository
+from motion_detection.motion_detection import MotionDetection
 from py_video_mapping import *
 from scenario import Scenario
 from speech_to_text.plant_intent_recognizer.detect_intent import Intent
 from speech_to_text.voice_controller import VoiceController, register_function_for_intent, \
     register_function_for_active, register_function_for_sleep
 from utils.config_reader import ConfigReader
+from pydub import AudioSegment, playback
+
+FOLDER_ABSOLUTE_PATH = os.path.normpath(os.path.dirname(os.path.abspath(__file__)))
+MOTION_DETECTION_SONG_PATH = os.path.join(FOLDER_ABSOLUTE_PATH, "ressources/sounds/son_de_la_foret.mp3")
 
 KARAOKE_TIME = 1  # Time in seconds to lock the karaoke
 
@@ -131,7 +136,23 @@ def play_next_step():
         print("Trying to call a next step but there is none", file=sys.stderr, flush=True)
 
 
+@register_function_for_sleep
+def start_motion_detection():
+    md.start()
+
+
+@register_function_for_active
+def stop_motion_detection():
+    md.stop()
+
+
+def on_motion_detection():
+    song = AudioSegment.from_mp3(MOTION_DETECTION_SONG_PATH)
+    playback.play(song)
+
+
 player_repo = PlayerRepository(config_reader)
+md = MotionDetection(config_reader, on_motion_detection)
 vc = VoiceController(config_reader)
 vc.start()
 sleep(2)

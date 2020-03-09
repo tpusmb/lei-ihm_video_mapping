@@ -18,6 +18,7 @@ You will need the following package:
     sudo apt install python3-dev python3-tk python-imaging-tk
     sudo apt install cmake
     sudo apt install python-pyaudio python3-pyaudio
+    sudo apt install ffmpeg
  
 Opencv optimisation lib
     
