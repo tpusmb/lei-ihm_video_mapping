@@ -27,5 +27,4 @@ mood_time_sad
 camera_index=0
 sensibility=100
 debug=false
-debug=false
 time_between_detection=5
