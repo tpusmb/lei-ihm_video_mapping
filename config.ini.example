@@ -14,6 +14,8 @@ active_time_delay=180
 noise_level=2000
 # Rasa min intent confidence to activate the action
 confidence_threshold=0.7
+# The mic index to be used, if the app crash at start with SIGSEG, change it
+input_device_index=13
 
 [Plant]
 mood_time_happy = 10.0
@@ -25,3 +27,5 @@ mood_time_sad
 camera_index=0
 sensibility=100
 debug=false
+debug=false
+time_between_detection=5

@@ -1,4 +1,5 @@
 import threading
+from time import sleep
 
 import cv2
 import imutils
@@ -22,6 +23,7 @@ class MotionDetection:
         self.camera_index = config.getint("camera_index", 0)
         self.sensibility = config.getint("sensibility", 100)
         self.debug = config.getboolean("debug", False)
+        self.time_between_detection = config.getint("time_between_detection", 0)
         self.callback = callback
         self._stop = False
 
@@ -78,8 +80,8 @@ class MotionDetection:
             if nbr_countour:
                 if self.debug:
                     print(f'nbr_countour: {nbr_countour}')
-                self._stop = True
                 self.callback()
+                sleep(self.time_between_detection)
             prev_frame = gray  # For next frame
         # cleanup the camera and close any open windows
         vs.stop()
@@ -88,7 +90,8 @@ class MotionDetection:
     def stop(self):
         """Stopping gracefully, might take a few seconds"""
         self._stop = True
-        self._thread.join()
+        if self._thread.is_alive():
+            self._thread.join()
 
     def start(self):
         self._stop = False
