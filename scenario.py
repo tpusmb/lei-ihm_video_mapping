@@ -5,9 +5,9 @@ import os
 
 import cv2
 
-from datas.models.Flower import Flower
 from datas.models.Garden import Garden
 from datas.repositories.PlayerRepository import PlayerRepository
+from datas.repositories.FlowerRepository import FlowerRepository
 from utils.img_utils import draw_text_onto_image, add_sub_image
 
 PYTHON_LOGGER = logging.getLogger(__name__)
@@ -49,7 +49,7 @@ ACTION_BINER = os.path.join(FOLDER_ABSOLUTE_PATH, "ressources", "images", "actio
 FEEDBACKS_BON = os.path.join(FOLDER_ABSOLUTE_PATH, "ressources", "images", "feedbacks", "Bon.png")
 FEEDBACKS_PAS_BON = os.path.join(FOLDER_ABSOLUTE_PATH, "ressources", "images", "feedbacks", "PasBon.png")
 FEEDBACKS_PAS_COMPRIS = os.path.join(FOLDER_ABSOLUTE_PATH, "ressources", "images", "feedbacks", "PasCompris.png")
-ETAT_PLANTE = os.path.join(FOLDER_ABSOLUTE_PATH, "ressources", "images", "EtatPlante.png")
+ETAT_PLANTE = os.path.join(FOLDER_ABSOLUTE_PATH, "ressources", "images", "Etat")
 DANCE = os.path.join(FOLDER_ABSOLUTE_PATH, "ressources", "videos", "karaoke", "dance.mp4")
 KARAOKE_GANG_NAMSEUTAYIL = os.path.join(FOLDER_ABSOLUTE_PATH, "ressources", "videos", "karaoke",
                                         "karaoke_gang-namseutayil.mp4")
@@ -134,19 +134,20 @@ class Scenario:
         image_text1 = draw_text_onto_image(
             cv2.imread(ETAT_PLANTE), "{} C".format(garden.temperature), 230, 650, 3)
         image_text2 = draw_text_onto_image(image_text1, "{}%".format(garden.humidity), 745, 650, 3)
-        animation_name = "{}_plant.mp4".format(garden.flower.mood.value)
+        animation_name = "{}_plant.mp4".format(garden.flower.mood)
         self.py_video_mapping.show_video_on_wallpaper(
             1, os.path.join(ANIMATIONS, animation_name),
             image_text2, 225, 10, 650, 1, True)
         next_state = state + 1 if state < 4 else state
         self.py_video_mapping.show_image(2, "{}{}Plante.png".format(ETAT_PLANTE, next_state))
 
-    def display_plant_progression(self, flower: Flower):
-        previous_mood_animation_name = "{}_plant.mp4".format(flower.saved_moods[len(flower.saved_moods) - 1].value)
-        current_mood_animation_name = "{}_plant.mp4".format(flower.mood.value)
+    def display_plant_progression(self, flower_repo: FlowerRepository):
+        previous_mood_animation_name = "{}_plant.mp4".format(
+            flower_repo.flower.saved_moods[len(flower_repo.flower.saved_moods) - 1])
+        current_mood_animation_name = "{}_plant.mp4".format(
+            flower_repo.flower.mood)
         self.py_video_mapping.show_video(0, os.path.join(ANIMATIONS, previous_mood_animation_name), True)
-        # TODO faire le graphique
-        self.py_video_mapping.show_image(1, COMMANDE_PROGRESSION_PLANTE)
+        self.py_video_mapping.show_image(1, flower_repo.mood_plot())
         self.py_video_mapping.show_video(2, os.path.join(ANIMATIONS, current_mood_animation_name), True)
 
     def display_gardener_progression(self, player_repo: PlayerRepository):

@@ -1,14 +1,10 @@
 from datetime import datetime
-from enum import Enum
-
-import matplotlib.pyplot as plt
 import numpy as np
 
 from utils.config_reader import ConfigReader
-from utils.utils import fig2opencv_img
 
 
-class Mood(Enum):
+class Mood:
     """
     All moods of the plant
     """
@@ -72,7 +68,7 @@ class Flower:
         Set the mood of the plant, and reset the last time the plant was treated
         :param mood: The new mood of the plant
         """
-        self.saved_moods.append(self.mood.value)
+        self.saved_moods.append(self.mood)
         if mood == Mood.HAPPY:
             self.make_update()
         self.__mood = mood

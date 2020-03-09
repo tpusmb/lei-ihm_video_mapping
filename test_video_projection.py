@@ -1,7 +1,8 @@
 from py_video_mapping import *
 from scenario import Scenario
-from datas.models.Flower import Mood, Flower
+from datas.models.Flower import Flower
 from datas.repositories.PlayerRepository import PlayerRepository
+from datas.repositories.FlowerRepository import FlowerRepository
 
 py_video_mapping = PyVideoMapping(PyVideoMapping.get_all_screens()[-1])
 # py_video_mapping.set_blackout(0, True)
@@ -12,15 +13,10 @@ p.player.xp += 30
 p.player.xp += 40
 p.player.xp += 50
 p.player.xp += 60
-p.player.xp += 70
-p.player.xp += 80
-p.player.xp += 90
-p.player.xp += 100
-p.player.xp += 110
-p.player.xp += 120
-scenario.display_gardener_progression(p)
+
+scenario.display_plant_progression(FlowerRepository(Flower()))
 input("enter top stop")
-scenario.display_plant_progression(Flower())
+scenario.display_gardener_progression(p)
 input("enter top stop")
 scenario.display_karaoke()
 input("enter top stop")

@@ -26,7 +26,7 @@ class FlowerRepository:
         :return: (ndarray) Plot made by matplotlib
         """
         fig, ax = plt.subplots()
-        y_labels = [Mood.ANGRY.value, Mood.SAD.value, Mood.STANDING.value, Mood.HAPPY.value]
+        y_labels = [Mood.ANGRY, Mood.SAD, Mood.STANDING, Mood.HAPPY]
         score = [y_labels.index(m) for m in self.flower.saved_moods]
         xi = list(range(len(self.flower.saved_moods)))
         yi = list(range(len(y_labels)))

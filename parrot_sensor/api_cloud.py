@@ -55,7 +55,6 @@ class ApiCloud(object):
                            params={'include_s3_urls': 1})
         return ApiCloud.__return_result(path, req)
 
-
     def get_samples_location(self, identifier, form_date_time, to_date_time):
         """
         get captor data with time interval
