@@ -32,7 +32,9 @@ from utils.config_reader import ConfigReader
 from pydub import AudioSegment, playback
 
 FOLDER_ABSOLUTE_PATH = os.path.normpath(os.path.dirname(os.path.abspath(__file__)))
-MOTION_DETECTION_SONG_PATH = os.path.join(FOLDER_ABSOLUTE_PATH, "ressources/sounds/son_de_la_foret.mp3")
+MOTION_DETECTION_SONG_PATH = os.path.join(FOLDER_ABSOLUTE_PATH, "ressources", "sounds", "son_de_la_foret.mp3")
+CORRECT_SOUND = os.path.join(FOLDER_ABSOLUTE_PATH, "ressources", "sounds", "mario_yippee.wav")
+INCOMPREHENSION_SOUND = os.path.join(FOLDER_ABSOLUTE_PATH, "ressources", "sounds", "mario_oof.wav")
 
 KARAOKE_TIME = 1  # Time in seconds to lock the karaoke
 
@@ -112,6 +114,7 @@ def entretenir_plante():
 
 @register_function_for_intent(intent=Intent.UNKNOWN_INTENT)
 def incomprehension_feedback():
+    playback.play(AudioSegment.from_wav(INCOMPREHENSION_SOUND))
     scenario.display_incomprehension_feedback()
 
 
@@ -126,6 +129,7 @@ def play_next_step():
     if NEXT_STEPS:
         f = NEXT_STEPS.pop(0)  # Call the first function and remove it from the FIFO
         scenario.display_good_feedback()
+        playback.play(AudioSegment.from_wav(CORRECT_SOUND))
         sleep(1)
         f()
     else:
@@ -155,6 +159,7 @@ vc = VoiceController(config_reader)
 vc.start()
 sleep(2)
 scenario.display_good_feedback()
+playback.play(AudioSegment.from_wav(CORRECT_SOUND))
 sleep(2)
 on_sleep()
 print("ALL GOOD")
