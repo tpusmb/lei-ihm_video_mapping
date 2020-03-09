@@ -20,3 +20,8 @@ mood_time_happy = 10.0
 mood_time_standing = 10.0
 mood_time_angry = 10.0
 mood_time_sad
+
+[Motion_detection]
+camera_index=0
+sensibility=100
+debug=false
