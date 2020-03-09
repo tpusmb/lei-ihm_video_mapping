@@ -59,9 +59,9 @@ class ApiCloud(object):
     def get_samples_location(self, identifier, form_date_time, to_date_time):
         """
         get captor data with time interval
-        :param identifier:
-        :param form_date_time:
-        :param to_date_time:
+        :param identifier: location
+        :param form_date_time: since
+        :param to_date_time: date end
         :return:
         """
         if not self.__logged:

@@ -18,10 +18,12 @@ class Flower:
     MAX_RANK = 5
 
     def __init__(self, rank: int = 1, planted_at=datetime.today(), config_reader: ConfigReader = ConfigReader()):
-        self.mood = Mood.STANDING  # based on the last time the plant was looked after
+        self.__mood = Mood.STANDING  # based on the last time the plant was looked after
         self.rank = rank
         self.planted_at = planted_at
         self.updated_at = datetime.today()
+
+        self.saved_moods = [Mood.STANDING]  # to save previous moods
 
         try:
             mood_time_sad = config_reader.Plant.getfloat("mood_time_sad")
@@ -35,22 +37,25 @@ class Flower:
 
     @property
     def mood(self):
+        self.saved_moods.append(self.__mood)
         time = (datetime.today() - self.updated_at).seconds
         time_happy = 0.0 <= time <= self.TIME_HAPPY
         time_standing = self.TIME_HAPPY <= time <= self.TIME_STANDING
         time_angry = self.TIME_STANDING <= time <= self.TIME_ANGRY
 
         if time_happy:
-            return Mood.HAPPY
+            self.__mood = Mood.HAPPY
         elif time_standing:
-            return Mood.STANDING
+            self.__mood = Mood.STANDING
         elif time_angry:
-            return Mood.ANGRY
+            self.__mood = Mood.ANGRY
         else:
-            return Mood.SAD
+            self.__mood = Mood.SAD
+        return self.__mood
 
     @mood.setter
     def mood(self, mood: Mood):
+        self.saved_moods.append(self.mood.value)
         if mood == Mood.HAPPY:
             self.make_update()
         self.__mood = mood
