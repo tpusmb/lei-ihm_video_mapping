@@ -128,7 +128,10 @@ class PyVideoMapping:
             image = cv2.imread(image_path)
         else:
             image = image_path
-        self.projector_show.display_face(face_id, ImageGetter(image))
+        if image is not None:
+            self.projector_show.display_face(face_id, ImageGetter(image))
+        else:
+            PYTHON_LOGGER.error("Image path {} not found".format(image_path))
 
     def show_video_on_wallpaper(self, face_id: int, video_path: str, image_path,
                                 x_offset: int, y_offset: int, width: int, height: int,

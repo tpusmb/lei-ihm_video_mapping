@@ -17,7 +17,7 @@ class CaptorData:
     Allows you to easily recover this data.
     """
 
-    def __init__(self, time_delta=2, config_reader: ConfigReader = ConfigReader()):
+    def __init__(self, time_delta=24, config_reader: ConfigReader = ConfigReader()):
         """
         Initializes data recovery from the sensor.
         :param time_delta: How many days have the data been recovered

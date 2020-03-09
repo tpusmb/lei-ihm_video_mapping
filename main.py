@@ -150,7 +150,7 @@ def on_motion_detection():
     playback.play(song)
 
 
-player_repo = PlayerRepository(config_reader)
+player_repo = PlayerRepository(config_reader=config_reader)
 flower_repo = FlowerRepository(player_repo.garden.flower)
 md = MotionDetection(config_reader, on_motion_detection)
 vc = VoiceController(config_reader)
