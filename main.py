@@ -53,9 +53,18 @@ def display_main_menu():
 
 
 @register_function_for_intent(intent=Intent.FIN)
+def force_sleep_mode():
+    vc.set_mode_sleep()
+
+
 def display_karaoke():
     scenario.display_karaoke()
     sleep(KARAOKE_TIME)
+
+
+@register_function_for_intent(intent=Intent.HELP)
+def display_help():
+    scenario.display_command_list()
 
 
 @register_function_for_intent(intent=Intent.PLANTER_UN_BULBE)
@@ -75,11 +84,6 @@ def start_planting_bulbe():
 @register_function_for_intent(intent=Intent.SUIVRE_ETAT_PLANTE)
 def suivre_etat_plante():
     scenario.display_sub_menu1()
-
-
-@register_function_for_intent(intent=Intent.AFFICHER_PROGRES_DU_JARDINIER)
-def progress():
-    scenario.display_sub_menu2()
 
 
 @register_function_for_intent(intent=Intent.AFFICHER_NIVEAU)
@@ -115,12 +119,6 @@ def entretenir_plante():
 def incomprehension_feedback():
     playback.play(AudioSegment.from_wav(INCOMPREHENSION_SOUND))
     scenario.display_incomprehension_feedback()
-
-
-@register_function_for_intent(intent=Intent.NEGATIF)
-def negatif_feedback():
-    # scenario.display_bad_feedback()  # TODO Should this be added ?
-    pass
 
 
 @register_function_for_intent(intent=Intent.POSITIF)
