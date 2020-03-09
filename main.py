@@ -34,6 +34,7 @@ from pydub import AudioSegment, playback
 FOLDER_ABSOLUTE_PATH = os.path.normpath(os.path.dirname(os.path.abspath(__file__)))
 MOTION_DETECTION_SONG_PATH = os.path.join(FOLDER_ABSOLUTE_PATH, "ressources", "sounds", "son_de_la_foret.mp3")
 CORRECT_SOUND = os.path.join(FOLDER_ABSOLUTE_PATH, "ressources", "sounds", "mario_yippee.wav")
+INCOMPREHENSION_SOUND = os.path.join(FOLDER_ABSOLUTE_PATH, "ressources", "sounds", "mario_oof.wav")
 
 KARAOKE_TIME = 1  # Time in seconds to lock the karaoke
 
@@ -113,6 +114,7 @@ def entretenir_plante():
 
 @register_function_for_intent(intent=Intent.UNKNOWN_INTENT)
 def incomprehension_feedback():
+    playback.play(AudioSegment.from_wav(INCOMPREHENSION_SOUND))
     scenario.display_incomprehension_feedback()
 
 
