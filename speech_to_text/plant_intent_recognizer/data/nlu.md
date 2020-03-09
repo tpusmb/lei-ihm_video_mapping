@@ -5,6 +5,8 @@
 - hello plante
 - coucou
 - ok plante
+- menu
+- depart
 
 ## intent:fin
 - fin
@@ -16,9 +18,15 @@
 - à plus
 - au revoir
 
-## intent:suivre_etat_plante
-- suivre etat plante
-- je souhaite suivre ton état de santée
+## intent:aide
+- aide
+- que puis-je faire
+- aide moi
+- sos
+- help
+- need help
+- j'ai besoin d'aide
+- au secours
 
 ## intent:afficher_etat_plante
 - afficher état plante
@@ -35,6 +43,8 @@
 - je souhaite voir ton état
 - laisse moi voir ton état
 - permets-moi de voir ton état
+- état plante
+- tu va bien?
 
 ## intent:entretenir_plante
 - entretenir la plante
@@ -55,19 +65,9 @@
 - quelle est ton evolution
 - quel est le progrès de la plante
 - je veux voir la progression de la plante
-
-## intent:afficher_progres_du_jardinier
-- afficher les progrès du jardinier
-- Comment est-ce que je m'en sors ?
-- Suis-je un bon jardinier
-- voir mes progrès
-
-## intent:afficher_courbe_progression
-- Quelle est ma courbe de progression
-- Affiche moi ma courbe de progression
-- Quels sont mes progrès ?
-- Montre moi mon amélioration
-- Dis moi si je m'améliore
+- progression plante
+- progretion plante
+- plante avoir progration
 
 ## intent:afficher_niveau
 - montrez-moi mon niveau
@@ -78,16 +78,9 @@
 - Montre moi mon classement
 - je veux voir mon niveau
 - j'aimerais voir mon niveau actuel
-
-## intent:planter_une_nouvelle_plante
-- Je souhaite planter une nouvelle plante
-- Je veux rajouter une plante au potager
-- Agrandissons le jardin
-- j'aimerais planter une plante
-- j'aimerais planter une nouvelle plante
-- aide moi à planter une nouvelle plante
-- comment planter une plante
-- je souhaite ajouter une nouvelle plante
+- mon niveux
+- lv
+- niveux
 
 ## intent:planter_un_bulbe
 - Je souhaite planter un bulbe
@@ -95,7 +88,6 @@
 - Aide moi à planter un bulbe
 - j'aimerais planter un bulbe
 - comment planter un bulbe
-
 
 ## intent:positif
 - ok
@@ -106,14 +98,4 @@
 - Cette tâche est faite
 - ensuite
 - aprés ?
-
-## intent:negatif
-- Attend je n'ai pas finis
-- Ce n'est pas bon
-- J'ai un peu de mal
-- Je me suis trompé
-- J'ai besoin d'aide
-
-## intent:plante_challenge
-- es-tu une plante ?
-- plante ou robot ?
+- oui

@@ -31,7 +31,7 @@ class MotionDetection:
         self.callback = callback
         self._stop = False
 
-        self._thread = threading.Thread(target=self.run, args=())
+        self._thread = None  # init when we start it, to allow motion detection to be run multiple time
 
     def run(self):
         # Reading from webcam
@@ -74,4 +74,5 @@ class MotionDetection:
 
     def start(self):
         self._stop = False
+        self._thread = threading.Thread(target=self.run, args=())
         self._thread.start()  # Call run()

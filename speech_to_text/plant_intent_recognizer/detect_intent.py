@@ -14,14 +14,11 @@ class Intent(Enum):
     AFFICHER_ETAT_PLANTE = "afficher_etat_plante"
     ENTRETENIR_PLANTE = "entretenir_plante"
     AFFICHER_PROGRES_PLANTE = "afficher_progres_de_la_plante"
-    AFFICHER_PROGRES_DU_JARDINIER = "afficher_progres_du_jardinier"
-    AFFICHER_COURBE_PROGRESSION = "afficher_courbe_progression"
     AFFICHER_NIVEAU = "afficher_niveau"
-    PLANTER_UNE_NOUVELLE_PLANTE = "planter_une_nouvelle_plante"
     PLANTER_UN_BULBE = "planter_un_bulbe"
     POSITIF = "positif"
-    NEGATIF = "negatif"
     PLANTE_CHALLENGE = "plante_challenge"
+    HELP = "aide"
     UNKNOWN_INTENT = ""
 
     @staticmethod

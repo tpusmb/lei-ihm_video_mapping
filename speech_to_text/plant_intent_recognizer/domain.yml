@@ -1,17 +1,13 @@
 intents:
   - salutation
   - fin
-  - suivre_etat_plante
   - afficher_etat_plante
   - entretenir_plante
-  - afficher_progres_du_jardinier
-  - afficher_courbe_progression
+  - afficher_progres_de_la_plante
   - afficher_niveau
-  - planter_une_nouvelle_plante
   - planter_un_bulbe
   - positif
-  - negatif
-  - plante_challenge
+  - aide
 
 actions:
 - utter_salutation
