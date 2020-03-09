@@ -7,6 +7,9 @@ from utils.config_reader import ConfigReader
 
 
 class Mood(Enum):
+    """
+    All moods of the plant
+    """
     STANDING = "standing"
     HAPPY = "happy"
     ANGRY = "angry"
@@ -14,10 +17,13 @@ class Mood(Enum):
 
 
 class Flower:
+    """
+    Flower model, which represents the flower on the pot
+    """
     MIN_RANK = 1
     MAX_RANK = 5
 
-    def __init__(self, rank: int = 1, planted_at=datetime.today(), config_reader: ConfigReader = ConfigReader()):
+    def __init__(self, rank: int = 1, planted_at=datetime.today(), config_reader=ConfigReader()):
         self.__mood = Mood.STANDING  # based on the last time the plant was looked after
         self.rank = rank
         self.planted_at = planted_at
@@ -37,6 +43,11 @@ class Flower:
 
     @property
     def mood(self):
+        """
+        Returns the current mood of the plant.
+        We calculate it based on the last time the plant has been treated.
+        :return: the mood of the flower
+        """
         self.saved_moods.append(self.__mood)
         time = (datetime.today() - self.updated_at).seconds
         time_happy = 0.0 <= time <= self.TIME_HAPPY
@@ -55,6 +66,10 @@ class Flower:
 
     @mood.setter
     def mood(self, mood: Mood):
+        """
+        Set the mood of the plant, and reset the last time the plant was treated
+        :param mood: The new mood of the plant
+        """
         self.saved_moods.append(self.mood.value)
         if mood == Mood.HAPPY:
             self.make_update()
@@ -66,6 +81,11 @@ class Flower:
 
     @rank.setter
     def rank(self, value):
+        """
+        Set the flower rank, only rank is in interval [MIN_RANK, MAX_RANK]
+        :raise ValueError if rank value is not in interval [MIN_RANK, MAX_RANK]
+        :param value: Rank value
+        """
         if self.MIN_RANK <= value <= self.MAX_RANK:
             self.__rank = value
         else:
@@ -75,4 +95,7 @@ class Flower:
         return self.rank == self.MAX_RANK
 
     def make_update(self):
+        """
+        Refresh update_at field,
+        """
         self.updated_at = datetime.today()
