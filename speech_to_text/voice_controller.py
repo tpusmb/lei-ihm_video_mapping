@@ -66,9 +66,8 @@ class VoiceController:
 
     def __init__(self, config_reader: ConfigReader = ConfigReader(), has_sleep_mode=True):
         """
-
-        :param config_reader:
-        :param has_sleep_mode:
+        :param config_reader: use to init the voice controller with the right values
+        :param has_sleep_mode: can be used to disable sleep_mode, not recommended
         """
         url = config_reader.Rasa["url"]
         headers = config_reader.Rasa["headers"]
@@ -116,7 +115,7 @@ class VoiceController:
                 if text:
                     intent, confidence = self._rasa_intent.detect_intent(text)
                     print(f"intent: {intent}\n with confidence: {confidence}", flush=True)
-                    if confidence > self.confidence_threshold:
+                    if confidence >= self.confidence_threshold:
                         _trigger_function_on_intent(intent)
                         self.last_active_time = time()
                     else:

@@ -8,7 +8,7 @@ import cv2
 from datas.models.Flower import Flower
 from datas.models.Garden import Garden
 from datas.repositories.PlayerRepository import PlayerRepository
-from utils.img_utils import draw_text_onto_image, xp_bar_draw
+from utils.img_utils import draw_text_onto_image, xp_bar_draw, add_sub_image
 
 PYTHON_LOGGER = logging.getLogger(__name__)
 if not os.path.exists("log"):
@@ -54,6 +54,9 @@ DANCE = os.path.join(FOLDER_ABSOLUTE_PATH, "ressources", "videos", "karaoke", "d
 KARAOKE_GANG_NAMSEUTAYIL = os.path.join(FOLDER_ABSOLUTE_PATH, "ressources", "videos", "karaoke",
                                         "karaoke_gang-namseutayil.mp4")
 NIVEAU_DU_JARDINIER = os.path.join(FOLDER_ABSOLUTE_PATH, "ressources", "images", "NiveauDuJardinier.png")
+PROCHAIN_NIVEAU_DU_JARDINIER = os.path.join(FOLDER_ABSOLUTE_PATH, "ressources", "images",
+                                            "ProchainNiveauDuJardinier.png")
+JARDINIER_RANG = os.path.join(FOLDER_ABSOLUTE_PATH, "ressources", "images", "rangs", "JardinierRang")
 LISTE_DES_COMMANDES = os.path.join(FOLDER_ABSOLUTE_PATH, "ressources", "images", "ListeDesCommandes.png")
 ETAPES_PLANTE = os.path.join(FOLDER_ABSOLUTE_PATH, "ressources", "images", "etapes", "Etape")
 ANIMATIONS = os.path.join(FOLDER_ABSOLUTE_PATH, "ressources", "videos", "animations")
@@ -139,18 +142,39 @@ class Scenario:
         self.py_video_mapping.show_image(2, "{}{}Plante.png".format(ETAT_PLANTE, next_state))
 
     def display_plant_progression(self, flower: Flower):
-        animation_name = "{}_plant.mp4".format(flower.mood.value)
-        self.py_video_mapping.show_video(0, os.path.join(ANIMATIONS, animation_name), True)
+        previous_mood_animation_name = "{}_plant.mp4".format(flower.saved_moods[len(flower.saved_moods) - 1].value)
+        current_mood_animation_name = "{}_plant.mp4".format(flower.mood.value)
+        self.py_video_mapping.show_video(0, os.path.join(ANIMATIONS, previous_mood_animation_name), True)
         # TODO faire le graphique
         self.py_video_mapping.show_image(1, COMMANDE_PROGRESSION_PLANTE)
-        self.py_video_mapping.show_video(2, os.path.join(ANIMATIONS, animation_name), True)
+        self.py_video_mapping.show_video(2, os.path.join(ANIMATIONS, current_mood_animation_name), True)
 
     def display_gardener_progression(self, player_repo: PlayerRepository):
-        gardener_level_image = draw_text_onto_image(cv2.imread(NIVEAU_DU_JARDINIER),
-                                                    "{}".format(player_repo.player.level), 300, 500, 10, (0, 0, 0), 20)
-        self.py_video_mapping.show_image(0, gardener_level_image)
+        rank_img_name = player_repo.player.level + 1
+        print(rank_img_name)
+        if rank_img_name > 5:
+            rank_img_name = 5
+        next_rank_img_name = player_repo.player.level + 2
+        if next_rank_img_name > 5:
+            next_rank_img_name = 5
+
+        gardener_current_rank_image = add_sub_image(cv2.imread(NIVEAU_DU_JARDINIER),
+                                                    cv2.imread("{}{}.png".format(JARDINIER_RANG, rank_img_name)), 200,
+                                                    250)
+        gardener_next_rank_image = add_sub_image(cv2.imread(PROCHAIN_NIVEAU_DU_JARDINIER),
+                                                 cv2.imread("{}{}.png".format(JARDINIER_RANG, next_rank_img_name)), 200,
+                                                 250)
+
+        gardener_current_rank_with_level_image = draw_text_onto_image(gardener_current_rank_image,
+                                                                      "{}".format(player_repo.player.level), 600, 500,
+                                                                      10, (0, 0, 0), 20)
+        gardener_next_rank_with_level_image = draw_text_onto_image(gardener_next_rank_image,
+                                                                   "{}".format(player_repo.player.level + 1), 600, 500,
+                                                                   10, (0, 0, 0), 20)
+
+        self.py_video_mapping.show_image(0, gardener_current_rank_with_level_image)
         self.py_video_mapping.show_image(1, xp_bar_draw(player_repo.xp_percent_to_next_level()))
-        self.py_video_mapping.show_image(2, gardener_level_image)
+        self.py_video_mapping.show_image(2, gardener_next_rank_with_level_image)
 
     # Help
     def display_command_list(self):

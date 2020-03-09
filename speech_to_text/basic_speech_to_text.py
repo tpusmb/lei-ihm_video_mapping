@@ -1,7 +1,6 @@
 """
 File to manage the speech to text for our plant.
 """
-import os
 import struct
 from contextlib import suppress
 from time import time
@@ -11,32 +10,12 @@ import pyaudio
 import speech_recognition as sr
 import pvporcupine
 
-FOLDER_ABSOLUTE_PATH = os.path.normpath(os.path.dirname(os.path.abspath(__file__)))
-HELLO_PLANT_PATH = 'hotworld_pico_voice_model/ok_plante_linux.ppn'
-
-PORCUPINE = None  # Allow to init porcupine only once
-
-
-def init_porcupine(use_custom, keyword, sensitivity):
-    global PORCUPINE
-    if not PORCUPINE:
-        keyword_file_path = [pvporcupine.KEYWORD_FILE_PATHS[keyword]]
-        custom_model_abs_path = os.path.join(FOLDER_ABSOLUTE_PATH, HELLO_PLANT_PATH)
-        if use_custom and os.path.exists(custom_model_abs_path):
-            keyword_file_path = [custom_model_abs_path]
-        num_keywords = len(keyword_file_path)
-        PORCUPINE = pvporcupine.create(
-            library_path=pvporcupine.LIBRARY_PATH,
-            model_file_path=pvporcupine.MODEL_FILE_PATH,
-            keyword_file_paths=keyword_file_path,
-            sensitivities=[sensitivity] * num_keywords)
-    return PORCUPINE
-
 
 def is_wake_up_word_said(input_device_index=18, sensitivity=0.5, keyword='hey pico', timeout=10):
     keyword_file_path = [pvporcupine.KEYWORD_FILE_PATHS[keyword]]
     num_keywords = len(keyword_file_path)
 
+    # Load the porcupine model
     porcupine = pvporcupine.create(
         library_path=pvporcupine.LIBRARY_PATH,
         model_file_path=pvporcupine.MODEL_FILE_PATH,
@@ -63,30 +42,6 @@ def is_wake_up_word_said(input_device_index=18, sensitivity=0.5, keyword='hey pi
     audio_stream.close()
     porcupine.delete()
     return keyword_said
-
-
-def is_keyword_said(keyword="ok", noise_level: int = None) -> bool:
-    """
-    Function called to check if the keyword is said
-    Work offline to preserve privacy at home
-
-    This function is DEPRECATED
-
-    :param: keyword the word to be said only to start (SHOULD BE CAREFULLY CHOSEN/TESTED)
-    :param: noise_level the level of ambient noise used to detect the end of a phrase
-    :return: Is the keyword said or not
-    """
-    r = sr.Recognizer()
-    with sr.Microphone() as source:
-        if noise_level:
-            r.energy_threshold = noise_level
-        else:
-            r.adjust_for_ambient_noise(source)
-        audio = r.listen(source)
-    text = None
-    with suppress(sr.UnknownValueError, sr.RequestError):
-        text = r.recognize_sphinx(audio)
-    return keyword in text if text else False
 
 
 def speech_to_text(noise_level: int = None) -> Union[None, str]:
