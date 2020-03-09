@@ -7,7 +7,6 @@ import cv2
 
 from datas.models.Garden import Garden
 from datas.repositories.PlayerRepository import PlayerRepository
-from datas.repositories.FlowerRepository import FlowerRepository
 from utils.img_utils import draw_text_onto_image, add_sub_image
 
 PYTHON_LOGGER = logging.getLogger(__name__)
@@ -141,13 +140,13 @@ class Scenario:
         next_state = state + 1 if state < 4 else state
         self.py_video_mapping.show_image(2, "{}{}Plante.png".format(ETAPES_PLANTE, next_state))
 
-    def display_plant_progression(self, flower_repo: FlowerRepository):
+    def display_plant_progression(self, player_repo: PlayerRepository):
         previous_mood_animation_name = "{}_plant.mp4".format(
-            flower_repo.flower.saved_moods[len(flower_repo.flower.saved_moods) - 1])
+            player_repo.garden.flower.saved_moods[len(player_repo.garden.flower.saved_moods) - 1])
         current_mood_animation_name = "{}_plant.mp4".format(
-            flower_repo.flower.mood)
+            player_repo.garden.flower.mood)
         self.py_video_mapping.show_video(0, os.path.join(ANIMATIONS, previous_mood_animation_name), True)
-        self.py_video_mapping.show_image(1, flower_repo.mood_plot())
+        self.py_video_mapping.show_image(1, player_repo.mood_plot())
         self.py_video_mapping.show_video(2, os.path.join(ANIMATIONS, current_mood_animation_name), True)
 
     def display_gardener_progression(self, player_repo: PlayerRepository):

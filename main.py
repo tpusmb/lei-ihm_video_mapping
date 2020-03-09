@@ -19,9 +19,9 @@ from time import sleep
 from typing import Callable, List
 
 from docopt import docopt
+from pydub import AudioSegment, playback
 
 from datas.repositories.PlayerRepository import PlayerRepository
-from datas.repositories.FlowerRepository import FlowerRepository
 from motion_detection.motion_detection import MotionDetection
 from py_video_mapping import *
 from scenario import Scenario
@@ -29,7 +29,6 @@ from speech_to_text.plant_intent_recognizer.detect_intent import Intent
 from speech_to_text.voice_controller import VoiceController, register_function_for_intent, \
     register_function_for_active, register_function_for_sleep
 from utils.config_reader import ConfigReader
-from pydub import AudioSegment, playback
 
 FOLDER_ABSOLUTE_PATH = os.path.normpath(os.path.dirname(os.path.abspath(__file__)))
 MOTION_DETECTION_SONG_PATH = os.path.join(FOLDER_ABSOLUTE_PATH, "ressources", "sounds", "son_de_la_foret.mp3")
@@ -95,7 +94,7 @@ def plant_state():
 
 @register_function_for_intent(intent=Intent.AFFICHER_PROGRES_PLANTE)
 def plant_progress():
-    scenario.display_plant_progression(flower_repo)
+    scenario.display_plant_progression(player_repo)
 
 
 @register_function_for_intent(intent=Intent.ENTRETENIR_PLANTE)
@@ -153,7 +152,6 @@ def on_motion_detection():
 
 
 player_repo = PlayerRepository(config_reader=config_reader)
-flower_repo = FlowerRepository(player_repo.garden.flower)
 md = MotionDetection(config_reader, on_motion_detection)
 vc = VoiceController(config_reader)
 vc.start()

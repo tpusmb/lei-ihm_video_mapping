@@ -1,8 +1,6 @@
+from datas.repositories.PlayerRepository import PlayerRepository
 from py_video_mapping import *
 from scenario import Scenario
-from datas.models.Flower import Flower
-from datas.repositories.PlayerRepository import PlayerRepository
-from datas.repositories.FlowerRepository import FlowerRepository
 
 py_video_mapping = PyVideoMapping(PyVideoMapping.get_all_screens()[-1])
 # py_video_mapping.set_blackout(0, True)
@@ -18,7 +16,7 @@ scenario.display_karaoke()
 input("enter top stop")
 scenario.display_plant_state(2, p.garden)
 input("enter top stop")
-scenario.display_plant_progression(FlowerRepository(Flower()))
+scenario.display_plant_progression(p)
 input("enter top stop")
 scenario.display_gardener_progression(p)
 input("enter top stop")

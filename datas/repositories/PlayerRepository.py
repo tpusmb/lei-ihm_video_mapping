@@ -1,10 +1,13 @@
 import numpy as np
+import matplotlib as mpl
+import matplotlib.pyplot as plt
 
-from datas.models.Flower import Flower
+from datas.models.Flower import Flower, Mood
 from datas.models.Garden import Garden
 from datas.models.Player import Player
 from utils.config_reader import ConfigReader
 from utils.img_utils import draw_text_onto_image
+from utils.utils import fig2opencv_img
 
 
 class PlayerRepository:
@@ -78,3 +81,27 @@ class PlayerRepository:
         x[:, :, 0:3] = np.random.randint(0, 200, (3,))
         img[:, 0:width] = x
         return draw_text_onto_image(img, "{}%".format(int(xp_in_percent)), width // 2, height // 2, 3, (255, 255, 255))
+
+    def mood_plot(self):
+        """
+        Plot the mood history of the flower
+        :return: (ndarray) Plot made by matplotlib
+        """
+        # Remove the toolbar
+        mpl.rcParams['toolbar'] = 'None'
+        # Set the font of the graph
+        font = {'weight': 'bold', 'size': 40}
+        mpl.rc('font', **font)
+        fig, ax = plt.subplots()
+        fig.set_size_inches(18, 10)
+        y_labels = [Mood.ANGRY, Mood.SAD, Mood.STANDING, Mood.HAPPY]
+        score = [y_labels.index(m) for m in self.garden.flower.saved_moods]
+        xi = list(range(len(self.garden.flower.saved_moods)))
+        yi = list(range(len(y_labels)))
+        ax.set_xticks(xi)
+        ax.set_yticks(yi)
+        ax.set_ylim(0, len(y_labels) - 1)
+        ax.set_yticklabels(y_labels)
+        ax.tick_params('y', pad=-40)
+        ax.plot(score, linewidth=10)
+        return fig2opencv_img(fig)
