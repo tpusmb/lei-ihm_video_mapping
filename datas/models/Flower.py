@@ -18,14 +18,15 @@ class Flower:
     """
     Flower model, which represents the flower on the pot
     """
-    MIN_RANK = 1
-    MAX_RANK = 5
+    MIN_RANK = 0
+    MAX_RANK = 4
 
     def __init__(self, rank: int = 1, planted_at=datetime.today(), config_reader=ConfigReader()):
         self.__mood = Mood.STANDING  # based on the last time the plant was looked after
         self.rank = rank
         self.planted_at = planted_at
         self.updated_at = datetime.today()
+        self.config_reader = config_reader
 
         self.saved_moods = [Mood.STANDING]  # to save previous moods
 

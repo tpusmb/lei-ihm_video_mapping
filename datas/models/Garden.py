@@ -21,3 +21,7 @@ class Garden:
         Update garden and humidity from the captor data
         """
         self.temperature, self.humidity = self.captor_data.get_sensor_data()
+
+    def calc_flower_rank(self):
+        diff = abs(self.temperature - self.humidity)
+        return Flower.MAX_RANK - diff if Flower.MIN_RANK <= diff < Flower.MAX_RANK else 0
