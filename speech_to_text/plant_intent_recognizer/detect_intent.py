@@ -42,7 +42,7 @@ class RasaIntent:
         self.url = url
         self.headers = headers if headers else {}
         if isinstance(self.headers, str):
-            self.headers = json.load(headers)
+            self.headers = json.loads(headers)
 
     def detect_intent(self, text: str) -> Tuple[Union[Intent, None], float]:
         res = requests.post(
