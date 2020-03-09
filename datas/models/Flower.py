@@ -101,16 +101,3 @@ class Flower:
         Refresh update_at field,
         """
         self.updated_at = datetime.today()
-
-    def mood_plot(self):
-        fig, ax = plt.subplots()
-        y_labels = [Mood.ANGRY.value, Mood.SAD.value, Mood.STANDING.value, Mood.HAPPY.value]
-        score = [y_labels.index(m) for m in self.saved_moods]
-        xi = list(range(len(self.saved_moods)))
-        yi = list(range(len(y_labels)))
-        ax.set_xticks(xi)
-        ax.set_yticks(yi)
-        ax.set_ylim(0, len(y_labels) - 1)
-        ax.set_yticklabels(y_labels)
-        ax.plot(score)
-        return fig2opencv_img(fig)
