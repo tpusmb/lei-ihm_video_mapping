@@ -8,7 +8,7 @@ import cv2
 from datas.models.Flower import Flower
 from datas.models.Garden import Garden
 from datas.repositories.PlayerRepository import PlayerRepository
-from utils.img_utils import draw_text_onto_image, xp_bar_draw, add_sub_image
+from utils.img_utils import draw_text_onto_image, add_sub_image
 
 PYTHON_LOGGER = logging.getLogger(__name__)
 if not os.path.exists("log"):
@@ -173,7 +173,7 @@ class Scenario:
                                                                    10, (0, 0, 0), 20)
 
         self.py_video_mapping.show_image(0, gardener_current_rank_with_level_image)
-        self.py_video_mapping.show_image(1, xp_bar_draw(player_repo.xp_percent_to_next_level()))
+        self.py_video_mapping.show_image(1, player_repo.xp_bar_draw())
         self.py_video_mapping.show_image(2, gardener_next_rank_with_level_image)
 
     # Help

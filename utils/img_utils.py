@@ -60,20 +60,3 @@ def draw_text_onto_image(image, text, x_offset, y_offset, scale, color=(0, 0, 0)
     font_scale = scale
     thickness = letters_thickness
     return cv2.putText(image, text, org, font, font_scale, color, thickness, cv2.LINE_AA)
-
-
-def xp_bar_draw(xp_in_percent):
-    """
-    Creat an image 1080x700 with a color rectangle represent the player xp
-    :param xp_in_percent: (int) Xp of the player in %
-    :return: (ndarray) an 1080x700 image
-    """
-    max_width = 1080
-    height = 700
-    width = int((xp_in_percent * max_width) // 100)
-    img = np.zeros((height, max_width, 3), np.uint8)
-
-    x = np.ones((height, width, 3))
-    x[:, :, 0:3] = np.random.randint(0, 200, (3,))
-    img[:, 0:width] = x
-    return draw_text_onto_image(img, "{}%".format(int(xp_in_percent)), width // 2, height // 2, 3, (255, 255, 255))
