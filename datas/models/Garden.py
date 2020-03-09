@@ -1,3 +1,5 @@
+import sys
+
 from datas.models.Flower import Flower
 from parrot_sensor.captor_data import CaptorData
 from utils.config_reader import ConfigReader
@@ -22,10 +24,15 @@ class Garden:
         """
         Update garden and humidity from the captor data
         """
-        self.temperature, self.humidity = self.captor_data.get_sensor_data()
+        try:
+            self.temperature, self.humidity = self.captor_data.get_sensor_data()
+        except:
+            print("captor_data (parrot) seems offline, using fake data", file=sys.stderr)
+            self.temperature = 0
+            self.humidity = 0
 
     def compute_flower_rank(self):
         diff_temperature = abs(self.temperature - self.target_temperature)
         diff_humidity = abs(self.humidity - self.target_humidity)
-        rank = Flower.MAX_RANK - diff_temperature / 3 + diff_humidity / 3
-        return max(rank, Flower.MIN_RANK)
+        rank = Flower.MAX_RANK - diff_temperature // 3 - diff_humidity // 3
+        return max(int(rank), Flower.MIN_RANK)
