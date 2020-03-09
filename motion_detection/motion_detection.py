@@ -27,7 +27,6 @@ class MotionDetection:
         config = config_reader.Motion_detection
         self.camera_index = config.getint("camera_index", 0)
         self.sensibility = config.getint("sensibility", 100)
-        self.debug = config.getboolean("debug", False)
         self.time_between_detection = config.getint("time_between_detection", 0)
         self.callback = callback
         self._stop = False
@@ -60,42 +59,18 @@ class MotionDetection:
             # loop over the contours
             for c in cnts:
                 # if the contour is too small, ignore it
-                if cv2.contourArea(c) < self.sensibility:
-                    continue
-                nbr_countour += 1
-                if self.debug:
-                    # compute the bounding box for the contour, draw it on the frame
-                    (x, y, w, h) = cv2.boundingRect(c)
-
-                    color = DEFAULT_COLOR
-                    cv2.rectangle(frame, (x, y), (x + w, y + h), color, 2)
-
-            if self.debug:
-                cv2.putText(frame, f"Motion: {bool(nbr_countour)}", (10, 20),
-                            cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
-                cv2.imshow("Frame", frame)
-                cv2.imshow("Gray", gray)
-
-                key = cv2.waitKey(1)
-                # if the `q` key is pressed, break from the loop
-                if key == ord("q"):
-                    print('stop')
-                    break
+                if cv2.contourArea(c) >= self.sensibility:
+                    nbr_countour += 1
             if nbr_countour:
-                if self.debug:
-                    print(f'nbr_countour: {nbr_countour}')
                 self.callback()
                 sleep(self.time_between_detection)
             prev_frame = gray  # For next frame
         # cleanup the camera and close any open windows
         vs.stop()
-        cv2.destroyAllWindows()
 
     def stop(self):
         """Stopping gracefully, might take a few seconds"""
         self._stop = True
-        if self._thread.is_alive():
-            self._thread.join()
 
     def start(self):
         self._stop = False

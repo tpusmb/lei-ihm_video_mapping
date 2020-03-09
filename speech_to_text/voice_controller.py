@@ -110,7 +110,7 @@ class VoiceController:
         self._stop = False
         while not self._stop:
             if self.active:  # We actively listen to user command
-                text = speech_to_text(self.noise_level)
+                text = speech_to_text(self.input_device_index, self.noise_level)
                 print(f"text: {text}", flush=True)
                 if text:
                     intent, confidence = self._rasa_intent.detect_intent(text)

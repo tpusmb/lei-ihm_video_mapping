@@ -44,7 +44,7 @@ def is_wake_up_word_said(input_device_index=18, sensitivity=0.5, keyword='hey pi
     return keyword_said
 
 
-def speech_to_text(noise_level: int = None) -> Union[None, str]:
+def speech_to_text(mic_index, noise_level: int = None) -> Union[None, str]:
     """
     Function called to listen and convert to text the answer of the user.
     Note that the user have to talk in french.
@@ -52,7 +52,7 @@ def speech_to_text(noise_level: int = None) -> Union[None, str]:
     :return: The answer of the user
     """
     r = sr.Recognizer()
-    with sr.Microphone() as source:
+    with sr.Microphone(device_index=mic_index) as source:
         if noise_level:
             r.energy_threshold = noise_level
         else:
@@ -65,4 +65,5 @@ def speech_to_text(noise_level: int = None) -> Union[None, str]:
 
 
 if __name__ == "__main__":
-    print(speech_to_text())
+    mic_index = input('enter the mic index please')
+    print(speech_to_text(mic_index))
