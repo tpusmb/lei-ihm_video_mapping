@@ -46,7 +46,7 @@ class ConfigReader:
 
     def __init__(self, absolute_path_config_file="config.ini"):
         """
-        :param absolute_path_config_file:
+        :param absolute_path_config_file: (string) path to the config file
         """
         self.config = configparser.ConfigParser(allow_no_value=True)
         if len(self.config.read(absolute_path_config_file)) == 0:
