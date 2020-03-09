@@ -14,6 +14,8 @@ p.player.xp += 40
 p.player.xp += 50
 p.player.xp += 60
 
+scenario.display_plant_state(2, p.garden)
+input("enter top stop")
 scenario.display_plant_progression(FlowerRepository(Flower()))
 input("enter top stop")
 scenario.display_gardener_progression(p)

@@ -132,8 +132,8 @@ class Scenario:
         garden.refresh_data()
         self.py_video_mapping.show_image(0, "{}{}Plante.png".format(ETAPES_PLANTE, state))
         image_text1 = draw_text_onto_image(
-            cv2.imread(ETAT_PLANTE), "{} C".format(garden.temperature), 230, 650, 3)
-        image_text2 = draw_text_onto_image(image_text1, "{}%".format(garden.humidity), 745, 650, 3)
+            cv2.imread(ETAT_PLANTE), "{} C".format(garden.temperature), 120, 650, 3)
+        image_text2 = draw_text_onto_image(image_text1, "{}%".format(garden.humidity), 650, 650, 3)
         animation_name = "{}_plant.mp4".format(garden.flower.mood)
         self.py_video_mapping.show_video_on_wallpaper(
             1, os.path.join(ANIMATIONS, animation_name),

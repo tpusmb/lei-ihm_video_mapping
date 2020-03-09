@@ -88,7 +88,7 @@ def afficher_niveau():
 
 @register_function_for_intent(intent=Intent.AFFICHER_ETAT_PLANTE)
 def plant_state():
-    scenario.display_plant_state(0, player_repo.garden)
+    scenario.display_plant_state(flower_repo.flower.rank, player_repo.garden)
 
 
 @register_function_for_intent(intent=Intent.AFFICHER_PROGRES_PLANTE)
