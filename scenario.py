@@ -57,6 +57,7 @@ PROCHAIN_NIVEAU_DU_JARDINIER = os.path.join(FOLDER_ABSOLUTE_PATH, "ressources", 
                                             "ProchainNiveauDuJardinier.png")
 JARDINIER_RANG = os.path.join(FOLDER_ABSOLUTE_PATH, "ressources", "images", "rangs", "JardinierRang")
 LISTE_DES_COMMANDES = os.path.join(FOLDER_ABSOLUTE_PATH, "ressources", "images", "ListeDesCommandes.png")
+COMMANDE_HEY_PICO = os.path.join(FOLDER_ABSOLUTE_PATH, "ressources", "images", "CommandHeyPico.png")
 ETAPES_PLANTE = os.path.join(FOLDER_ABSOLUTE_PATH, "ressources", "images", "etapes", "Etape")
 ANIMATIONS = os.path.join(FOLDER_ABSOLUTE_PATH, "ressources", "videos", "animations")
 
@@ -180,6 +181,11 @@ class Scenario:
     def display_command_list(self):
         self.py_video_mapping.set_blackout(0, True)
         self.py_video_mapping.show_image(1, LISTE_DES_COMMANDES)
+        self.py_video_mapping.set_blackout(2, True)
+
+    def display_wake_up_word(self):
+        self.py_video_mapping.set_blackout(0, True)
+        self.py_video_mapping.show_image(1, COMMANDE_HEY_PICO)
         self.py_video_mapping.set_blackout(2, True)
 
     # Karaoke

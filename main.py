@@ -145,8 +145,11 @@ def stop_motion_detection():
 
 
 def on_motion_detection():
+    scenario.display_wake_up_word()
     song = AudioSegment.from_mp3(MOTION_DETECTION_SONG_PATH)
     playback.play(song)
+    if not vc.active:
+        scenario.blackout()
 
 
 player_repo = PlayerRepository(config_reader=config_reader)
