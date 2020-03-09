@@ -14,7 +14,7 @@ active_time_delay=180
 noise_level=2000
 # Rasa min intent confidence to activate the action
 confidence_threshold=0.7
-# The mic index to be used, if the app crash at start with SIGSEG, change it
+# The mic index to be used, if the app crash at start with SIGSEGV, change it (check detect_mic_to_use.py)
 input_device_index=13
 
 [Plant]
