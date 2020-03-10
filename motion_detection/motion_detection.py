@@ -29,7 +29,7 @@ class MotionDetection:
         self.sensibility = config.getint("sensibility", 100)
         self.time_between_detection = config.getint("time_between_detection", 0)
         self.callback = callback
-        self._stop = False
+        self._stop = True
 
         self._thread = None  # init when we start it, to allow motion detection to be run multiple time
         self._thread = threading.Thread(target=self.run, args=())
