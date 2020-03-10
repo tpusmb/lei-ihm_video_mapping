@@ -151,13 +151,9 @@ class Scenario:
         self.py_video_mapping.show_video(2, os.path.join(ANIMATIONS, current_mood_animation_name), True)
 
     def display_gardener_progression(self, player_repo: PlayerRepository):
-        rank_img_name = player_repo.player.level + 1
-        print(rank_img_name)
-        if rank_img_name > 5:
-            rank_img_name = 5
-        next_rank_img_name = player_repo.player.level + 2
-        if next_rank_img_name > 5:
-            next_rank_img_name = 5
+        print(player_repo.player.level)
+        rank_img_name = player_repo.player.level if player_repo.player.level < 5 else 4
+        next_rank_img_name = player_repo.player.level+1 if player_repo.player.level < 4 else 4
 
         gardener_current_rank_image = add_sub_image(cv2.imread(NIVEAU_DU_JARDINIER),
                                                     cv2.imread("{}{}.png".format(JARDINIER_RANG, rank_img_name)), 200,
