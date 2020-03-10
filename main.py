@@ -93,7 +93,7 @@ def afficher_niveau():
 
 @register_function_for_intent(intent=Intent.AFFICHER_ETAT_PLANTE)
 def plant_state():
-    scenario.display_plant_state(player_repo.garden.calc_flower_rank(), player_repo.garden)
+    scenario.display_plant_state(player_repo.garden.compute_flower_rank(), player_repo.garden)
 
 
 @register_function_for_intent(intent=Intent.AFFICHER_PROGRES_PLANTE)
@@ -145,8 +145,11 @@ def stop_motion_detection():
 
 
 def on_motion_detection():
+    scenario.display_wake_up_word()
     song = AudioSegment.from_mp3(MOTION_DETECTION_SONG_PATH)
     playback.play(song)
+    if not vc.active:
+        scenario.blackout()
 
 
 player_repo = PlayerRepository(config_reader=config_reader)
