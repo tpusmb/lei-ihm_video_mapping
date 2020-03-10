@@ -56,6 +56,10 @@
 - quelles actions faire pour t'entretenir
 - de quoi la plante a besoin
 - quelles sont tes besoins
+- entretenir
+- entretien plante
+- occuper de la plante
+- arroser la plante
 
 ## intent:afficher_progres_de_la_plante
 - quelle sont les progres de la pante
@@ -81,6 +85,7 @@
 - mon niveux
 - lv
 - niveux
+- niveaux
 
 ## intent:planter_un_bulbe
 - Je souhaite planter un bulbe
@@ -88,6 +93,10 @@
 - Aide moi à planter un bulbe
 - j'aimerais planter un bulbe
 - comment planter un bulbe
+- planter une fleur
+- planter une plante
+- ajouter une fleur
+- je voudrais une fleur
 
 ## intent:positif
 - ok
@@ -99,3 +108,7 @@
 - ensuite
 - aprés ?
 - oui
+- wii
+- done
+- okey
+- fait
