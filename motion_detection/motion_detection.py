@@ -7,7 +7,7 @@ from imutils.video import VideoStream
 
 from utils.config_reader import ConfigReader
 
-WITDH = 500
+WITDH = 250
 DEFAULT_COLOR = (0, 255, 0)
 
 
@@ -32,13 +32,15 @@ class MotionDetection:
         self._stop = False
 
         self._thread = None  # init when we start it, to allow motion detection to be run multiple time
+        self._thread = threading.Thread(target=self.run, args=())
+        self._thread.start()  # Call run()
 
     def run(self):
         # Reading from webcam
-        vs = VideoStream(src=self.camera_index, framerate=10).start()
+        cam = cv2.VideoCapture(self.camera_index)
         prev_frame = None  # Previous frame is used to compare the pixel vs the current frame
-        while not self._stop:
-            frame = vs.read()
+        while True:
+            ret, frame = cam.read()
             frame = imutils.resize(frame, width=WITDH)
             gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
             gray = cv2.GaussianBlur(gray, (21, 21), 0)
@@ -61,12 +63,17 @@ class MotionDetection:
                 # if the contour is too small, ignore it
                 if cv2.contourArea(c) >= self.sensibility:
                     nbr_countour += 1
-            if nbr_countour:
+            if nbr_countour and not self._stop:
                 self.callback()
-                sleep(self.time_between_detection)
+                #sleep(self.time_between_detection)
+                event = threading.Event()
+                event.wait(timeout=self.time_between_detection)  # Not blocking sleep
+            else:
+                event = threading.Event()
+                event.wait(timeout=1)  # Not blocking sleep
             prev_frame = gray  # For next frame
         # cleanup the camera and close any open windows
-        vs.stop()
+        cam.release()
 
     def stop(self):
         """Stopping gracefully, might take a few seconds"""
@@ -74,5 +81,3 @@ class MotionDetection:
 
     def start(self):
         self._stop = False
-        self._thread = threading.Thread(target=self.run, args=())
-        self._thread.start()  # Call run()

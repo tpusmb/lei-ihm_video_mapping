@@ -51,6 +51,7 @@ def speech_to_text(mic_index, noise_level: int = None) -> Union[None, str]:
     :param: noise_level the level of ambient noise used to detect the end of a phrase
     :return: The answer of the user
     """
+    print("ecoute...")
     r = sr.Recognizer()
     with sr.Microphone(device_index=mic_index) as source:
         if noise_level:
@@ -62,6 +63,7 @@ def speech_to_text(mic_index, noise_level: int = None) -> Union[None, str]:
     with suppress(sr.UnknownValueError, sr.RequestError):
         # Call the google voice recognizer
         return r.recognize_google(audio, language="fr-FR")
+    print("fin ecoute")
 
 
 if __name__ == "__main__":
