@@ -47,7 +47,6 @@ class Flower:
         We calculate it based on the last time the plant has been treated.
         :return: the mood of the flower
         """
-        self.saved_moods.append(self.__mood)
         time = (datetime.today() - self.updated_at).seconds
         time_happy = 0.0 <= time <= self.TIME_HAPPY
         time_standing = self.TIME_HAPPY < time <= self.TIME_STANDING
@@ -61,6 +60,8 @@ class Flower:
             self.__mood = Mood.ANGRY
         else:
             self.__mood = Mood.SAD
+
+        self.saved_moods.append(self.__mood)
         return self.__mood
 
     @mood.setter
