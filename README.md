@@ -16,7 +16,6 @@ We code in python3.7 version.
 You will need the following package:
     
     sudo apt install python3
-    sudo apt install virtualenv
     sudo apt install python3-dev python3-tk python-imaging-tk
     sudo apt install cmake
     sudo apt install python-pyaudio python3-pyaudio
@@ -28,7 +27,13 @@ Opencv optimisation lib
     sudo apt install libjpeg-dev libpng-dev libtiff-dev libavcodec-dev libavformat-dev libswscale-dev libv4l-dev libxvidcore-dev libx264-dev
     sudo apt install libopenblas-dev libatlas-base-dev liblapack-dev gfortran
     sudo apt install libhdf5-serial-dev libgtk-3-dev
- 
+
+Install pip and virtualenv:
+
+    wget https://bootstrap.pypa.io/get-pip.py
+    sudo python3 get-pip.py
+    pip3 install virtualenv virtualenvwrapper
+
 Prepare your virtualenv:
 
     virtualenv -p python3 venv

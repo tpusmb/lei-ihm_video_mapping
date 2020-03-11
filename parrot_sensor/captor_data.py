@@ -32,6 +32,7 @@ class CaptorData:
         if self.have_sensor:
             self.connection = api_cloud.ApiCloud(self.user_id, self.user_code)
         else:
+            print("off line sensor")
             self.connection = None
 
     def get_sensor_data(self):

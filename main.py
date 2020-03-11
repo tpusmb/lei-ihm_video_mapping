@@ -19,7 +19,6 @@ from time import sleep
 from typing import Callable, List
 
 from docopt import docopt
-from pydub import AudioSegment, playback
 
 from datas.repositories.PlayerRepository import PlayerRepository
 from motion_detection.motion_detection import MotionDetection
@@ -29,6 +28,7 @@ from speech_to_text.plant_intent_recognizer.detect_intent import Intent
 from speech_to_text.voice_controller import VoiceController, register_function_for_intent, \
     register_function_for_active, register_function_for_sleep
 from utils.config_reader import ConfigReader
+from ffpyplayer.player import MediaPlayer
 
 FOLDER_ABSOLUTE_PATH = os.path.normpath(os.path.dirname(os.path.abspath(__file__)))
 MOTION_DETECTION_SONG_PATH = os.path.join(FOLDER_ABSOLUTE_PATH, "ressources", "sounds", "son_de_la_foret.mp3")
@@ -117,7 +117,7 @@ def entretenir_plante():
 
 @register_function_for_intent(intent=Intent.UNKNOWN_INTENT)
 def incomprehension_feedback():
-    playback.play(AudioSegment.from_wav(INCOMPREHENSION_SOUND))
+    song = MediaPlayer(INCOMPREHENSION_SOUND)
     scenario.display_incomprehension_feedback()
 
 
@@ -126,7 +126,7 @@ def play_next_step():
     if NEXT_STEPS:
         f = NEXT_STEPS.pop(0)  # Call the first function and remove it from the FIFO
         scenario.display_good_feedback()
-        playback.play(AudioSegment.from_wav(CORRECT_SOUND))
+        song = MediaPlayer(CORRECT_SOUND)
         sleep(1)
         f()
     else:
@@ -146,8 +146,7 @@ def stop_motion_detection():
 
 def on_motion_detection():
     scenario.display_wake_up_word()
-    song = AudioSegment.from_mp3(MOTION_DETECTION_SONG_PATH)
-    playback.play(song)
+    song = MediaPlayer(MOTION_DETECTION_SONG_PATH)
     if not vc.active:
         scenario.blackout()
 
@@ -158,7 +157,7 @@ vc = VoiceController(config_reader)
 vc.start()
 sleep(2)
 scenario.display_good_feedback()
-playback.play(AudioSegment.from_wav(CORRECT_SOUND))
+MediaPlayer(CORRECT_SOUND)
 sleep(2)
 on_sleep()
 print("ALL GOOD")

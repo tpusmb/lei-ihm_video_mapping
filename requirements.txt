@@ -10,4 +10,3 @@ opencv-contrib-python==4.2.0.32
 imutils==0.5.3
 SpeechRecognition
 soundfile
-pydub==0.23.1
