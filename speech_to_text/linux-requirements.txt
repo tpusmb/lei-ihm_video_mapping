@@ -1,9 +1,0 @@
-SpeechRecognition==3.8.1
-python-pyaudio
-python3-pyaudio
-pyaudio==0.2.11
-rasa==1.7.1
-
-pvporcupine==1.6.3
-numpy
-soundfile==0.10.3.post1

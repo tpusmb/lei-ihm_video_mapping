@@ -1,0 +1,32 @@
+[Parrot]
+userid = <To fill>
+usercode = <To fill>
+passwd = <To fill>
+
+[Rasa]
+url = https://localhost:5005/model/parse
+headers
+
+[Speech_to_text]
+# time in seconds after a recognized intent was said before being not "active"
+active_time_delay=180
+# allow to fine tune the ambient noise, leave empy for auto-tune with background listening
+noise_level=2000
+# Rasa min intent confidence to activate the action
+confidence_threshold=0.7
+# The mic index to be used, if the app crash at start with SIGSEGV, change it (check detect_mic_to_use.py)
+input_device_index=13
+
+[Plant]
+mood_time_happy = 10.0
+mood_time_standing = 10.0
+mood_time_angry = 10.0
+mood_time_sad
+target_temperature = 17
+target_humidity = 20
+
+[Motion_detection]
+camera_index=0
+sensibility=100
+debug=false
+time_between_detection=5

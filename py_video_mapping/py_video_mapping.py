@@ -5,17 +5,14 @@ from __future__ import absolute_import
 
 import logging.handlers
 import os
-from abc import ABC, abstractmethod
-from threading import Thread, Lock
 
 import cv2
-import imutils
-import numpy as np
 import screeninfo
 from screeninfo import Monitor
 
-from utils import save_mapping
-from .filevideostream import FileVideoStream
+from utils.config_reader import ConfigReader
+from .frame_getter import ImageGetter, VideoGetter, VideoOnWallpaper
+from .projector_show import ProjectorShow
 from .screen_relation import ScreenRelation
 
 PYTHON_LOGGER = logging.getLogger(__name__)
@@ -35,315 +32,75 @@ PYTHON_LOGGER.setLevel(logging.DEBUG)
 FOLDER_ABSOLUTE_PATH = os.path.normpath(os.path.dirname(os.path.abspath(__file__)))
 
 TEST_IMAGE = os.path.join(FOLDER_ABSOLUTE_PATH, "test_image.jpg")
-PROJECTOR_DATA = "projector_data.map"
+# We have 3 face
 NB_FACES = 3
 
 
-def add_sub_image(wall_paper, frame, x_offset, y_offset):
-    """
-
-    :param wall_paper:
-    :param frame:
-    :param x_offset:
-    :param y_offset:
-    :return:
-    """
-    wall_paper_copy = wall_paper.copy()
-    try:
-        wall_paper_copy[y_offset:y_offset + frame.shape[0], x_offset:x_offset + frame.shape[1]] = frame
-    except ValueError:
-        pass
-    return wall_paper_copy
-
-
-def draw_text_onto_image(image, text, x_offset, y_offset, scale):
-    org = (x_offset, y_offset)
-    font = cv2.FONT_HERSHEY_SIMPLEX
-    font_scale = scale
-    color = (0, 0, 0)
-    thickness = 5
-    return cv2.putText(image, text, org, font, font_scale, color, thickness, cv2.LINE_AA)
-
-
-class FaceObject:
-
-    def __init__(self, output_width, output_height,
-                 projector_top_left=None, projector_top_right=None,
-                 projector_bottom_right=None, projector_bottom_left=None):
-        """
-
-        :param output_width:
-        :param projector_top_left: (tuple) x, y
-        :param output_height:
-        :param projector_top_right:
-        :param projector_bottom_right:
-        :param projector_bottom_left:
-        """
-        self.projector_top_left = projector_top_left
-        self.projector_top_right = projector_top_right
-        self.projector_bottom_right = projector_bottom_right
-        self.projector_bottom_left = projector_bottom_left
-        self.output_width = output_width
-        self.output_height = output_height
-        self.blackout = False
-        self.perspective_mat = None
-
-    def transform_image(self, frame):
-        """
-
-        :param frame:
-        :return:
-        """
-        # TODO if self.perspective_mat is None:
-        h, w, _ = frame.shape
-        rect = np.array([
-            [0, 0],
-            [w - 1, 0],
-            [w - 1, h - 1],
-            [0, h - 1]], dtype="float32")
-        dst = np.array([
-            self.projector_top_left,
-            self.projector_top_right,
-            self.projector_bottom_right,
-            self.projector_bottom_left
-        ], dtype="float32")
-        self.perspective_mat = cv2.getPerspectiveTransform(rect, dst)
-        warped = cv2.warpPerspective(frame, self.perspective_mat, (self.output_width, self.output_height))
-        min_x = min(self.projector_top_left[0], self.projector_bottom_left[0])
-        max_x = max(self.projector_top_right[0], self.projector_bottom_right[0])
-        min_y = min(self.projector_top_left[1], self.projector_top_right[1])
-        max_y = max(self.projector_bottom_left[1], self.projector_bottom_right[1])
-        return warped[min_y:max_y, min_x:max_x]
-
-    def is_ready(self):
-        return self.projector_top_left is not None and self.projector_top_right is not None \
-               and self.projector_bottom_right is not None and self.projector_bottom_left
-
-    def set_blackout(self, b: bool):
-        self.blackout = b
-
-    def process_image(self, wall_paper, frame):
-        assert self.is_ready()
-        if self.blackout:
-            return wall_paper
-        wrap = self.transform_image(frame)
-        return add_sub_image(wall_paper, wrap, *self.projector_top_left)
-
-
-class FrameGetter(ABC):
-
-    @abstractmethod
-    def get_image(self):
-        pass
-
-    @abstractmethod
-    def stop(self):
-        pass
-
-
-class VideoGetter(FrameGetter):
-
-    def __init__(self, path_video, play_audio):
-        self.path_video = path_video
-        self.file_video_stream = FileVideoStream(self.path_video, play_audio=play_audio).start()
-        self.play_audio = play_audio
-
-    def get_image(self):
-        frame = self.file_video_stream.read()
-        if frame is None:
-            self.file_video_stream.stop()
-            self.file_video_stream = FileVideoStream(self.path_video, play_audio=self.play_audio).start()
-        while frame is None:
-            print("Play video again")
-            frame = self.file_video_stream.read()
-        return frame
-
-    def stop(self):
-        self.file_video_stream.stop()
-
-
-class ImageGetter(FrameGetter):
-
-    def __init__(self, image):
-        self.image = image
-
-    def get_image(self):
-        return self.image
-
-    def stop(self):
-        pass
-
-
-class VideoOnWallpaper(FrameGetter):
-
-    def __init__(self, image, video_path, x_offset, y_offset, width, height, play_video_audio):
-        """
-
-        :param image:
-        :param video_path:
-        :param x_offset:
-        :param y_offset:
-        :param width:
-        :param height:
-        """
-        offset_ok = 0 <= x_offset < image.shape[1] and 0 <= y_offset < image.shape[1]
-        dim_ok = 0 < width < image.shape[1] and 0 < height < image.shape[0]
-        assert offset_ok and dim_ok
-        self.video_getter = VideoGetter(video_path, play_video_audio)
-        self.image_getter = ImageGetter(image)
-        self.x_offset = x_offset
-        self.y_offset = y_offset
-        self.width = width
-        self.height = height
-
-    def get_image(self):
-        video_img = self.video_getter.get_image()
-        wall_paper = self.image_getter.get_image()
-        video_img = imutils.resize(video_img, width=self.width, height=self.height)
-        wall_image = add_sub_image(wall_paper, video_img, self.x_offset, self.y_offset)
-        return wall_image
-
-    def stop(self):
-        self.video_getter.stop()
-        self.image_getter.stop()
-
-
-class ProjectorShow(Thread):
-    def __init__(self, screen, nb_face, delay=20):
-        """
-
-        :param screen:
-        """
-        Thread.__init__(self)
-        self.screen = screen
-        self.current_image = None
-        self.window_name = 'projector'
-        self.end = False
-        self.projector_positions = save_mapping.load(PROJECTOR_DATA)
-        self.nb_face = nb_face
-        if self.projector_positions is not None:
-            self.faces_object = [FaceObject(self.screen.width, self.screen.height, *self.projector_positions[i])
-                                 for i in range(nb_face)]
-        else:
-            self.faces_object = [FaceObject(output_width=self.screen.width, output_height=self.screen.height)
-                                 for _ in range(nb_face)]
-            self.projector_positions = [None] * nb_face
-        self.frame_getter_list = [None, None, None]
-        self.wall_paper = self.creat_blank_image()
-        self.mutex = Lock()
-        self.delay = delay
-
-    def creat_blank_image(self):
-        return np.zeros((self.screen.height, self.screen.width, 3), np.uint8)
-
-    def run(self):
-
-        cv2.namedWindow(self.window_name, cv2.WND_PROP_FULLSCREEN)
-        cv2.moveWindow(self.window_name, self.screen.x - 1, self.screen.y - 1)
-        cv2.setWindowProperty(self.window_name, cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
-        while not self.end:
-            output_frame = self.wall_paper.copy()
-            self.mutex.acquire()
-            for frame_getter, face_object in zip(self.frame_getter_list, self.faces_object):
-                if frame_getter is None or not face_object.is_ready():
-                    continue
-                output_frame = face_object.process_image(output_frame, frame_getter.get_image())
-            self.mutex.release()
-            cv2.imshow(self.window_name, output_frame)
-            cv2.waitKey(self.delay)
-
-    def display_face(self, face_id, object_to_show: FrameGetter):
-        """
-
-        :param face_id: 0 to 2
-        :param object_to_show: video or image
-        :return:
-        """
-        assert 0 <= face_id < len(self.faces_object)
-        with self.mutex:
-            if self.frame_getter_list[face_id] is not None:
-                self.frame_getter_list[face_id].stop()
-            self.faces_object[face_id].set_blackout(False)
-            self.frame_getter_list[face_id] = object_to_show
-
-    def set_blackout(self, face_id, b: bool):
-        assert 0 <= face_id < len(self.faces_object)
-        with self.mutex:
-            self.faces_object[face_id].set_blackout(b)
-
-    def update_face(self, face_id, projector_top_left, projector_top_right,
-                    projector_bottom_right, projector_bottom_left):
-        """
-
-        :param face_id:
-        :param projector_top_left: (tuple) x, y
-        :param projector_top_right:
-        :param projector_bottom_right:
-        :param projector_bottom_left:
-        :return:
-        """
-        assert 0 <= face_id < len(self.faces_object)
-        with self.mutex:
-            self.faces_object[face_id].__init__(self.screen.width, self.screen.height,
-                                                projector_top_left, projector_top_right,
-                                                projector_bottom_right, projector_bottom_left)
-            self.projector_positions[face_id] = [projector_top_left, projector_top_right,
-                                                 projector_bottom_right, projector_bottom_left]
-        save_mapping.save(self.projector_positions, PROJECTOR_DATA)
-
-    def stop(self):
-        self.end = True
-        for face_object in self.faces_object:
-            if face_object is not None:
-                face_object.stop()
-
-
 class PyVideoMapping:
-    def __init__(self, screen, ui_screen: Monitor = None, delay=22):
+    def __init__(self, screen: Monitor, ui_screen: Monitor = None, config_reader: ConfigReader = ConfigReader()):
+        """
+        Class to display image or video onto faces.
+        :param screen: (Monitor) Screen to display the mapping
+        :param ui_screen: (Monitor) Screen information of the ui (use by the web interface)
+        :param config_reader: (ConfigReader) Config file class
+        """
+        self.config_reader = config_reader
         self.screen = screen
         self.ui_screen = ui_screen
         self.screen_relation = None
         self.test_image = cv2.imread(TEST_IMAGE)
-        self.projector_show = ProjectorShow(self.screen, NB_FACES, delay)
+        # Start the projector show
+        self.projector_show = ProjectorShow(self.screen, NB_FACES, config_reader.Py_video_mapping.getint("delay"))
 
         if self.ui_screen is not None:
             self.screen_relation = ScreenRelation(ui_screen, self.screen)
         self.projector_show.start()
 
+        # creat faces
         for i in range(NB_FACES):
             self.projector_show.display_face(i, ImageGetter(self.test_image))
 
     @staticmethod
     def get_image_size(frame):
         """
-
-        :param frame:
+        Get the size of a image
+        :param frame: (ndarray)
         :return: (tuple) height, width
         """
         return frame.shape
 
     @staticmethod
     def get_all_screens():
+        """
+        :return: (list of Monitor) Return all connected monitors
+        """
         return screeninfo.get_monitors()
 
     def change_ui_screen(self, ui_screen: Monitor):
+        """
+        Change the ui screen
+        :param ui_screen: (Monitor) Screen information of the ui (use by the web interface)
+        """
         self.ui_screen = ui_screen
         self.screen_relation = ScreenRelation(self.ui_screen, self.screen)
 
     def mapping_calibration(self, ui_images):
         """
-
+        Update test images on the video projector screen
         :param ui_images: (list) All test image to display into the projector
                                     Image 1
-            [ [ui_top_left, ui_top_right, ui_bottom_right, ui_bottom_left], ... ]
-            ui_top_left = x, y
-        :return:
+            [ [ui_top_left, ui_top_right, ui_bottom_right, ui_bottom_left],
+                                    ...,
+                                    Image n
+              [ui_top_left, ui_top_right, ui_bottom_right, ui_bottom_left]
+            ui_top_left, ui_top_right, ui_bottom_right, ui_bottom_left: (tuple) x, y
         """
         if self.screen_relation is None:
             raise ValueError("Need to provide ui screen in the constructor")
         # Get all image tuple (tuple) x, y
         for face_id in range(len(ui_images)):
             ui_top_left, ui_top_right, ui_bottom_right, ui_bottom_left = ui_images[face_id]
+            # Get the position into the video projector
             projector_top_left = self.screen_relation.to_projector_screen(*ui_top_left)
             projector_top_right = self.screen_relation.to_projector_screen(*ui_top_right)
             projector_bottom_right = self.screen_relation.to_projector_screen(*ui_bottom_right)
@@ -352,35 +109,43 @@ class PyVideoMapping:
                                             projector_bottom_right, projector_bottom_left)
 
     def show_video(self, face_id: int, video_path: str, enable_audio: bool = False):
+        """
+        display a video on face
+        :param face_id: (int) 0 to n - 1. Where n his the number of faces
+        :param video_path: (string) Path to read the video
+        :param enable_audio: (bool) If true play the audio of the file
+        """
         self.projector_show.display_face(face_id, VideoGetter(video_path, enable_audio))
 
     def show_image(self, face_id: int, image_path):
         """
-
-        :param face_id:
-        :param image_path: image path or ndarray
+        Display a image on face
+        :param face_id: (int) 0 to n - 1. Where n his the number of faces
+        :param image_path: (string or ndarray) image path to show or frame to show
         :return:
         """
         if isinstance(image_path, str):
             image = cv2.imread(image_path)
         else:
             image = image_path
-        self.projector_show.display_face(face_id, ImageGetter(image))
+        if image is not None:
+            self.projector_show.display_face(face_id, ImageGetter(image))
+        else:
+            PYTHON_LOGGER.error("Image path {} not found".format(image_path))
 
     def show_video_on_wallpaper(self, face_id: int, video_path: str, image_path,
                                 x_offset: int, y_offset: int, width: int, height: int,
                                 play_video_audio: bool = False):
         """
-
-        :param face_id:
-        :param video_path:
-        :param image_path: image path or ndarray
-        :param x_offset:
-        :param y_offset:
-        :param width:
-        :param height:
-        :param play_video_audio:
-        :return:
+        Display a video on wallpaper
+        :param face_id: (int) 0 to n - 1. Where n his the number of faces
+        :param video_path: (string) Path to read the video
+        :param image_path: (string or ndarray) image path to show or frame to show
+        :param x_offset: (int) X position of the video
+        :param y_offset: (int) y position of the video
+        :param width: (int) width of the video
+        :param height: (int) height of the video
+        :param play_video_audio: (bool) If true play audio of the video
         """
         if isinstance(image_path, str):
             image = cv2.imread(image_path)
@@ -392,12 +157,14 @@ class PyVideoMapping:
 
     def set_blackout(self, face_id, b: bool):
         """
-
-        :param face_id:
-        :param b:
-        :return:
+        Set the face to black out (display black image)
+        :param face_id: (int) 0 to n - 1. Where n his the number of faces
+        :param b: (bool)
         """
         self.projector_show.set_blackout(face_id, b)
 
     def stop(self):
+        """
+        Stop the mapping
+        """
         self.projector_show.stop()

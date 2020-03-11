@@ -1,24 +1,48 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""
+Run the augmented reality garden
+**Note**: Make sure your do the video mapping configuration with the configure_video_mapping.py file
+
+Usage:
+   main.py <config-file-path>
+
+Options:
+    -h --help                   Show this screen.
+    <config-file-path>          Path to the config file. Use the config.ini.example for help
+"""
+import os
+import random
 import sys
 from time import sleep
 from typing import Callable, List
 
-import random
+from docopt import docopt
+from pydub import AudioSegment, playback
 
-from datas.models.Flower import Flower, Mood
 from datas.repositories.PlayerRepository import PlayerRepository
+from motion_detection.motion_detection import MotionDetection
 from py_video_mapping import *
-
 from scenario import Scenario
 from speech_to_text.plant_intent_recognizer.detect_intent import Intent
 from speech_to_text.voice_controller import VoiceController, register_function_for_intent, \
     register_function_for_active, register_function_for_sleep
+from utils.config_reader import ConfigReader
+
+FOLDER_ABSOLUTE_PATH = os.path.normpath(os.path.dirname(os.path.abspath(__file__)))
+MOTION_DETECTION_SONG_PATH = os.path.join(FOLDER_ABSOLUTE_PATH, "ressources", "sounds", "son_de_la_foret.mp3")
+CORRECT_SOUND = os.path.join(FOLDER_ABSOLUTE_PATH, "ressources", "sounds", "mario_yippee.wav")
+INCOMPREHENSION_SOUND = os.path.join(FOLDER_ABSOLUTE_PATH, "ressources", "sounds", "mario_oof.wav")
 
 KARAOKE_TIME = 1  # Time in seconds to lock the karaoke
 
 NEXT_STEPS: List[Callable[[], None]] = []  # Global var to know what the next function should be
 
-
-py_video_mapping = PyVideoMapping(PyVideoMapping.get_all_screens()[1])
+args = docopt(__doc__)
+config_file_path = args["<config-file-path>"]
+config_reader = ConfigReader(config_file_path)
+py_video_mapping = PyVideoMapping(PyVideoMapping.get_all_screens()[-1], config_reader=config_reader)
 scenario = Scenario(py_video_mapping)
 
 
@@ -28,15 +52,19 @@ def display_main_menu():
     scenario.display_main_menu()
 
 
-@register_function_for_sleep
-def stop():
-    scenario.blackout()
-
-
 @register_function_for_intent(intent=Intent.FIN)
+def force_sleep_mode():
+    vc.set_mode_sleep()
+
+
 def display_karaoke():
     scenario.display_karaoke()
     sleep(KARAOKE_TIME)
+
+
+@register_function_for_intent(intent=Intent.HELP)
+def display_help():
+    scenario.display_command_list()
 
 
 @register_function_for_intent(intent=Intent.PLANTER_UN_BULBE)
@@ -58,11 +86,6 @@ def suivre_etat_plante():
     scenario.display_sub_menu1()
 
 
-@register_function_for_intent(intent=Intent.AFFICHER_PROGRES_DU_JARDINIER)
-def progress():
-    scenario.display_sub_menu2()
-
-
 @register_function_for_intent(intent=Intent.AFFICHER_NIVEAU)
 def afficher_niveau():
     scenario.display_gardener_progression(player_repo)
@@ -70,12 +93,12 @@ def afficher_niveau():
 
 @register_function_for_intent(intent=Intent.AFFICHER_ETAT_PLANTE)
 def plant_state():
-    scenario.display_plant_state(0, Mood.HAPPY, 30, 34)
+    scenario.display_plant_state(player_repo.garden.compute_flower_rank(), player_repo.garden)
 
 
 @register_function_for_intent(intent=Intent.AFFICHER_PROGRES_PLANTE)
 def plant_progress():
-    scenario.display_plant_progression(flower)
+    scenario.display_plant_progression(player_repo)
 
 
 @register_function_for_intent(intent=Intent.ENTRETENIR_PLANTE)
@@ -94,13 +117,8 @@ def entretenir_plante():
 
 @register_function_for_intent(intent=Intent.UNKNOWN_INTENT)
 def incomprehension_feedback():
+    playback.play(AudioSegment.from_wav(INCOMPREHENSION_SOUND))
     scenario.display_incomprehension_feedback()
-
-
-@register_function_for_intent(intent=Intent.NEGATIF)
-def negatif_feedback():
-    # scenario.display_bad_feedback()  # TODO Should this be added ?
-    pass
 
 
 @register_function_for_intent(intent=Intent.POSITIF)
@@ -108,18 +126,39 @@ def play_next_step():
     if NEXT_STEPS:
         f = NEXT_STEPS.pop(0)  # Call the first function and remove it from the FIFO
         scenario.display_good_feedback()
+        playback.play(AudioSegment.from_wav(CORRECT_SOUND))
         sleep(1)
         f()
     else:
         print("Trying to call a next step but there is none", file=sys.stderr, flush=True)
 
 
-player_repo = PlayerRepository()
-flower = Flower(Mood.HAPPY)
-vc = VoiceController(active_time_delay=180, noise_level=2000, confidence_threshold=0.5)
+@register_function_for_sleep
+def on_sleep():
+    scenario.blackout()
+    md.start()
+
+
+@register_function_for_active
+def stop_motion_detection():
+    md.stop()
+
+
+def on_motion_detection():
+    scenario.display_wake_up_word()
+    song = AudioSegment.from_mp3(MOTION_DETECTION_SONG_PATH)
+    playback.play(song)
+    if not vc.active:
+        scenario.blackout()
+
+
+player_repo = PlayerRepository(config_reader=config_reader)
+md = MotionDetection(config_reader, on_motion_detection)
+vc = VoiceController(config_reader)
 vc.start()
 sleep(2)
 scenario.display_good_feedback()
+playback.play(AudioSegment.from_wav(CORRECT_SOUND))
 sleep(2)
-stop()
+on_sleep()
 print("ALL GOOD")

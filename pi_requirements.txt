@@ -1,9 +1,0 @@
-numpy
-docopt
-Flask==1.1.1
-opencv-contrib-python==4.1.0.25
-screeninfo
-imutils
-matplotlib
-pillow
-ffpyplayer

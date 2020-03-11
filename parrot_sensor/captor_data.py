@@ -1,38 +1,35 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-"""
-GNU AFFERO GENERAL PUBLIC LICENSE
-    Version 3, 19 November 2007
-"""
 
-import csv
 import datetime
 import json
+import os
 
 from parrot_sensor import api_cloud
-from utils import save_mapping
+from utils.config_reader import ConfigReader
+
+FOLDER_ABSOLUTE_PATH = os.path.normpath(os.path.dirname(os.path.abspath(__file__)))
 
 
 class CaptorData:
     """
-    Se charge de récupérer les données sur le Cloud de Flower Power via leur API puis de les organiser dans une liste
-    de dictionnaire.
-    Permet de récupérer facilement ces données.
+    Is responsible for retrieving data from the Flower Power Cloud via their API and then organizing it in a list.
+    Allows you to easily recover this data.
     """
 
-    def __init__(self, time_delta=2):
+    def __init__(self, time_delta=24, config_reader: ConfigReader = ConfigReader()):
         """
-        Initialise la récupération de données du capteur.
-        :param time_delta: Depuis combien de jours récupérer les données
+        Initializes data recovery from the sensor.
+        :param time_delta: How many days have the data been recovered
         """
         self.since = (datetime.datetime.now() - datetime.timedelta(hours=time_delta)).strftime("%d-%b-%Y %H:%M:%S")
         self.today = datetime.datetime.now().strftime("%d-%b-%Y %H:%M:%S")
-        self.config = self.get_projetconfig('../projetconfig.json')
+        self.config = self.get_projetconfig(config_reader)
         self.connection = api_cloud.ApiCloud(self.config[0], self.config[1])
 
     def get_sensor_data(self):
         """
-        recupere les données du capteur température ect.
+        retrieves data from sensor
         :return:
         """
         self.connection = api_cloud.ApiCloud(self.config[0], self.config[1])
@@ -43,26 +40,28 @@ class CaptorData:
 
     def get_identifier_location(self):
         """
+        recover the position of the plant
         :return:
         """
-        parrot_data = json.loads(json.dumps(self.connection.get_sensor_data_sync()))["locations"][0][
-            "location_identifier"]
+        parrot_data = json.loads(
+            json.dumps(self.connection.get_sensor_data_sync()))["locations"][0]["location_identifier"]
         return parrot_data
 
-    def get_projetconfig(self, filename):
+    def get_projetconfig(self, config_reader):
         """
-        :param filename: fichier json
+        initialize the configuration from a json file
+        :param config_reader: (ConfigReader) config class
         :return: liste avec les infos de connexion
         """
         config_data = list()
-        data = save_mapping.load(filename)
-        config_data.append(data["user"]["userid"])
-        config_data.append(data["user"]["usercode"])
-        config_data.append(data["user"]["passwd"])
+        config_data.append(config_reader.Parrot["userid"])
+        config_data.append(config_reader.Parrot["usercode"])
+        config_data.append(config_reader.Parrot["passwd"])
         return config_data
 
     def init_temperature_and_humidity(self, filename):
         """
+        get temperature and humidity from sensor data
         :param filename: fichier json
         :return:
         """

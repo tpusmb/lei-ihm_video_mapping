@@ -5,7 +5,7 @@ Our lei IHM to config mapping
 
 TODO
 
-## Installation
+## 1) Installation
 
 ### General setup
 
@@ -15,9 +15,17 @@ You will need the following package:
     
     sudo apt install python3
     sudo apt install virtualenv
-    sudo apt install python3-pip
-    sudo apt install python3-tk
+    sudo apt install python3-dev python3-tk python-imaging-tk
     sudo apt install cmake
+    sudo apt install python-pyaudio python3-pyaudio
+    sudo apt install ffmpeg
+ 
+Opencv optimisation lib
+    
+    sudo apt install libxmu-dev libxi-dev libglu1-mesa libglu1-mesa-dev
+    sudo apt install libjpeg-dev libpng-dev libtiff-dev libavcodec-dev libavformat-dev libswscale-dev libv4l-dev libxvidcore-dev libx264-dev
+    sudo apt install libopenblas-dev libatlas-base-dev liblapack-dev gfortran
+    sudo apt install libhdf5-serial-dev libgtk-3-dev
  
 Prepare your virtualenv:
 
@@ -25,7 +33,7 @@ Prepare your virtualenv:
     . venv/bin/activate
     pip install -r requirements.txt   
 
-If you want to exit your virtualenv:
+If you want to exit your virtualenv:    
 
     deactivate
 
@@ -33,21 +41,76 @@ Then install requirements
 
     pip install -r requirements.txt
 
-You need to setup the speech to text
+### Speech recognition setup
+
+A speech to text to control an IoT object
+
+On Ubuntu, you need to run:
+
+    sudo apt update && sudo apt install portaudio19-dev swig libpulse-dev libasound2-dev
+
+Install pvporcupine for hot word recognition
+
+    pip install pvporcupine
+
+#### Py audio Linux
+
+ You will need pyaudio. If you use a python version > 3.6 install with apt (pip not work for 3.7 python)
+
+    sudo apt install python-pyaudio python3-pyaudio
     
-    ## For linux
-    pip install -r speech_to_text/linux-requirements.txt
+    or this if fail
     
-    ## For windows
-    pip install -r speech_to_text/win-requirements.txt
+    sudo apt install portaudio19-dev
+    sudo apt install python-all-dev python3-all-dev
+
+#### Py audio Windows
+
+To install Pyaudio you can use this [web site](https://www.lfd.uci.edu/~gohlke/pythonlibs/#pyaudio).
+
+Then do
+
+    pip install <path to .whl>
+
+#### Rasa
+
+To install rasa just run
+
+    pip install rasa
 
 
-## Creat a mapping
+## 2) Creat a mapping
 
 First you need to map your video projector with the flower pot. To do this you need to run this command
 
-    python app.py
+    python configure_video_mapping.py
 
 When the mapping his done you can test by running the test script.
 
     python test_video_projection.py
+
+## 3) Run rasa server
+
+We do not use the full capacities of rasa but [only the NLU part](https://rasa.com/docs/rasa/nlu/using-nlu-only/)
+
+To detect witch action do we use Rasa intent recognition. First you need to train the Rasa NLU model
+
+    cd speech_to_text/plant_intent_recognizer && rasa train nlu
+
+Then start the server
+
+    rasa run --enable-api
+    
+To test if all work
+
+    curl localhost:5005/model/parse -d '{"text":"hello"}'
+
+## 4) run the garden
+
+Before to run the main script copy and rename the `config.ini.example` file to `config.ini`
+
+**Note** and remember to replace all the parameters with the text `<To fill>`
+
+The you can run the garden
+
+    python main.py config.ini

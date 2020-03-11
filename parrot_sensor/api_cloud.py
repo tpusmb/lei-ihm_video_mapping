@@ -18,6 +18,12 @@ class ApiCloud(object):
         self.__token = {}
 
     def login(self, username, password):
+        """
+        login to the cloud
+        :param username:
+        :param password:
+        :return:
+        """
         self._credentials['username'] = username
         self._credentials['password'] = password
         options = self._credentials
@@ -36,6 +42,10 @@ class ApiCloud(object):
             return False
 
     def get_sensor_data_sync(self):
+        """
+        get all captor data from cloud
+        :return:
+        """
         if not self.__logged:
             return False
 
@@ -46,6 +56,13 @@ class ApiCloud(object):
         return ApiCloud.__return_result(path, req)
 
     def get_samples_location(self, identifier, form_date_time, to_date_time):
+        """
+        get captor data with time interval
+        :param identifier: location
+        :param form_date_time: since
+        :param to_date_time: date end
+        :return:
+        """
         if not self.__logged:
             return False
 

@@ -1,3 +1,4 @@
+import json
 import subprocess
 import sys
 from enum import Enum
@@ -13,14 +14,11 @@ class Intent(Enum):
     AFFICHER_ETAT_PLANTE = "afficher_etat_plante"
     ENTRETENIR_PLANTE = "entretenir_plante"
     AFFICHER_PROGRES_PLANTE = "afficher_progres_de_la_plante"
-    AFFICHER_PROGRES_DU_JARDINIER = "afficher_progres_du_jardinier"
-    AFFICHER_COURBE_PROGRESSION = "afficher_courbe_progression"
     AFFICHER_NIVEAU = "afficher_niveau"
-    PLANTER_UNE_NOUVELLE_PLANTE = "planter_une_nouvelle_plante"
     PLANTER_UN_BULBE = "planter_un_bulbe"
     POSITIF = "positif"
-    NEGATIF = "negatif"
     PLANTE_CHALLENGE = "plante_challenge"
+    HELP = "aide"
     UNKNOWN_INTENT = ""
 
     @staticmethod
@@ -37,15 +35,26 @@ class Intent(Enum):
 
 class RasaIntent:
 
-    def __init__(self, url="http://localhost:5005/model/parse"):
+    def __init__(self, url="http://localhost:5005/model/parse", headers=None):
         self.url = url
-        # TODO start server in background
+        self.headers = headers if headers else {}
+        if isinstance(self.headers, str):
+            self.headers = json.loads(headers)
 
     def detect_intent(self, text: str) -> Tuple[Union[Intent, None], float]:
-        res = requests.post(self.url, json={"text": text})
-        intent_res = res.json().get("intent", [])
-        intent_str = intent_res.get("name")
-        confidence = intent_res.get('confidence')
+        res = requests.post(
+            self.url,
+            json={"text": text},
+            headers=self.headers,
+        )
+        if not (200 <= res.status_code < 300):
+            print(f"received invalid response code {res.status_code}: {res.reason}", file=sys.stderr)
+            intent_str = ""
+            confidence = 0
+        else:
+            intent_res = res.json().get("intent", [])
+            intent_str = intent_res.get("name")
+            confidence = intent_res.get('confidence')
         return Intent.from_str(intent_str), confidence
 
 
