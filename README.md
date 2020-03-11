@@ -11,6 +11,8 @@ TODO
 
 For this project you will need a python3 version.
 
+We code in python3.7 version.
+
 You will need the following package:
     
     sudo apt install python3
@@ -68,9 +70,9 @@ Install pvporcupine for hot word recognition
 
 To install Pyaudio you can use this [web site](https://www.lfd.uci.edu/~gohlke/pythonlibs/#pyaudio).
 
-Then do
+Or use the one in lib folder (python 3.7 64x):
 
-    pip install <path to .whl>
+    pip install lib/PyAudio-0.2.11-cp37-cp37m-win_amd64.whl
 
 #### Rasa
 
