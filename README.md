@@ -3,6 +3,7 @@ This project goal is to have a smart plant that help our fictive target, an old 
 We opted for an ambient solution that take form of a plant pot. It can listen to the user questions and help him, using visual indication projected on a flowerpot.
 > We gave a special consideration on the ethic part of this project, especially by making sure this object is not intruding in Lei's life, by reducing request to third parties (and in particular Google's servers) to the strict minimum 
 
+*A [demo](README.md#Demo) (in french) is available at the end of this README*
 ## Material list
 
 * An hexagonal flowerpot of any size
@@ -129,3 +130,9 @@ As each microphone is different, `noise_level` can be found by running [detect_m
 Once you are all set, you can run the program: 
 
     python main.py config.ini
+    
+## Demo
+#### Live demo and possible evolution  
+[![](https://drive.google.com/thumbnail?id=1IxPbVcb4gfIZVlxCVQsETd5TNV5ggkIW)](https://drive.google.com/open?id=1IxPbVcb4gfIZVlxCVQsETd5TNV5ggkIW "")  
+#### Demo of the website used to configure the mapping  
+[![](https://drive.google.com/thumbnail?id=10vhSDGST67oB31JZqjXGDijphCGYk4C5)](https://drive.google.com/open?id=10vhSDGST67oB31JZqjXGDijphCGYk4C5 "")
