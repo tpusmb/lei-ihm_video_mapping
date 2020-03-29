@@ -1,6 +1,6 @@
 # INFO 903-904 project: Enhancing a flowerpot by video mapping
 This project goal is to have a smart plant that help our fictive target, an old man named Lei, learn to take care of a plant over several weeks.  
-We opted for an ambient solution that take form of a plant pot that can listen to the user questions and help him using visual indication projected on this flowerpot.
+We opted for an ambient solution that take form of a plant pot. It can listen to the user questions and help him, using visual indication projected on a flowerpot.
 > We gave a special consideration on the ethic part of this project, especially by making sure this object is not intruding in Lei's life, by reducing request to third parties (and in particular Google's servers) to the strict minimum 
 
 ## Material list
