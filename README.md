@@ -42,7 +42,6 @@ Prepare your virtualenv:
 
     python3 -m virtualenv venv
     . venv/bin/activate
-    pip install -r requirements.txt   
 
 If you want to exit your virtualenv:    
 
@@ -50,7 +49,7 @@ If you want to exit your virtualenv:
 
 Then install requirements
 
-    pip install -r requirements.txt
+    pip install --upgrade --force-reinstall -r requirements.txt
 
 ### Speech recognition setup
 
