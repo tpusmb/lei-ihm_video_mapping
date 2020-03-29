@@ -1,9 +1,15 @@
-# lei-ihm_video_mapping
-Our lei IHM to config mapping
+# INFO 903-904 project: Enhancing a flowerpot by video mapping
+This project goal is to have a smart plant that help our fictive target, an old man named Lei, learn to take care of a plant over several weeks.  
+We opted for an ambient solution that take form of a plant pot that can listen to the user questions and help him using visual indication projected on this flowerpot.
+> We gave a special consideration on the ethic part of this project, especially by making sure this object is not intruding in Lei's life, by reducing request to third parties (and in particular Google's servers) to the strict minimum 
 
 ## Material list
 
-TODO
+* An hexagonal flowerpot of any size
+* A video projector that's has a resolution as low as 360p
+* A webcam (to detect movement near the flowerpot)
+* A microphone (if not include in the webcam)
+* [Optional] Lei
 
 ## 1) Installation
 
@@ -13,11 +19,9 @@ If you are on windows you can only use the video mapping application `py_video_m
 
 ### General setup
 
-For this project you will need a python3 version.
+For this project you will need a python3.7 version.  
 
-We code in python3.7 version.
-
-You will need the following package:
+You will need the following package on Ubuntu:
     
     sudo apt install python3
     sudo apt install python3-dev python3-tk python-imaging-tk
@@ -25,7 +29,7 @@ You will need the following package:
     sudo apt install python-pyaudio python3-pyaudio
     sudo apt install ffmpeg
  
-Opencv optimisation lib
+**[Optional]** Opencv optimisation lib (in particular to improve performance on embarked hardware)
     
     sudo apt install libxmu-dev libxi-dev libglu1-mesa libglu1-mesa-dev
     sudo apt install libjpeg-dev libpng-dev libtiff-dev libavcodec-dev libavformat-dev libswscale-dev libv4l-dev libxvidcore-dev libx264-dev
@@ -65,11 +69,11 @@ Install pvporcupine for hot word recognition
 
 #### Py audio
 
- You will need pyaudio. If you use a python version > 3.6 install with apt (pip not work for 3.7 python)
+ You will need pyaudio. If you use a python version > 3.6 install with apt (pip doesn't work for 3.7 python)
 
     sudo apt install python-pyaudio python3-pyaudio
     
-    or this if fail
+or this if fail
     
     sudo apt install portaudio19-dev
     sudo apt install python-all-dev python3-all-dev
@@ -81,9 +85,9 @@ To install rasa just run
     pip install rasa
 
 
-## 2) Creat a mapping
+## 2) Create a mapping
 
-First you need to map your video projector with the flower pot. To do this you need to run this command
+First you need to map your video projector with the flowerpot. To do this you need to run this command
 
     python configure_video_mapping.py
 
@@ -109,7 +113,7 @@ To test if all work
 
 ## 4) run the garden (Only work on Linux and Mac)
 
-Before to run the main script copy and rename the `config.ini.example` file to `config.ini`
+Before to run the main script, copy and rename the `config.ini.example` file to `config.ini`
 
 **Note** and remember to replace all the parameters with the text `<To fill>`
 
