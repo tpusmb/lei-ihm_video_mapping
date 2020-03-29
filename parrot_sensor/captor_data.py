@@ -24,7 +24,6 @@ class CaptorData:
         """
         self.since = (datetime.datetime.now() - datetime.timedelta(hours=time_delta)).strftime("%d-%b-%Y %H:%M:%S")
         self.today = datetime.datetime.now().strftime("%d-%b-%Y %H:%M:%S")
-        self.config = self.get_projetconfig(config_reader)
         self.user_id = config_reader.Parrot["userid"]
         self.user_code = config_reader.Parrot["usercode"]
         self.password = config_reader.Parrot["passwd"]
