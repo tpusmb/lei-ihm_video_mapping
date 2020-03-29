@@ -7,6 +7,10 @@ TODO
 
 ## 1) Installation
 
+**Note** The speech recognition work only on Linux, Mac distribution. Because we use ``pvporcupine``
+
+If you are on windows you can only use the video mapping application `py_video_mapping`
+
 ### General setup
 
 For this project you will need a python3 version.
@@ -36,7 +40,7 @@ Install pip and virtualenv:
 
 Prepare your virtualenv:
 
-    virtualenv -p python3 venv
+    python3 -m virtualenv venv
     . venv/bin/activate
     pip install -r requirements.txt   
 
@@ -60,7 +64,7 @@ Install pvporcupine for hot word recognition
 
     pip install pvporcupine
 
-#### Py audio Linux
+#### Py audio
 
  You will need pyaudio. If you use a python version > 3.6 install with apt (pip not work for 3.7 python)
 
@@ -70,14 +74,6 @@ Install pvporcupine for hot word recognition
     
     sudo apt install portaudio19-dev
     sudo apt install python-all-dev python3-all-dev
-
-#### Py audio Windows
-
-To install Pyaudio you can use this [web site](https://www.lfd.uci.edu/~gohlke/pythonlibs/#pyaudio).
-
-Or use the one in lib folder (python 3.7 64x):
-
-    pip install lib/PyAudio-0.2.11-cp37-cp37m-win_amd64.whl
 
 #### Rasa
 
@@ -112,7 +108,7 @@ To test if all work
 
     curl localhost:5005/model/parse -d '{"text":"hello"}'
 
-## 4) run the garden
+## 4) run the garden (Only work on Linux and Mac)
 
 Before to run the main script copy and rename the `config.ini.example` file to `config.ini`
 
