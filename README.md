@@ -50,6 +50,8 @@ Prepare your virtualenv:
 If you want to exit your virtualenv:    
 
     deactivate
+    
+> From now on, all commands should be run in the virtualenv
 
 Then install requirements
 
@@ -111,12 +113,19 @@ To test if all work
 
     curl localhost:5005/model/parse -d '{"text":"hello"}'
 
-## 4) run the garden (Only work on Linux and Mac)
+## 4) Configure and run the garden (Only work on Linux and Mac)
 
 Before to run the main script, copy and rename the `config.ini.example` file to `config.ini`
 
 **Note** and remember to replace all the parameters with the text `<To fill>`
 
-The you can run the garden
+#### Setting the values of the microphones
+Default microphone values are unlikely to be adapted to your system, please change them.
+   
+To help find the right index for `input_device_index`, you can run [detect_mic_to_use](detect_mic_to_use.py)  
+As each microphone is different, `noise_level` can be found by running [detect_mic_sensibility](detect_mic_sensibility.py), it will also asset the mic index is working.
+
+#### Run the program
+Once you are all set, you can run the program: 
 
     python main.py config.ini
