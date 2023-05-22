@@ -5,7 +5,7 @@ screeninfo
 matplotlib==3.2.0
 pillow
 ffpyplayer==4.3.1
-requests==2.23.0
+requests==2.31.0
 opencv-contrib-python==4.2.0.32
 imutils==0.5.3
 SpeechRecognition
